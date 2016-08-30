@@ -11,8 +11,6 @@ IndexShuffleBlockResolver用于生成并维护逻辑块到物理文件位置的�
 统一的数据文件中。数据块在数据文件中的偏移量存储在不同的索引文件中。数据文件的命名方式为shuffle_shuffleID_
 mapId_reduceId.data，但是reduceId是被设置为0的，索引文件只是后缀为.index。
 
-`
-
     private[spark] class IndexShuffleBlockResolver(
         conf: SparkConf,
         _blockManager: BlockManager = null)
@@ -86,7 +84,6 @@ mapId_reduceId.data，但是reduceId是被设置为0的，索引文件只是后�
           }
         }
     }
-`
 
 实际上，这里的reduceId由于一直保持0，所以并不是每个map和reduce都对应一个data和index文件。从上面的代码可以
 看出获取索引文件靠的只是shuffleId和mapId，然后通过`ByteStreams.skipFully(in, blockId.reduceId * 8)`将in的
@@ -99,8 +96,6 @@ mapId_reduceId.data，但是reduceId是被设置为0的，索引文件只是后�
 
 ###ShuffleWriter分析
 下面分析ShuffleWriter的逻辑。
-
-`
 
     private[spark] class SortShuffleWriter[K, V, C](
         shuffleBlockResolver: IndexShuffleBlockResolver,
@@ -133,13 +128,10 @@ mapId_reduceId.data，但是reduceId是被设置为0的，索引文件只是后�
         mapStatus = MapStatus(blockManager.shuffleServerId, partitionLengths)
       }
     }
-`
 
 首先分析默认的ShuffleWriter，SortShuffleWriter，其实现依赖于ExternalSorter，即外部排序，看源码的注释，
 原理是基桶排序，先将key分到不同的partition中，然后每个partition中单独进行排序，并且这里有合并参数，
 控制是否对相同key的value进行合并。经过排序后将不同partition的数据写到文件中。
-
-`
 
     final class BypassMergeSortShuffleWriter<K, V> extends ShuffleWriter<K, V> {
 
@@ -186,7 +178,6 @@ mapId_reduceId.data，但是reduceId是被设置为0的，索引文件只是后�
         mapStatus = MapStatus$.MODULE$.apply(blockManager.shuffleServerId(), partitionLengths);
       }
     }
-`
 
 BypassMergeSortShuffleWriter就是过去的HashShuffle，从代码中可以看到`partitionWriters`会为每个map和
 reduce生成一个partition文件writer，但是由于这会造成大量的小文件，所以这里会将这些小文件合并成一个大
@@ -195,7 +186,6 @@ reduce生成一个partition文件writer，但是由于这会造成大量的小�
 对应的则是各个分片的大小，所以利用同样的原理生成索引文件。这种shuffle方式只有在特定的条件下会发挥不错，
 具体可以看代码注释。
 
-`
 
     public class UnsafeShuffleWriter<K, V> extends ShuffleWriter<K, V> {
 
@@ -314,7 +304,6 @@ reduce生成一个partition文件writer，但是由于这会造成大量的小�
         }
       }
     }
-`
 
 UnsafeShuffleWriter与SortShuffleWriter最大的不同在于二者使用的排序方式。前者使用的是ShuffleExternalSorter，
 其排序使用的是ShuffleInMemorySorter，但该Sorter本身使用的排序有两种可供选择：RadixSort和TimSort。而且排序是
@@ -333,8 +322,6 @@ insertRecordIntoSorter中先是利用`serOutputStream`将record加入序列化�
 的输出流，这二者的关系在open方法中有体现，`serBuffer`实际上是一个ByteArrayOutputStream的对象，只是它对外暴露了
 自己的`buf`
 
-`   
-
     private void open() throws IOException {
         assert (sorter == null);
         sorter = new ShuffleExternalSorter(
@@ -348,15 +335,11 @@ insertRecordIntoSorter中先是利用`serOutputStream`将record加入序列化�
         serBuffer = new MyByteArrayOutputStream(1024 * 1024);
         serOutputStream = serializer.serializeStream(serBuffer);
     }
-`
 
 所以在
 
-`
-
     sorter.insertRecord(
           serBuffer.getBuf(), Platform.BYTE_ARRAY_OFFSET, serializedRecordSize, partitionId);
-`
 
 这句中可以看到，利用`serBuffer`直接将buffer中的内容传到了sorter中，由其进行排序。然后在closeAndWriteOutput方法中
 对数据进行写文件的操作，前面的部分类似于其他Writer，不同的是`partitionLengths = mergeSpills(spills, tmp);`，而spills
@@ -369,8 +352,6 @@ insertRecordIntoSorter中先是利用`serOutputStream`将record加入序列化�
 ###ShuffleReader分析
 SortShuffleManager依赖的ShuffleReader是BlockStoreShuffleReader，其作用就是从其他节点将该reduce所要读取的数据段拉过来。
 其只包含方法read
-
-`
 
     private[spark] class BlockStoreShuffleReader[K, C](
         handle: BaseShuffleHandle[K, _, C],
@@ -441,7 +422,6 @@ SortShuffleManager依赖的ShuffleReader是BlockStoreShuffleReader，其作用�
         }
       }
     }
-`
 
 为了简洁，这里删去部分代码，前两句是获取打包后的数据（因为不同节点对应的map输出并不在一起），第一句使用到
 `mapOutputTracker`，也就是reduce必须通过它才能知道自己应该拉取的数据在哪台物理节点上。第4句是用于反序列化
