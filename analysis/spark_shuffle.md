@@ -1,12 +1,12 @@
-#Spark»ù´¡¼°ShuffleÊµÏÖ
+#SparkåŸºç¡€åŠShuffleå®ç°
 
-##Job£¬Stage£¬Task£¬Dependency
+##Jobï¼ŒStageï¼ŒTaskï¼ŒDependency
 
-###´ÓÒ»°ãJob£¨·ÇShuffle£©¿ªÊ¼
+###ä»ä¸€èˆ¬Jobï¼ˆéShuffleï¼‰å¼€å§‹
 
-Job¿ÉÒÔ¿´×÷ÊÇÒ»×étransformation²Ù×÷ºÍÒ»¸öaction²Ù×÷µÄ¼¯ºÏ£¬»»¾ä»°ËµÃ¿¸öaction²Ù×÷»á´¥·¢Ò»¸öJob¡£²é¿´Ô´Âë
-¿ÉÒÔ·¢ÏÖÃ¿¸öaction²Ù×÷µÄ×îºó×ÜÊÇµ÷ÓÃ`sc.runJob(this,...)`£¬¼´SparkContextÏÂµÄrunJob·½·¨¡£ÆäÊµËùÓĞµÄrunJobµÄ
-ÖØÔØ·½·¨×îÖÕ¶¼»áµ÷ÓÃÈçÏÂµÄ¹ı³Ì£¬
+Jobå¯ä»¥çœ‹ä½œæ˜¯ä¸€ç»„transformationæ“ä½œå’Œä¸€ä¸ªactionæ“ä½œçš„é›†åˆï¼Œæ¢å¥è¯è¯´æ¯ä¸ªactionæ“ä½œä¼šè§¦å‘ä¸€ä¸ªJobã€‚æŸ¥çœ‹æºç 
+å¯ä»¥å‘ç°æ¯ä¸ªactionæ“ä½œçš„æœ€åæ€»æ˜¯è°ƒç”¨`sc.runJob(this,...)`ï¼Œå³SparkContextä¸‹çš„runJobæ–¹æ³•ã€‚å…¶å®æ‰€æœ‰çš„runJobçš„
+é‡è½½æ–¹æ³•æœ€ç»ˆéƒ½ä¼šè°ƒç”¨å¦‚ä¸‹çš„è¿‡ç¨‹ï¼Œ
 
 	def runJob[T, U: ClassTag](
 		  rdd: RDD[T],
@@ -26,10 +26,10 @@ Job¿ÉÒÔ¿´×÷ÊÇÒ»×étransformation²Ù×÷ºÍÒ»¸öaction²Ù×÷µÄ¼¯ºÏ£¬»»¾ä»°ËµÃ¿¸öaction²Ù×
 		progressBar.foreach(_.finishAll())
 		rdd.doCheckpoint()
 	}
-`resultHandler`²ÎÊıÊÇÓÉÖ®Ç°µÄrunJob´«ÈëµÄ£¬Ö÷Òª×÷ÓÃÊÇÀûÓÃ»Øµ÷º¯ÊıÀ´·µ»Ø½á¹û£¬×¢ÒâÕâÀï²¢²»ÊÇÀûÓÃ·½·¨·µ»ØÖµÊµÏÖ½á¹û·µ»Ø¡£
-`func`²ÎÊıÊÇÕë¶ÔÃ¿¸öpartitionÔËĞĞaction²Ù×÷µÄº¯Êı¡£`partitions`ÊÇ¸÷¸öpartition±àºÅ¹¹³ÉµÄÊı×é¡£dagScheduler·µ»ØSpark×îÍâ
-²ãµÄµ÷¶ÈÆ÷£¬Í¨¹ıÃû×ÖÒ²¿ÉÒÔÖªµÀJobÊÇÒ»¸öDAGÍ¼£¬`dagScheduler.runJob`ÊÇÒ»¸ö¶ÂÈû²Ù×÷£¬JobÍê³ÉÖ®ºó£¬rdd»á½øĞĞcheckpoint¡£
-¼ÌĞøÉîÈëDAGScheduler.runJob
+`resultHandler`å‚æ•°æ˜¯ç”±ä¹‹å‰çš„runJobä¼ å…¥çš„ï¼Œä¸»è¦ä½œç”¨æ˜¯åˆ©ç”¨å›è°ƒå‡½æ•°æ¥è¿”å›ç»“æœï¼Œæ³¨æ„è¿™é‡Œå¹¶ä¸æ˜¯åˆ©ç”¨æ–¹æ³•è¿”å›å€¼å®ç°ç»“æœè¿”å›ã€‚
+`func`å‚æ•°æ˜¯é’ˆå¯¹æ¯ä¸ªpartitionè¿è¡Œactionæ“ä½œçš„å‡½æ•°ã€‚`partitions`æ˜¯å„ä¸ªpartitionç¼–å·æ„æˆçš„æ•°ç»„ã€‚dagSchedulerè¿”å›Sparkæœ€å¤–
+å±‚çš„è°ƒåº¦å™¨ï¼Œé€šè¿‡åå­—ä¹Ÿå¯ä»¥çŸ¥é“Jobæ˜¯ä¸€ä¸ªDAGå›¾ï¼Œ`dagScheduler.runJob`æ˜¯ä¸€ä¸ªå µå¡æ“ä½œï¼ŒJobå®Œæˆä¹‹åï¼Œrddä¼šè¿›è¡Œcheckpointã€‚
+ç»§ç»­æ·±å…¥DAGScheduler.runJob
 
 	def runJob[T, U](
 		  rdd: RDD[T],
@@ -55,8 +55,8 @@ Job¿ÉÒÔ¿´×÷ÊÇÒ»×étransformation²Ù×÷ºÍÒ»¸öaction²Ù×÷µÄ¼¯ºÏ£¬»»¾ä»°ËµÃ¿¸öaction²Ù×
 			throw exception
 		}
 	}
-¿ÉÒÔ·¢ÏÖ¸Ã·½·¨ÊÇ¶ÂÈûµÄ£¬¾ßÌåµÄ¾ÍÊÇ`waiter = submitJob(rdd, func, partitions, callSite, resultHandler, properties)`£¬¼´Ìá½»×÷ÒµºóÆäÊµ
-¾ÍÒÑ¾­¶ÂÈûÁË¡£
+å¯ä»¥å‘ç°è¯¥æ–¹æ³•æ˜¯å µå¡çš„ï¼Œå…·ä½“çš„å°±æ˜¯`waiter = submitJob(rdd, func, partitions, callSite, resultHandler, properties)`ï¼Œå³æäº¤ä½œä¸šåå…¶å®
+å°±å·²ç»å µå¡äº†ã€‚
 
 	//DAGScheduler
 	def submitJob[T, U](
@@ -88,12 +88,12 @@ Job¿ÉÒÔ¿´×÷ÊÇÒ»×étransformation²Ù×÷ºÍÒ»¸öaction²Ù×÷µÄ¼¯ºÏ£¬»»¾ä»°ËµÃ¿¸öaction²Ù×
 		  SerializationUtils.clone(properties)))
 		waiter
 	}
-Ç°Á½¾äÊÇÅĞ¶ÏrddµÄpartitionºÍ´«ÈëµÄpartitionsµÄÊıÄ¿Ò»ÖÂ²Å¿ÉÒÔ´¦Àí£¬Ö®ºó¾ÍÊÇÕâ¸öJob´´½¨Ò»¸öJobId£¬Èç¹û¸ÃrddÃ»ÓĞ
-partition»áÖ±½ÓÅĞ¶¨Îª´¦Àí³É¹¦£¨Ö±½Ó·µ»ØÒ»¸öJobWaiter¶ÔÏó£©£¬·´Ö®ÀûÓÃJobIdºÍ¸Ãrdd´´½¨Ò»¸öJobWaiter¶ÔÏó£¬È»ºóÏò
-`eventProcessLoop`£¬¼´DAGµ÷¶ÈÆ÷£¬·¢ËÍÒ»¸öJobSubmittedµÄÏûÏ¢¡£ÓÉÓÚÏÖÔÚµÄ°æ±¾µÄSparkÒÑ¾­ÓÃNetty´úÌæÁËAkka£¬ËùÒÔ
-²¢²»ÊÇAkka·ç¸ñµÄĞ´·¨¡£ÕâÀïµÄJobWaiterÒ²±»Ò»Æğ·¢ËÍÁË³öÈ¥£¬`waiter`¶ÔÏó·â×°ÁËºÜ¶àĞÅÏ¢£¬°üÀ¨·ÖÇøÊıºÍÓÃÓÚ½ÓÊÕ½á¹ûµÄ
-»Øµ÷º¯Êı¡£`eventProcessLoop`ÊÇÒ»¸öDAGSchedulerEventProcessLoop¶ÔÏó£¬ÆäÔÚ½ÓÊÕµ½Ò»¸öeventºó»áµ÷ÓÃDAGSchedulerµÄ
-handleJobSubmitted·½·¨¡£
+å‰ä¸¤å¥æ˜¯åˆ¤æ–­rddçš„partitionå’Œä¼ å…¥çš„partitionsçš„æ•°ç›®ä¸€è‡´æ‰å¯ä»¥å¤„ç†ï¼Œä¹‹åå°±æ˜¯è¿™ä¸ªJobåˆ›å»ºä¸€ä¸ªJobIdï¼Œå¦‚æœè¯¥rddæ²¡æœ‰
+partitionä¼šç›´æ¥åˆ¤å®šä¸ºå¤„ç†æˆåŠŸï¼ˆç›´æ¥è¿”å›ä¸€ä¸ªJobWaiterå¯¹è±¡ï¼‰ï¼Œåä¹‹åˆ©ç”¨JobIdå’Œè¯¥rddåˆ›å»ºä¸€ä¸ªJobWaiterå¯¹è±¡ï¼Œç„¶åå‘
+`eventProcessLoop`ï¼Œå³DAGè°ƒåº¦å™¨ï¼Œå‘é€ä¸€ä¸ªJobSubmittedçš„æ¶ˆæ¯ã€‚ç”±äºç°åœ¨çš„ç‰ˆæœ¬çš„Sparkå·²ç»ç”¨Nettyä»£æ›¿äº†Akkaï¼Œæ‰€ä»¥
+å¹¶ä¸æ˜¯Akkaé£æ ¼çš„å†™æ³•ã€‚è¿™é‡Œçš„JobWaiterä¹Ÿè¢«ä¸€èµ·å‘é€äº†å‡ºå»ï¼Œ`waiter`å¯¹è±¡å°è£…äº†å¾ˆå¤šä¿¡æ¯ï¼ŒåŒ…æ‹¬åˆ†åŒºæ•°å’Œç”¨äºæ¥æ”¶ç»“æœçš„
+å›è°ƒå‡½æ•°ã€‚`eventProcessLoop`æ˜¯ä¸€ä¸ªDAGSchedulerEventProcessLoopå¯¹è±¡ï¼Œå…¶åœ¨æ¥æ”¶åˆ°ä¸€ä¸ªeventåä¼šè°ƒç”¨DAGSchedulerçš„
+handleJobSubmittedæ–¹æ³•ã€‚
 
 	private[scheduler] def handleJobSubmitted(jobId: Int,
 		  finalRDD: RDD[_],
@@ -117,10 +117,10 @@ handleJobSubmitted·½·¨¡£
 
 		submitStage(finalStage)
 	}
-ÕâÀïÉ¾È¥²¿·ÖÃ»ÓÃµÄ´úÂë£¨¹ØÓÚlogĞÅÏ¢ºÍwebÍ³¼ÆÒ³Ãæ£©£¬¸Ã·½·¨µÄÖ÷Òª¹¤×÷¾ÍÊÇ¸ù¾İrddºÍºÍjobIdÉú³ÉfinalStage£¬²¢ÇÒ
-µ÷ÓÃ`submitStage(finalStage)`½«ÆäÌá½»ÔËĞĞ¡£ÕâÀïÉæ¼°µ½stage£¬Ã¿¸öJobÖ»ÓĞÒ»¸öfinalStage£¬ËüÊÇÕû¸öDAG×îºóÒ»¸öStage£¬
-µ«ÊÇÖĞ¼äÒÀ¾İÇé¿ö»áÓĞ¶à¸ö£¨»ò0¸ö£©ShuffleStage£¨ÑÏ¸ñËµÊÇShuffleMapStage£©£¬ShuffleStageÊÇÉæ¼°µ½¿íÒÀÀµ²Å»áÓĞµÄ¡£
-½øÈëcreateResultStage
+è¿™é‡Œåˆ å»éƒ¨åˆ†æ²¡ç”¨çš„ä»£ç ï¼ˆå…³äºlogä¿¡æ¯å’Œwebç»Ÿè®¡é¡µé¢ï¼‰ï¼Œè¯¥æ–¹æ³•çš„ä¸»è¦å·¥ä½œå°±æ˜¯æ ¹æ®rddå’Œå’ŒjobIdç”ŸæˆfinalStageï¼Œå¹¶ä¸”
+è°ƒç”¨`submitStage(finalStage)`å°†å…¶æäº¤è¿è¡Œã€‚è¿™é‡Œæ¶‰åŠåˆ°stageï¼Œæ¯ä¸ªJobåªæœ‰ä¸€ä¸ªfinalStageï¼Œå®ƒæ˜¯æ•´ä¸ªDAGæœ€åä¸€ä¸ªStageï¼Œ
+ä½†æ˜¯ä¸­é—´ä¾æ®æƒ…å†µä¼šæœ‰å¤šä¸ªï¼ˆæˆ–0ä¸ªï¼‰ShuffleStageï¼ˆä¸¥æ ¼è¯´æ˜¯ShuffleMapStageï¼‰ï¼ŒShuffleStageæ˜¯æ¶‰åŠåˆ°å®½ä¾èµ–æ‰ä¼šæœ‰çš„ã€‚
+è¿›å…¥createResultStage
 
 	private def createResultStage(
 		  rdd: RDD[_],
@@ -160,14 +160,14 @@ handleJobSubmitted·½·¨¡£
 		}
 		parents
 	}
-Ê×ÏÈÊÇµ÷ÓÃ`getOrCreateParentStages(rdd, jobId)`À´Éú³É¸¸Stage£¬¿ÉÒÔ·¢ÏÖÔÚ`getOrCreateParentStages`ÖĞÊÇ¸¸StageÊÇÒÀ¾İ
-shuffleÒÀÀµÉú³ÉµÄ¡£½øÈë`getShuffleDependencies`£¬¿ÉÒÔ·¢ÏÖÖ»ÓĞÔÚShuffleDependency£¬¼´¿íÒÀÀµ£¬µÄÇé¿öÏÂ²Å»á½«Æä×÷Îª¸¸ÒÀÀµ£¬ÆäËû
-Çé¿ö£¨Ò²¾ÍÊÇÕ­ÒÀÀµ£©Ö»ÊÇ×·ËİÆä¸¸ÒÀÀµ£¨ShuffleDependency£©£¬¶øÇÒÕâÀïÖ»»á×·ËİÒ»²ãÒÀÀµ£¬ÀıÈç£ºA<--B<--C±íÊ¾CÒÀÀµ£¨ShuffleÒÀÀµ£©B£¬
-BÒÀÀµA£¬ÕâÀïÖ»»á½âÎöµ½B<--C¡£`getOrCreateParentStages`ÖĞÎªÃ¿¸öShuffleÒÀÀµ´´½¨Ò»¸öShuffleStage£¬Ò²¾ÍÊÇShuffleMapStage¡£
-ShuffleMapStageÓĞÁ½¸ö±È½ÏÖØÒªµÄº¯Êı£¬`isAvailable`ÅĞ¶Ïµ±Ç°StageÊÇ·ñÔËĞĞÍê³É£¬ÅĞ¶ÏÌõ¼şÒ»Ä¿ÁËÈ»¡£`addOutputLoc`ÔòÖ÷ÒªÊÇ¶Ô
-`_numAvailableOutputs`½øĞĞĞŞ¸Ä£¬`outputLocs`ÊÇÀûÓÃpartition±àºÅ×÷ÎªÏÂ±ê£¬Ã¿¸ö±àºÅ¶ÔÓ¦µÄ¿ÉÄÜMapStatus£¨ÒòÎªÒ»¸öpartition¿ÉÄÜÔËĞĞ¶à´Î£©£¬
-MapStatus»áÔÚÖ®ºó½øĞĞ½éÉÜ£¬¸Ãº¯ÊıÖ÷ÒªÊÇÔÚ`createShuffleMapStage`ÖĞµ÷ÓÃ£¬Ã¿ÓĞÒ»¸öpartitionÓĞshuffleÊä³ö£¬¾Í»áµ÷ÓÃÒ»´Î£¬µ±ËùÓĞpartitionÊä³ö
-¶¼Íê³ÉÊ±£¬¸ÃstageÒ²¾ÍÍê³ÉÁË¡£
+é¦–å…ˆæ˜¯è°ƒç”¨`getOrCreateParentStages(rdd, jobId)`æ¥ç”Ÿæˆçˆ¶Stageï¼Œå¯ä»¥å‘ç°åœ¨`getOrCreateParentStages`ä¸­æ˜¯çˆ¶Stageæ˜¯ä¾æ®
+shuffleä¾èµ–ç”Ÿæˆçš„ã€‚è¿›å…¥`getShuffleDependencies`ï¼Œå¯ä»¥å‘ç°åªæœ‰åœ¨ShuffleDependencyï¼Œå³å®½ä¾èµ–ï¼Œçš„æƒ…å†µä¸‹æ‰ä¼šå°†å…¶ä½œä¸ºçˆ¶ä¾èµ–ï¼Œå…¶ä»–
+æƒ…å†µï¼ˆä¹Ÿå°±æ˜¯çª„ä¾èµ–ï¼‰åªæ˜¯è¿½æº¯å…¶çˆ¶ä¾èµ–ï¼ˆShuffleDependencyï¼‰ï¼Œè€Œä¸”è¿™é‡Œåªä¼šè¿½æº¯ä¸€å±‚ä¾èµ–ï¼Œä¾‹å¦‚ï¼šA<--B<--Cè¡¨ç¤ºCä¾èµ–ï¼ˆShuffleä¾èµ–ï¼‰Bï¼Œ
+Bä¾èµ–Aï¼Œè¿™é‡Œåªä¼šè§£æåˆ°B<--Cã€‚`getOrCreateParentStages`ä¸­ä¸ºæ¯ä¸ªShuffleä¾èµ–åˆ›å»ºä¸€ä¸ªShuffleStageï¼Œä¹Ÿå°±æ˜¯ShuffleMapStageã€‚
+ShuffleMapStageæœ‰ä¸¤ä¸ªæ¯”è¾ƒé‡è¦çš„å‡½æ•°ï¼Œ`isAvailable`åˆ¤æ–­å½“å‰Stageæ˜¯å¦è¿è¡Œå®Œæˆï¼Œåˆ¤æ–­æ¡ä»¶ä¸€ç›®äº†ç„¶ã€‚`addOutputLoc`åˆ™ä¸»è¦æ˜¯å¯¹
+`_numAvailableOutputs`è¿›è¡Œä¿®æ”¹ï¼Œ`outputLocs`æ˜¯åˆ©ç”¨partitionç¼–å·ä½œä¸ºä¸‹æ ‡ï¼Œæ¯ä¸ªç¼–å·å¯¹åº”çš„å¯èƒ½MapStatusï¼ˆå› ä¸ºä¸€ä¸ªpartitionå¯èƒ½è¿è¡Œå¤šæ¬¡ï¼‰ï¼Œ
+MapStatusä¼šåœ¨ä¹‹åè¿›è¡Œä»‹ç»ï¼Œè¯¥å‡½æ•°ä¸»è¦æ˜¯åœ¨`createShuffleMapStage`ä¸­è°ƒç”¨ï¼Œæ¯æœ‰ä¸€ä¸ªpartitionæœ‰shuffleè¾“å‡ºï¼Œå°±ä¼šè°ƒç”¨ä¸€æ¬¡ï¼Œå½“æ‰€æœ‰partitionè¾“å‡º
+éƒ½å®Œæˆæ—¶ï¼Œè¯¥stageä¹Ÿå°±å®Œæˆäº†ã€‚
 
 	def isAvailable: Boolean = _numAvailableOutputs == numPartitions
 	def addOutputLoc(partition: Int, status: MapStatus): Unit = {
@@ -177,15 +177,15 @@ MapStatus»áÔÚÖ®ºó½øĞĞ½éÉÜ£¬¸Ãº¯ÊıÖ÷ÒªÊÇÔÚ`createShuffleMapStage`ÖĞµ÷ÓÃ£¬Ã¿ÓĞÒ»¸ö
 		  _numAvailableOutputs += 1
 		}
 	}
-½ÓÏÂÀ´·ÖÎöMapStatus£¬
+æ¥ä¸‹æ¥åˆ†æMapStatusï¼Œ
 
 	private[spark] sealed trait MapStatus {
 	  def location: BlockManagerId
 
 	  def getSizeForBlock(reduceId: Int): Long
 	}
-ÆäÖ»°üº¬Ò»¸ö¶ÔÏólocation£¬¼´Õâ¸öÈÎÎñÔËĞĞµÄÎ»ÖÃ£¬Ò²¾ÍÊÇMapÈÎÎñµÄÊä³öÎ»ÖÃ¡£»¹ÓĞ¶ÔreduceId¶ÔÓ¦µÄBlockµÄÔ¤²â´óĞ¡£¬ÆäÊµÔ¤²âµÄÖØµãÄ¿µÄÊÇÕë¶ÔÔ¤²âÖµÎª0
-µÄBlock²»½øĞĞ¼ÆËã¡£¶ÔÓÚResultStageÊÇ·ñÍê³ÉµÄÅĞ¶ÏÓÉÈçÏÂÁ½²¿·ÖÍê³É
+å…¶åªåŒ…å«ä¸€ä¸ªå¯¹è±¡locationï¼Œå³è¿™ä¸ªä»»åŠ¡è¿è¡Œçš„ä½ç½®ï¼Œä¹Ÿå°±æ˜¯Mapä»»åŠ¡çš„è¾“å‡ºä½ç½®ã€‚è¿˜æœ‰å¯¹reduceIdå¯¹åº”çš„Blockçš„é¢„æµ‹å¤§å°ï¼Œå…¶å®é¢„æµ‹çš„é‡ç‚¹ç›®çš„æ˜¯é’ˆå¯¹é¢„æµ‹å€¼ä¸º0
+çš„Blockä¸è¿›è¡Œè®¡ç®—ã€‚å¯¹äºResultStageæ˜¯å¦å®Œæˆçš„åˆ¤æ–­ç”±å¦‚ä¸‹ä¸¤éƒ¨åˆ†å®Œæˆ
 
 	//ResultStage
 	def activeJob: Option[ActiveJob] = _activeJob
@@ -211,10 +211,10 @@ MapStatus»áÔÚÖ®ºó½øĞĞ½éÉÜ£¬¸Ãº¯ÊıÖ÷ÒªÊÇÔÚ`createShuffleMapStage`ÖĞµ÷ÓÃ£¬Ã¿ÓĞÒ»¸ö
 
 	  var numFinished = 0
 	}
-ResultStageÖĞÓÃactiveJob»ñÈ¡¸ÃJob£¬È»ºóJobÖĞÓĞÒ»¸öfinished±äÁ¿±íÊ¾¸÷¸öpartitionÊÇ·ñÍê³É£¬¶ÔÓÚfinishµÄĞŞ¸ÄÊÇÔÚ
-`DAGScheduler.handleTaskCompletion(event: CompletionEvent)`ÖĞÍê³ÉµÄ¡£
+ResultStageä¸­ç”¨activeJobè·å–è¯¥Jobï¼Œç„¶åJobä¸­æœ‰ä¸€ä¸ªfinishedå˜é‡è¡¨ç¤ºå„ä¸ªpartitionæ˜¯å¦å®Œæˆï¼Œå¯¹äºfinishçš„ä¿®æ”¹æ˜¯åœ¨
+`DAGScheduler.handleTaskCompletion(event: CompletionEvent)`ä¸­å®Œæˆçš„ã€‚
 
-½ÓÏÂÀ´¼ÌĞø`submitJob`·ÖÎö
+æ¥ä¸‹æ¥ç»§ç»­`submitJob`åˆ†æ
 
 	private def submitStage(stage: Stage) {
 		val jobId = activeJobForStage(stage)
@@ -268,16 +268,16 @@ ResultStageÖĞÓÃactiveJob»ñÈ¡¸ÃJob£¬È»ºóJobÖĞÓĞÒ»¸öfinished±äÁ¿±íÊ¾¸÷¸öpartitionÊ
 		}
 		missing.toList
 	}
-Ê×ÏÈÅĞ¶Ï¸ÃStageÊÇ·ñÊÇµÈ´ı£¨¸¸StageÃ»ÓĞÍê³É£©¡¢ÔËĞĞ¡¢Ê§°ÜµÈ×´Ì¬¡£È»ºóÓÃ`getMissingParentStages(stage)`»ñÈ¡
-finalStageµÄËùÓĞÎ´´¦ÀíµÄ¸¸Stage£¬²¢ÇÒµü´úÌá½»¸¸Stage£¬²¢ÇÒ°Ñ¸ÃfinalStage¼ÓÈëwaitingStage£¬Èç¹ûÃ»ÓĞ¸¸Stage£¬
-ÄÇÃ´¾ÍÀûÓÃ`submitMissingTasks(stage, jobId.get)`Ìá½»¸ÃStage¡£
+é¦–å…ˆåˆ¤æ–­è¯¥Stageæ˜¯å¦æ˜¯ç­‰å¾…ï¼ˆçˆ¶Stageæ²¡æœ‰å®Œæˆï¼‰ã€è¿è¡Œã€å¤±è´¥ç­‰çŠ¶æ€ã€‚ç„¶åç”¨`getMissingParentStages(stage)`è·å–
+finalStageçš„æ‰€æœ‰æœªå¤„ç†çš„çˆ¶Stageï¼Œå¹¶ä¸”è¿­ä»£æäº¤çˆ¶Stageï¼Œå¹¶ä¸”æŠŠè¯¥finalStageåŠ å…¥waitingStageï¼Œå¦‚æœæ²¡æœ‰çˆ¶Stageï¼Œ
+é‚£ä¹ˆå°±åˆ©ç”¨`submitMissingTasks(stage, jobId.get)`æäº¤è¯¥Stageã€‚
 
-`getCacheLocs(rdd)`ÊÇ»ñÈ¡¸ÃStage´¦ÀíµÄRDDµÄËùÓĞPartitionµÄcacheÎ»ÖÃ£¬Ö÷Òª¾ÍÊÇ½èÖú`cacheLocs`±äÁ¿£¬Æä±íÊ¾µÄ
-ÊÇRDDºÍÆäpartirionµÄcacheÎ»ÖÃµÄÓ³Éä£¬ËüÊÇÒ»¸öHashMap£¬keyÊÇRDDµÄid£¬valÊÇÒ»¸öÊı×é£¬ÏÂ±êÎªpartitionµÄid£¬ÄÚ
-ÈİÊÇcacheÎ»ÖÃ¡£Èç¹ûÓĞÃ»ÓĞ´¦ÀíÍêµÄpartition£¬ÄÇÃ´ÅĞ¶Ï¸ÃRDDµÄÒÀÀµ¶ÔÓ¦µÄStageÊÇ·ñÍê³É£¬Èç¹ûÃ»ÓĞÍê³É£¬¾Í°ÑÃ»ÓĞÍê
-³ÉµÄ¸¸Stage¼ÓÈë`missing`¡£
+`getCacheLocs(rdd)`æ˜¯è·å–è¯¥Stageå¤„ç†çš„RDDçš„æ‰€æœ‰Partitionçš„cacheä½ç½®ï¼Œä¸»è¦å°±æ˜¯å€ŸåŠ©`cacheLocs`å˜é‡ï¼Œå…¶è¡¨ç¤ºçš„
+æ˜¯RDDå’Œå…¶partirionçš„cacheä½ç½®çš„æ˜ å°„ï¼Œå®ƒæ˜¯ä¸€ä¸ªHashMapï¼Œkeyæ˜¯RDDçš„idï¼Œvalæ˜¯ä¸€ä¸ªæ•°ç»„ï¼Œä¸‹æ ‡ä¸ºpartitionçš„idï¼Œå†…
+å®¹æ˜¯cacheä½ç½®ã€‚å¦‚æœæœ‰æ²¡æœ‰å¤„ç†å®Œçš„partitionï¼Œé‚£ä¹ˆåˆ¤æ–­è¯¥RDDçš„ä¾èµ–å¯¹åº”çš„Stageæ˜¯å¦å®Œæˆï¼Œå¦‚æœæ²¡æœ‰å®Œæˆï¼Œå°±æŠŠæ²¡æœ‰å®Œ
+æˆçš„çˆ¶StageåŠ å…¥`missing`ã€‚
 
-½ÓÏÂÀ´·ÖÎö`submitMissingTasks`
+æ¥ä¸‹æ¥åˆ†æ`submitMissingTasks`
 
 	private def submitMissingTasks(stage: Stage, jobId: Int) {
 		//step1
@@ -363,15 +363,15 @@ finalStageµÄËùÓĞÎ´´¦ÀíµÄ¸¸Stage£¬²¢ÇÒµü´úÌá½»¸¸Stage£¬²¢ÇÒ°Ñ¸ÃfinalStage¼ÓÈëwait
 		  submitWaitingChildStages(stage)
 		}
 	}
-¸Ã¹ı³Ì´óÌå·ÖÎª5²½¡£
+è¯¥è¿‡ç¨‹å¤§ä½“åˆ†ä¸º5æ­¥ã€‚
 
-µÚ1²½ÊÇÖ¸Ã÷¸ÃStageËùĞè¼ÆËãµÄpartition£¨ÒòÎª¿ÉÄÜÖØĞÂ¼ÆËã£¬ËùÒÔ´æÔÚ²¿·ÖpartitionÒÑ¾­ËãÍê£©¡£
+ç¬¬1æ­¥æ˜¯æŒ‡æ˜è¯¥Stageæ‰€éœ€è®¡ç®—çš„partitionï¼ˆå› ä¸ºå¯èƒ½é‡æ–°è®¡ç®—ï¼Œæ‰€ä»¥å­˜åœ¨éƒ¨åˆ†partitionå·²ç»ç®—å®Œï¼‰ã€‚
 
-È»ºóµÚ2²½¾ÍÊÇÕë¶Ô²»Í¬µÄStageÑ¡Ôñ¸ÃÈÎÎñÖ´ĞĞµÄÎ»ÖÃ£¬½Ó×Å¾ÍÊÇÇëÇóÔËĞĞ£¨Ã¿ÔËĞĞÒ»¸öStage¶¼»áÇëÇó£©£¬²¢ÇÒÏò`listenerBus`·¢ËÍ
-`SparkListenerStageSubmitted`ÏûÏ¢£¬Ö»ÓĞÔÚ½ÓÊÕµ½Õâ¸öÏûÏ¢ºó²Å¿ÉÒÔ²âÊÔÈÎÎñÊÇ·ñ¿ÉĞòÁĞ»¯¡£
+ç„¶åç¬¬2æ­¥å°±æ˜¯é’ˆå¯¹ä¸åŒçš„Stageé€‰æ‹©è¯¥ä»»åŠ¡æ‰§è¡Œçš„ä½ç½®ï¼Œæ¥ç€å°±æ˜¯è¯·æ±‚è¿è¡Œï¼ˆæ¯è¿è¡Œä¸€ä¸ªStageéƒ½ä¼šè¯·æ±‚ï¼‰ï¼Œå¹¶ä¸”å‘`listenerBus`å‘é€
+`SparkListenerStageSubmitted`æ¶ˆæ¯ï¼Œåªæœ‰åœ¨æ¥æ”¶åˆ°è¿™ä¸ªæ¶ˆæ¯åæ‰å¯ä»¥æµ‹è¯•ä»»åŠ¡æ˜¯å¦å¯åºåˆ—åŒ–ã€‚
 
-µÚ3²½ÊÇ½«ÈÎÎñÔËĞĞËùĞèµÄĞÅÏ¢½øĞĞĞòÁĞ»¯²¢ÇÒ·¢ËÍ¸ø¸÷¸öÈÎÎñ£¬Õë¶Ô²»Í¬µÄStage·¢ËÍµÄĞÅÏ¢ÉÔÓĞ²»Í¬£¬Ê×ÏÈShuffleStageºÍResultStage¶¼ĞèÒªRDDĞÅÏ¢£¬ËùÒÔÃ¿¸ö
-ÈÎÎñ¶¼ÓĞÒ»·İRDDÒıÓÃµÄ¿½±´£¬µ«ÊÇShuffleStageĞèÒª¶îÍâ·¢ËÍÒÀÀµ£¨ShuffleDependency£©£¬¶øResultStageÔò±ØĞëÓĞ`func`ĞÅÏ¢¡£
+ç¬¬3æ­¥æ˜¯å°†ä»»åŠ¡è¿è¡Œæ‰€éœ€çš„ä¿¡æ¯è¿›è¡Œåºåˆ—åŒ–å¹¶ä¸”å‘é€ç»™å„ä¸ªä»»åŠ¡ï¼Œé’ˆå¯¹ä¸åŒçš„Stageå‘é€çš„ä¿¡æ¯ç¨æœ‰ä¸åŒï¼Œé¦–å…ˆShuffleStageå’ŒResultStageéƒ½éœ€è¦RDDä¿¡æ¯ï¼Œæ‰€ä»¥æ¯ä¸ª
+ä»»åŠ¡éƒ½æœ‰ä¸€ä»½RDDå¼•ç”¨çš„æ‹·è´ï¼Œä½†æ˜¯ShuffleStageéœ€è¦é¢å¤–å‘é€ä¾èµ–ï¼ˆShuffleDependencyï¼‰ï¼Œè€ŒResultStageåˆ™å¿…é¡»æœ‰`func`ä¿¡æ¯ã€‚
 
 	class ShuffleDependency[K: ClassTag, V: ClassTag, C: ClassTag](
 		@transient private val _rdd: RDD[_ <: Product2[K, V]],
@@ -381,19 +381,19 @@ finalStageµÄËùÓĞÎ´´¦ÀíµÄ¸¸Stage£¬²¢ÇÒµü´úÌá½»¸¸Stage£¬²¢ÇÒ°Ñ¸ÃfinalStage¼ÓÈëwait
 		val aggregator: Option[Aggregator[K, V, C]] = None,
 		val mapSideCombine: Boolean = false)
 
-¿ÉÒÔ·¢ÏÖShuffleDependency°üº¬ÁËpartitioner¸æËßÎÒÃÇÒª°´ÕÕÊ²Ã´·ÖÇøº¯Êı½«Map·ÖBucket½øĞĞÊä³ö, ÓĞserializer¸æËßÎÒÃÇÔõÃ´
-¶ÔMapµÄÊä³ö½øĞĞ ĞòÁĞ»¯, ÓĞkeyOrderingºÍaggregator¸æËßÎÒÃÇÔõÃ´°´ÕÕKey½øĞĞ·ÖBucket,ÒÑ¾­ÔõÃ´½øĞĞºÏ²¢,ÒÔ¼°mapSideCombine
-¸æËßÎÒÃÇÊÇ·ñĞèÒª½øĞĞMap¶Ëreduce¡£
+å¯ä»¥å‘ç°ShuffleDependencyåŒ…å«äº†partitionerå‘Šè¯‰æˆ‘ä»¬è¦æŒ‰ç…§ä»€ä¹ˆåˆ†åŒºå‡½æ•°å°†Mapåˆ†Bucketè¿›è¡Œè¾“å‡º, æœ‰serializerå‘Šè¯‰æˆ‘ä»¬æ€ä¹ˆ
+å¯¹Mapçš„è¾“å‡ºè¿›è¡Œ åºåˆ—åŒ–, æœ‰keyOrderingå’Œaggregatorå‘Šè¯‰æˆ‘ä»¬æ€ä¹ˆæŒ‰ç…§Keyè¿›è¡Œåˆ†Bucket,å·²ç»æ€ä¹ˆè¿›è¡Œåˆå¹¶,ä»¥åŠmapSideCombine
+å‘Šè¯‰æˆ‘ä»¬æ˜¯å¦éœ€è¦è¿›è¡ŒMapç«¯reduceã€‚
 
-µÚ4²½¾ÍÊÇÕë¶ÔÃ¿¸ö¼ÆËãµÄ·ÖÆ¬¹¹ÔìTask¶ÔÏó£¬·Ö±ğÊÇ`ShuffleMapTask`ºÍ`ResultTask`£¬¶şÕß¶¼½ÓÊÜÈÎÎñµÄÔËĞĞÎ»ÖÃ¡¢partitionÊı¾İ¡¢
-¸ÃStageµÄĞÅÏ¢¡¢»¹ÓĞÇ°ÃæÉú³ÉµÄ¹ã²¥ĞÅÏ¢µÈ¡£½øÈë¾ßÌåµÄ`ShuffleMapTask`ÀàÖĞ£¬Ö÷Òªº¯Êı¾ÍÊÇ`runTask`£¬¶Ô¹ã²¥¶ÔÏó½øĞĞ·´ĞòÁĞ»¯£¬È»ºóÀûÓÃ
-¾ßÌåShuffleManagerµÄ¾ßÌåShuffleWriter¶ÔÊı¾İ½øĞĞ´¦Àí£¨Õâ²¿·Ö»áÔÚ[SparkµÄshuffle»úÖÆ·ÖÎö][1]ÖĞ·ÖÎö£©¡£
-¶ø`ResultTask`µÄ`runTask`µÄ´¦ÀíÏà¶Ô¼òµ¥£¬³ıÁË·´ĞòÁĞ»¯¹ã²¥ĞÅÏ¢Íâ£¬Ê£Óà²Ù×÷¾ÍÊÇµ÷ÓÃ`func`À´¼ÆËã¸ÃpartitionµÄ½á¹û¡£
+ç¬¬4æ­¥å°±æ˜¯é’ˆå¯¹æ¯ä¸ªè®¡ç®—çš„åˆ†ç‰‡æ„é€ Taskå¯¹è±¡ï¼Œåˆ†åˆ«æ˜¯`ShuffleMapTask`å’Œ`ResultTask`ï¼ŒäºŒè€…éƒ½æ¥å—ä»»åŠ¡çš„è¿è¡Œä½ç½®ã€partitionæ•°æ®ã€
+è¯¥Stageçš„ä¿¡æ¯ã€è¿˜æœ‰å‰é¢ç”Ÿæˆçš„å¹¿æ’­ä¿¡æ¯ç­‰ã€‚è¿›å…¥å…·ä½“çš„`ShuffleMapTask`ç±»ä¸­ï¼Œä¸»è¦å‡½æ•°å°±æ˜¯`runTask`ï¼Œå¯¹å¹¿æ’­å¯¹è±¡è¿›è¡Œååºåˆ—åŒ–ï¼Œç„¶ååˆ©ç”¨
+å…·ä½“ShuffleManagerçš„å…·ä½“ShuffleWriterå¯¹æ•°æ®è¿›è¡Œå¤„ç†ï¼ˆè¿™éƒ¨åˆ†ä¼šåœ¨[Sparkçš„shuffleæœºåˆ¶åˆ†æ][1]ä¸­åˆ†æï¼‰ã€‚
+è€Œ`ResultTask`çš„`runTask`çš„å¤„ç†ç›¸å¯¹ç®€å•ï¼Œé™¤äº†ååºåˆ—åŒ–å¹¿æ’­ä¿¡æ¯å¤–ï¼Œå‰©ä½™æ“ä½œå°±æ˜¯è°ƒç”¨`func`æ¥è®¡ç®—è¯¥partitionçš„ç»“æœã€‚
 
-µÚ5²½ÊÇ½«ËùÓĞÈÎÎñÍ¨¹ıÈÎÎñµ÷¶ÈÆ÷£¨¾ßÌå·ÖÎö¼û[Taskµ÷¶È»úÖÆ]()£©½øĞĞÌá½»¡£Èç¹û¸ÃStageµÄÈÎÎñÒÑ¾­Íê±Ï£¬ÄÇÃ´¾Í½«Æä±ê¼ÇÎªÍê³É£¬
-²¢ÇÒ¿ªÊ¼µ÷¶ÈµÈ´ıµÄ×ÓStage¡£
+ç¬¬5æ­¥æ˜¯å°†æ‰€æœ‰ä»»åŠ¡é€šè¿‡ä»»åŠ¡è°ƒåº¦å™¨ï¼ˆå…·ä½“åˆ†æè§[Taskè°ƒåº¦æœºåˆ¶]()ï¼‰è¿›è¡Œæäº¤ã€‚å¦‚æœè¯¥Stageçš„ä»»åŠ¡å·²ç»å®Œæ¯•ï¼Œé‚£ä¹ˆå°±å°†å…¶æ ‡è®°ä¸ºå®Œæˆï¼Œ
+å¹¶ä¸”å¼€å§‹è°ƒåº¦ç­‰å¾…çš„å­Stageã€‚
 
-ÏÖÔÚ¼ÙÉèÈÎÎñÒÑ¾­ÔËĞĞÍê±Ï£¬¿ªÊ¼·ÖÎöÈçºÎ½«ÈÎÎñµÄÔËĞĞ½á¹û´«µİ¸øÖ®Ç°·ÖÎöµÄ`waiter`¡£
+ç°åœ¨å‡è®¾ä»»åŠ¡å·²ç»è¿è¡Œå®Œæ¯•ï¼Œå¼€å§‹åˆ†æå¦‚ä½•å°†ä»»åŠ¡çš„è¿è¡Œç»“æœä¼ é€’ç»™ä¹‹å‰åˆ†æçš„`waiter`ã€‚
 
 	private[scheduler] def handleTaskCompletion(event: CompletionEvent) {
 		val task = event.task
@@ -442,13 +442,13 @@ finalStageµÄËùÓĞÎ´´¦ÀíµÄ¸¸Stage£¬²¢ÇÒµü´úÌá½»¸¸Stage£¬²¢ÇÒ°Ñ¸ÃfinalStage¼ÓÈëwait
 			}
 		}
 	}
-ÕâÀïÉ¾È¥ÁËºÜ¶àÂß¼­£¬»ù±¾Ö»Ê£³É¹¦´¦ÀíResultTaskµÄÇé¿ö¡£²»¹ı£¬Õâ¶Î´úÂëÀï²¢Ã»ÓĞwaiterµÄĞÅÏ¢£¬Êµ¼ÊÉÏÕâÀïµÄ`job.listener`¾ÍÊÇÃ¿¸öJob¶ÔÓ¦µÄWaiter£¬ÒòÎªJobWaiterÊÇJobListenerµÄ
-×ÓÀà£¬ÄÇwaiterÊÇÔõÃ´´«¸øJobµÄÄØ£¿ÆäÊµÔÚÖ®Ç°µÄ`handleJobSubmitted`º¯Êı·ÖÎöÖĞ£¬¾Í¿ÉÒÔ·¢ÏÖ±ä³ÉÁËlistener£¬¶øÇÒÀûÓÃfinalStage
-ºÍlistenerÉú³ÉÁË¶ÔÓ¦µÄActiveJob¶ÔÏó¡£
+è¿™é‡Œåˆ å»äº†å¾ˆå¤šé€»è¾‘ï¼ŒåŸºæœ¬åªå‰©æˆåŠŸå¤„ç†ResultTaskçš„æƒ…å†µã€‚ä¸è¿‡ï¼Œè¿™æ®µä»£ç é‡Œå¹¶æ²¡æœ‰waiterçš„ä¿¡æ¯ï¼Œå®é™…ä¸Šè¿™é‡Œçš„`job.listener`å°±æ˜¯æ¯ä¸ªJobå¯¹åº”çš„Waiterï¼Œå› ä¸ºJobWaiteræ˜¯JobListenerçš„
+å­ç±»ï¼Œé‚£waiteræ˜¯æ€ä¹ˆä¼ ç»™Jobçš„å‘¢ï¼Ÿå…¶å®åœ¨ä¹‹å‰çš„`handleJobSubmitted`å‡½æ•°åˆ†æä¸­ï¼Œå°±å¯ä»¥å‘ç°å˜æˆäº†listenerï¼Œè€Œä¸”åˆ©ç”¨finalStage
+å’Œlistenerç”Ÿæˆäº†å¯¹åº”çš„ActiveJobå¯¹è±¡ã€‚
 
-Ê×ÏÈÏòÓÉlistenerBus£¨ÒÔºó»áÁíÍâ½éÉÜ£©·¢ËÍÈÎÎñÍê³ÉµÄĞÅÏ¢£¬Õë¶ÔResultTask£¬ÄÇÃ´ËµÃ÷¸ÃJobÒ²Íê³ÉÁË£¬ËùÒÔ½«Job±ê¼ÇÎªÍê³É¡£
-ÏòlistenerBus·¢ËÍJobÍê³ÉµÄĞÅÏ¢¡£×îºó`job.listener.taskSucceeded(rt.outputId, event.result)`½«ÈÎÎñµÄ½á¹û·µ»Ø¸ø`listener`£¨¼´`waiter`£©¡£
-JobWaiterµÄ`taskSucceeded`·½·¨ÖĞµ÷ÓÃ`resultHandler`£¬¼´ÀûÓÃËùËµµÄ»Øµ÷º¯ÊıÍê³É½á¹ûµÄ·µ»Ø£¨ÈçÏÂÃæµÄ´úÂëËùÊ¾£©¡£
+é¦–å…ˆå‘ç”±listenerBusï¼ˆä»¥åä¼šå¦å¤–ä»‹ç»ï¼‰å‘é€ä»»åŠ¡å®Œæˆçš„ä¿¡æ¯ï¼Œé’ˆå¯¹ResultTaskï¼Œé‚£ä¹ˆè¯´æ˜è¯¥Jobä¹Ÿå®Œæˆäº†ï¼Œæ‰€ä»¥å°†Jobæ ‡è®°ä¸ºå®Œæˆã€‚
+å‘listenerBuså‘é€Jobå®Œæˆçš„ä¿¡æ¯ã€‚æœ€å`job.listener.taskSucceeded(rt.outputId, event.result)`å°†ä»»åŠ¡çš„ç»“æœè¿”å›ç»™`listener`ï¼ˆå³`waiter`ï¼‰ã€‚
+JobWaiterçš„`taskSucceeded`æ–¹æ³•ä¸­è°ƒç”¨`resultHandler`ï¼Œå³åˆ©ç”¨æ‰€è¯´çš„å›è°ƒå‡½æ•°å®Œæˆç»“æœçš„è¿”å›ï¼ˆå¦‚ä¸‹é¢çš„ä»£ç æ‰€ç¤ºï¼‰ã€‚
 
 	override def taskSucceeded(index: Int, result: Any): Unit = {
 		// resultHandler call must be synchronized in case resultHandler itself is not thread safe.
@@ -460,17 +460,17 @@ JobWaiterµÄ`taskSucceeded`·½·¨ÖĞµ÷ÓÃ`resultHandler`£¬¼´ÀûÓÃËùËµµÄ»Øµ÷º¯ÊıÍê³É½á¹
 		}
 	}
 
-###Shuffle JobÖ´ĞĞ¹ı³Ì
+###Shuffle Jobæ‰§è¡Œè¿‡ç¨‹
 
-Shuffle°üº¬Á½¸ö¹ı³Ì£ºShuffle MapºÍShuffle reduce£¬ÀàËÆÓÚMapReduceÖĞµÄmapºÍreduce¡£Shuffle Map¾ÍÊÇShuffleMapStage£¬
-ShuffleMapTask½«Êı¾İĞ´µ½ÏàÓ¦ÎÄ¼şÖĞ£¬²¢°ÑÎÄ¼şÎ»ÖÃÒÔMapOutput·µ»Ø¸øDAGScheduler£¬²¢¸üĞÂStageĞÅÏ¢¡£ReduceÊÇÀûÓÃ²»Í¬ÀàĞÍµÄRDD
-À´ÊµÏÖµÄ¡£
+ShuffleåŒ…å«ä¸¤ä¸ªè¿‡ç¨‹ï¼šShuffle Mapå’ŒShuffle reduceï¼Œç±»ä¼¼äºMapReduceä¸­çš„mapå’Œreduceã€‚Shuffle Mapå°±æ˜¯ShuffleMapStageï¼Œ
+ShuffleMapTaskå°†æ•°æ®å†™åˆ°ç›¸åº”æ–‡ä»¶ä¸­ï¼Œå¹¶æŠŠæ–‡ä»¶ä½ç½®ä»¥MapOutputè¿”å›ç»™DAGSchedulerï¼Œå¹¶æ›´æ–°Stageä¿¡æ¯ã€‚Reduceæ˜¯åˆ©ç”¨ä¸åŒç±»å‹çš„RDD
+æ¥å®ç°çš„ã€‚
 
-####Shuffle Map¹ı³Ì
+####Shuffle Mapè¿‡ç¨‹
 
-Ê×ÏÈ½éÉÜDAGSchedulerÖĞµÄ`mapOutputTracker`£¨MapOutputTrackerMaster¶ÔÏó£©¡£MapOutputTrackerÓÃÓÚ¼ÇÂ¼Ã¿¸öStage mapÊä³öµÄÎ»ÖÃ£¨MapStatus¶ÔÏó£©£¬
-Ïàµ±ÓÚÊÇ´æ´¢ÔªÊı¾İĞÅÏ¢£¬ÓÉÓÚDriver¶ËºÍExecutor¶ËÓĞ²»Í¬µÄÊµÏÖ£¬ËùÒÔ·ÖÎªMapOutputTrackerMasterºÍMapOutputTrackerWorker¡£Master¶ËÓÃÓÚ
-×¢²áShuffleIdºÍMapOutputĞÅÏ¢£¬¶øExecutor¶ËÓÃÓÚÀ­È¡ÕâĞ©ĞÅÏ¢¡£
+é¦–å…ˆä»‹ç»DAGSchedulerä¸­çš„`mapOutputTracker`ï¼ˆMapOutputTrackerMasterå¯¹è±¡ï¼‰ã€‚MapOutputTrackerç”¨äºè®°å½•æ¯ä¸ªStage mapè¾“å‡ºçš„ä½ç½®ï¼ˆMapStatuså¯¹è±¡ï¼‰ï¼Œ
+ç›¸å½“äºæ˜¯å­˜å‚¨å…ƒæ•°æ®ä¿¡æ¯ï¼Œç”±äºDriverç«¯å’ŒExecutorç«¯æœ‰ä¸åŒçš„å®ç°ï¼Œæ‰€ä»¥åˆ†ä¸ºMapOutputTrackerMasterå’ŒMapOutputTrackerWorkerã€‚Masterç«¯ç”¨äº
+æ³¨å†ŒShuffleIdå’ŒMapOutputä¿¡æ¯ï¼Œè€ŒExecutorç«¯ç”¨äºæ‹‰å–è¿™äº›ä¿¡æ¯ã€‚
 
 	private[spark] class MapOutputTrackerMaster(conf: SparkConf,
 		broadcastManager: BroadcastManager, isLocal: Boolean)
@@ -510,10 +510,10 @@ ShuffleMapTask½«Êı¾İĞ´µ½ÏàÓ¦ÎÄ¼şÖĞ£¬²¢°ÑÎÄ¼şÎ»ÖÃÒÔMapOutput·µ»Ø¸øDAGScheduler£¬²
 		}
 	  }
 	}
-MasterµÄÄÚÈİ±È½Ï¶à£¬ÕâÀïÖ»È¡³ö3¸ö±È½ÏÖØÒªµÄº¯Êı£¬`registerShuffle`ºÍ`registerMapOutputs`¾ÍÊÇ·Ö±ğ×¢²áShuffleIdºÍ¶ÔÓ¦µÄ
-MapOutputĞÅÏ¢¡£`getSerializedMapOutputStatuses`ÊÇÓÃÓÚĞòÁĞ»¯MapOutputĞÅÏ¢£¨ÕâÀïÉ¾È¥ÁË´ÓcacheÁËµÄĞÅÏ¢ÖĞ²éÕÒµÄ¹ı³Ì£©¡£
-ÆäÖĞ`registerShuffle`ºÍ`getSerializedMapOutputStatuses`ÊÇÔÚ´´½¨ShuffleMapStageµÄÊ±ºòµ÷ÓÃµÄ£¬¼´Ö®Ç°Ìáµ½µÄ
-`createShuffleMapStage`º¯Êı¡£`registerMapOutputs`ÊÇÔÚÈÎÎñ½áÊøºóµ÷ÓÃµÄ£¬¼´`handleTaskCompletion`º¯ÊıÖĞ¡£
+Masterçš„å†…å®¹æ¯”è¾ƒå¤šï¼Œè¿™é‡Œåªå–å‡º3ä¸ªæ¯”è¾ƒé‡è¦çš„å‡½æ•°ï¼Œ`registerShuffle`å’Œ`registerMapOutputs`å°±æ˜¯åˆ†åˆ«æ³¨å†ŒShuffleIdå’Œå¯¹åº”çš„
+MapOutputä¿¡æ¯ã€‚`getSerializedMapOutputStatuses`æ˜¯ç”¨äºåºåˆ—åŒ–MapOutputä¿¡æ¯ï¼ˆè¿™é‡Œåˆ å»äº†ä»cacheäº†çš„ä¿¡æ¯ä¸­æŸ¥æ‰¾çš„è¿‡ç¨‹ï¼‰ã€‚
+å…¶ä¸­`registerShuffle`å’Œ`getSerializedMapOutputStatuses`æ˜¯åœ¨åˆ›å»ºShuffleMapStageçš„æ—¶å€™è°ƒç”¨çš„ï¼Œå³ä¹‹å‰æåˆ°çš„
+`createShuffleMapStage`å‡½æ•°ã€‚`registerMapOutputs`æ˜¯åœ¨ä»»åŠ¡ç»“æŸåè°ƒç”¨çš„ï¼Œå³`handleTaskCompletion`å‡½æ•°ä¸­ã€‚
 
 	private[scheduler] def handleTaskCompletion(event: CompletionEvent) {
 		...
@@ -559,14 +559,14 @@ MapOutputĞÅÏ¢¡£`getSerializedMapOutputStatuses`ÊÇÓÃÓÚĞòÁĞ»¯MapOutputĞÅÏ¢£¨ÕâÀïÉ¾
 			}
 		}
 	}
-RPCÍ¨ĞÅµÄ¹¤×÷ÊÇÔÚMapOutputTrackerMasterEndpointÀàÖĞÊµÏÖµÄ£¬ËüÌá¹©ÁËÒ»¸öÏûÏ¢ÊÕ·¢µÄ´¦Àí·½Ê½£¬ÒòÎªMapOutputTracker
-¶ÔÏó±¾Éí¾ÍÓĞÒ»¸öMapOutputTrackerMasterEndpointÀàĞÍµÄ³ÉÔ±±äÁ¿`trackerEndpoint`£¬ËùÒÔ¿ÉÒÔ½«Æä¿´×÷ÊÇÒ»¸ö·ÃÎÊÈë¿Ú¡£
-¸ÃÈë¿ÚµÄÉèÖÃÊÇÔÚSparkEnvÖĞµÄcreate·½·¨ÖĞ×¢²áÍê³ÉµÄ£¨ÓÉ`createDriverEnv`ºÍ`createExecutorEnv`µ÷ÓÃ£©¡£ÖÁÓÚExecutorÊÇ
-ÈçºÎRPCÀ­È¥Êı¾İµÄ£¬¾ÍÊÇÍ¨¹ıMapOutputTrackerÖĞµÄ`getStatuses(shuffleId: Int)`·½·¨ÊµÏÖµÄ£¬¾ßÌå¹ı³Ì²»ÔÙ×¸Êö¡£
+RPCé€šä¿¡çš„å·¥ä½œæ˜¯åœ¨MapOutputTrackerMasterEndpointç±»ä¸­å®ç°çš„ï¼Œå®ƒæä¾›äº†ä¸€ä¸ªæ¶ˆæ¯æ”¶å‘çš„å¤„ç†æ–¹å¼ï¼Œå› ä¸ºMapOutputTracker
+å¯¹è±¡æœ¬èº«å°±æœ‰ä¸€ä¸ªMapOutputTrackerMasterEndpointç±»å‹çš„æˆå‘˜å˜é‡`trackerEndpoint`ï¼Œæ‰€ä»¥å¯ä»¥å°†å…¶çœ‹ä½œæ˜¯ä¸€ä¸ªè®¿é—®å…¥å£ã€‚
+è¯¥å…¥å£çš„è®¾ç½®æ˜¯åœ¨SparkEnvä¸­çš„createæ–¹æ³•ä¸­æ³¨å†Œå®Œæˆçš„ï¼ˆç”±`createDriverEnv`å’Œ`createExecutorEnv`è°ƒç”¨ï¼‰ã€‚è‡³äºExecutoræ˜¯
+å¦‚ä½•RPCæ‹‰å»æ•°æ®çš„ï¼Œå°±æ˜¯é€šè¿‡MapOutputTrackerä¸­çš„`getStatuses(shuffleId: Int)`æ–¹æ³•å®ç°çš„ï¼Œå…·ä½“è¿‡ç¨‹ä¸å†èµ˜è¿°ã€‚
 
-#####Shuffle»úÖÆ
+#####Shuffleæœºåˆ¶
 
-Map°´ÕÕÊ²Ã´¹æÔòÊä³öÊı¾İÊÇÓÉShuffleManager¾ö¶¨µÄ¡£
+MapæŒ‰ç…§ä»€ä¹ˆè§„åˆ™è¾“å‡ºæ•°æ®æ˜¯ç”±ShuffleManagerå†³å®šçš„ã€‚
 
 	private[spark] class BaseShuffleHandle[K, V, C](
 		shuffleId: Int,
@@ -595,20 +595,20 @@ Map°´ÕÕÊ²Ã´¹æÔòÊä³öÊı¾İÊÇÓÉShuffleManager¾ö¶¨µÄ¡£
 	  
 	  def stop(): Unit
 	}
-Ê×ÏÈ¿´ÉÏÃæµÄShuffleHandleµÄÊµÏÖ, ËüÖ»ÊÇÒ»¸öshuffleId, numMapsºÍShuffleDepµÄ·â×°; ÔÙ¿´ShuffleManagerÌá¹©µÄ½Ó¿Ú¡£
+é¦–å…ˆçœ‹ä¸Šé¢çš„ShuffleHandleçš„å®ç°, å®ƒåªæ˜¯ä¸€ä¸ªshuffleId, numMapså’ŒShuffleDepçš„å°è£…; å†çœ‹ShuffleManageræä¾›çš„æ¥å£ã€‚
 
-+registerShuffle/unregisterShuffle£ºÌá¹©ÁËShuffleµÄ×¢²áºÍ×¢ÏúµÄ¹¦ÄÜ£¬ºÍÉÏÃæÌ¸µ½µÄMapOutputTrackerÒ»ÖÂ£¬È»ºó
-·µ»ØÒ»¸öShuffleHandle¶ÔÏó£¬À´¶Ôshuffle½øĞĞ·â×°¡£
-+getWriter£ºMapTaskµ÷ÓÃ£¬ÓÃÓÚÊä³öÊı¾İ¡£
-+getReader£ºReduce¹ı³Ì½øĞĞµ÷ÓÃ£¬¼´ShuffleRDDµ÷ÓÃ£¬ÓÃÓÚ¶ÁÈ¡MapÊä³öµÄÄÚÈİ¡£ÕâÀïÉèÖÃÁËÆğÊ¼Î»ÖÃ£¬ÊÇÒòÎªÃ¿¸öMapÊä³öµÄ
-ÎÄ¼şÆäÊµÖ»ÓĞÒ»¸ö£¬Ö»ÊÇÕë¶Ô²»Í¬µÄReduceÊä³öµÄÆ«ÒÆÁ¿²»Í¬£¬Õâ²¿·ÖÔÚ[SparkµÄshuffle»úÖÆ·ÖÎö][1]ÌÖÂÛ¡£
++ registerShuffle/unregisterShuffleï¼šæä¾›äº†Shuffleçš„æ³¨å†Œå’Œæ³¨é”€çš„åŠŸèƒ½ï¼Œå’Œä¸Šé¢è°ˆåˆ°çš„MapOutputTrackerä¸€è‡´ï¼Œç„¶å
+è¿”å›ä¸€ä¸ªShuffleHandleå¯¹è±¡ï¼Œæ¥å¯¹shuffleè¿›è¡Œå°è£…ã€‚
++ getWriterï¼šMapTaskè°ƒç”¨ï¼Œç”¨äºè¾“å‡ºæ•°æ®ã€‚
++ getReaderï¼šReduceè¿‡ç¨‹è¿›è¡Œè°ƒç”¨ï¼Œå³ShuffleRDDè°ƒç”¨ï¼Œç”¨äºè¯»å–Mapè¾“å‡ºçš„å†…å®¹ã€‚è¿™é‡Œè®¾ç½®äº†èµ·å§‹ä½ç½®ï¼Œæ˜¯å› ä¸ºæ¯ä¸ªMapè¾“å‡ºçš„
+æ–‡ä»¶å…¶å®åªæœ‰ä¸€ä¸ªï¼Œåªæ˜¯é’ˆå¯¹ä¸åŒçš„Reduceè¾“å‡ºçš„åç§»é‡ä¸åŒï¼Œè¿™éƒ¨åˆ†åœ¨[Sparkçš„shuffleæœºåˆ¶åˆ†æ][1]è®¨è®ºã€‚
 
-ÔËĞĞ¹ı³ÌÒÑ¾­ÔÚÉÏÃæµÄShuffleMapTaskµÄrunTaskÖĞ½éÉÜ¹ıÁË¡£
+è¿è¡Œè¿‡ç¨‹å·²ç»åœ¨ä¸Šé¢çš„ShuffleMapTaskçš„runTaskä¸­ä»‹ç»è¿‡äº†ã€‚
 
-####Shuffle ReduceÊµÏÖ
+####Shuffle Reduceå®ç°
 
-Reduce¶ÔÓ¦µÄÓ¦¸ÃÊÇÖ®Ç°½²µÄResultTaskÖĞrunTaskµÄÄÚÈİ£¬ÆäÖĞ²Ù×÷µÄRDD°üÀ¨£ºCoGroupedRDD¡¢CustomShuffledRDD¡¢ShuffledRDD¡¢
-ShuffledRowRDDºÍSubtractedRDD£¬ÒÔShuffleRDDÎªÀı£¬Æäcompute·½·¨²»Í¬ÓëÒ»°ãµÄ·ÇShuffle RDD¡£
+Reduceå¯¹åº”çš„åº”è¯¥æ˜¯ä¹‹å‰è®²çš„ResultTaskä¸­runTaskçš„å†…å®¹ï¼Œå…¶ä¸­æ“ä½œçš„RDDåŒ…æ‹¬ï¼šCoGroupedRDDã€CustomShuffledRDDã€ShuffledRDDã€
+ShuffledRowRDDå’ŒSubtractedRDDï¼Œä»¥ShuffleRDDä¸ºä¾‹ï¼Œå…¶computeæ–¹æ³•ä¸åŒä¸ä¸€èˆ¬çš„éShuffle RDDã€‚
 
 	override def compute(split: Partition, context: TaskContext): Iterator[(K, C)] = {
 		val dep = dependencies.head.asInstanceOf[ShuffleDependency[K, V, C]]
