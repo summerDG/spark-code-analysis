@@ -447,7 +447,7 @@ finalStage的所有未处理的父Stage，并且迭代提交父Stage，并且把
 子类，那waiter是怎么传给Job的呢？其实在之前的`handleJobSubmitted`函数分析中，就可以发现变成了listener，而且利用finalStage
 和listener生成了对应的ActiveJob对象。
 
-首先向由`listenerBus`（以后会另外介绍）发送任务完成的信息，针对ResultTask，那么说明该Job也完成了，所以将Job标记为完成。
+首先向由`listenerBus`发送任务完成的信息，针对ResultTask，那么说明该Job也完成了，所以将Job标记为完成。
 向`listenerBus`发送Job完成的信息。注意这里的`listenerBus`并不会给JobWaiter发送消息，这也就是之前说的，并不是所有的JobListener都会在`listenerBus`注册，`listenerBus`针对的是度量系统，所以这里要把这两者的关系分清。最后`job.listener.taskSucceeded(rt.outputId, event.result)`将任务的结果返回给`listener`（即`waiter`）。
 JobWaiter的`taskSucceeded`方法中调用`resultHandler`，即利用所说的回调函数完成结果的返回（如下面的代码所示）。
 
