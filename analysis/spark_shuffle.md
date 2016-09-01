@@ -368,7 +368,8 @@ finalStage的所有未处理的父Stage，并且迭代提交父Stage，并且把
 第1步是指明该Stage所需计算的partition（因为可能重新计算，所以存在部分partition已经算完）。
 
 然后第2步就是针对不同的Stage选择该任务执行的位置，接着就是请求运行（每运行一个Stage都会请求），并且向`listenerBus`发送
-`SparkListenerStageSubmitted`消息，只有在接收到这个消息后才可以测试任务是否可序列化。
+`SparkListenerStageSubmitted`消息，只有在接收到这个消息后才可以测试任务是否可序列化。这里的`listenerBus`仅用于监测系统，即用于度量
+各种系统指标，`listenerBus`就是向监听器发送消息，收集这些指标的。但是并不是所有的JobListener都会在listener进行注册。
 
 第3步是将任务运行所需的信息进行序列化并且发送给各个任务，针对不同的Stage发送的信息稍有不同，首先ShuffleStage和ResultStage都需要RDD信息，所以每个
 任务都有一份RDD引用的拷贝，但是ShuffleStage需要额外发送依赖（ShuffleDependency），而ResultStage则必须有`func`信息。
@@ -446,8 +447,8 @@ finalStage的所有未处理的父Stage，并且迭代提交父Stage，并且把
 子类，那waiter是怎么传给Job的呢？其实在之前的`handleJobSubmitted`函数分析中，就可以发现变成了listener，而且利用finalStage
 和listener生成了对应的ActiveJob对象。
 
-首先向由listenerBus（以后会另外介绍）发送任务完成的信息，针对ResultTask，那么说明该Job也完成了，所以将Job标记为完成。
-向listenerBus发送Job完成的信息。最后`job.listener.taskSucceeded(rt.outputId, event.result)`将任务的结果返回给`listener`（即`waiter`）。
+首先向由`listenerBus`（以后会另外介绍）发送任务完成的信息，针对ResultTask，那么说明该Job也完成了，所以将Job标记为完成。
+向`listenerBus`发送Job完成的信息。注意这里的`listenerBus`并不会给JobWaiter发送消息，这也就是之前说的，并不是所有的JobListener都会在`listenerBus`注册，`listenerBus`针对的是度量系统，所以这里要把这两者的关系分清。最后`job.listener.taskSucceeded(rt.outputId, event.result)`将任务的结果返回给`listener`（即`waiter`）。
 JobWaiter的`taskSucceeded`方法中调用`resultHandler`，即利用所说的回调函数完成结果的返回（如下面的代码所示）。
 
 	override def taskSucceeded(index: Int, result: Any): Unit = {
