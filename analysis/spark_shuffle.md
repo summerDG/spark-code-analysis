@@ -390,7 +390,7 @@ finalStage的所有未处理的父Stage，并且迭代提交父Stage，并且把
 具体ShuffleManager的具体ShuffleWriter对数据进行处理（这部分会在[Spark的shuffle机制分析][1]中分析）。
 而`ResultTask`的`runTask`的处理相对简单，除了反序列化广播信息外，剩余操作就是调用`func`来计算该partition的结果。
 
-第5步是将所有任务通过任务调度器（具体分析见[Task调度机制]()）进行提交。如果该Stage的任务已经完毕，那么就将其标记为完成，
+第5步是将所有任务通过任务调度器（具体分析见[Task调度机制][2]）进行提交。如果该Stage的任务已经完毕，那么就将其标记为完成，
 并且开始调度等待的子Stage。
 
 现在假设任务已经运行完毕，开始分析如何将任务的运行结果传递给之前分析的`waiter`。
@@ -618,3 +618,4 @@ ShuffledRowRDD和SubtractedRDD，以ShuffleRDD为例，其compute方法不同与
 	}
 
 [1]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/spark_sort_shuffle.md
+[2]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/task_schedule.md
