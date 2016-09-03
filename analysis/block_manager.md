@@ -85,7 +85,7 @@ NettyManagedBuffer是通过ByteBuf读取的，NioManagedBuffer保存的直接就
 
 对于DISK和Memory两种级别是可以同时出现的。
 
-关于OffHeap（毕竟是实验室里的作品）这里多说两句：JVM中如果直接进行内存分配都是受JVM来管理，使用的是JVM中内存堆，但是现在有很
+关于OffHeap这里多说两句：JVM中如果直接进行内存分配都是受JVM来管理，使用的是JVM中内存堆，但是现在有很
 多技术可以在JVM代码中访问不受JVM管理的内存，即OffHeap内存。OffHeap最大的好处就是将内存的管理工作从JVM的GC管理器剥离出来由自己
 进行管理，特别是大对象，自定义生命周期的对象来说OffHeap很实用，可以减少GC的代销。具体实现是基于Spark的Off-heap实现的（说到底是
 通过Java直接调JVM之外的内存，过去是基于Alluxio——前Tachyon——做的，在SPARK-12667中被移除了，该问题的描述见[SPARK-13992][4]）。
@@ -95,7 +95,7 @@ StorageLevel还提供了另外两个配置项：
 * _deserialized：是否需要反序列化。
 * _replication：副本数目。
 
-存储在中BlockManager可以是各种对象，是否支持序列化影响了对这个对象的访问以及内存的压缩，`_deserialized`被标记为`true`之后，就不会
+存储在BlockManager中的可以是各种对象，是否支持序列化影响了对这个对象的访问以及内存的压缩，`_deserialized`被标记为`true`之后，就不会
 对数据进行序列化了。
 
 ***
@@ -271,7 +271,7 @@ MemoryStore中有两张映射表：`onHeapUnrollMemoryMap`和`offHeapUnrollMemor
 		throw new IllegalStateException("unreachable");
 	}
 
-看到`allocateDirectBuffer`中的`cleaner`和`freeMemory`方法了吧。即使这里完成off-heap内存申请的。所以这里返
+看到`allocateDirectBuffer`中的`cleaner`和`freeMemory`方法了吧。因此是在这里完成off-heap内存申请的。所以这里返
 回的`allocator`已经是一个off-heap内存的ByteBuffer了。
 
 ###DiskStore
