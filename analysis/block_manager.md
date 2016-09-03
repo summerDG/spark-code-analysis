@@ -1,16 +1,16 @@
-#Spark Block Manager¹ÜÀí
+#Spark Block Managerç®¡ç†
 
-SparkÖĞµÄRDD-Cache¡¢broadcast¡¢ShuffleWriterºÍExternalSorterµÈ¶¼ÊÇ»ùÓÚBlockManagerÊµÏÖµÄ¡£BlockManager»áÔËĞĞÔÚÃ¿¸ö½ÚµãÉÏ£¬
-°üÀ¨driverºÍexecutor¡£ÆäÖ÷ÒªÊÇÌá¹©½Ó¿ÚÀ´¼ìË÷¸÷ÖÖ´æ´¢£¨memory£¬diskºÍoff-heap£©ÖĞ±¾µØ»òÔ¶³ÌµÄblock¡£
+Sparkä¸­çš„RDD-Cacheã€broadcastã€ShuffleWriterå’ŒExternalSorterç­‰éƒ½æ˜¯åŸºäºBlockManagerå®ç°çš„ã€‚BlockManagerä¼šè¿è¡Œåœ¨æ¯ä¸ªèŠ‚ç‚¹ä¸Šï¼Œ
+åŒ…æ‹¬driverå’Œexecutorã€‚å…¶ä¸»è¦æ˜¯æä¾›æ¥å£æ¥æ£€ç´¢å„ç§å­˜å‚¨ï¼ˆmemoryï¼Œdiskå’Œoff-heapï¼‰ä¸­æœ¬åœ°æˆ–è¿œç¨‹çš„blockã€‚
 
-##BlockManager´´½¨
+##BlockManageråˆ›å»º
 
-BlockManagerÊÇÔÚSparkEnvÖĞ´´½¨Éú³ÉµÄ¡£ÕâÀï²åÒ»¾äSparkContextºÍSparkEnvµÄÇø±ğ£¬Ç°ÕßÊÇ´´½¨ÁËÕû¸öSparkÏµÍ³µÄ»·¾³±äÁ¿»òÕßµ÷¶ÈÆ÷£¬
-¶øºóÕßÊÇÕë¶ÔÃ¿¸öÔËĞĞµÄSparkÊµÌå£¨master»òworker£©´´½¨ÁËÔËĞĞÊ±»·¾³¶ÔÏó£¨ÈçĞòÁĞ»¯Æ÷¡¢RpcEnv¡¢block manager¡¢map output trackerµÈ£©¡£
-µ±È»SparkEnvÒ²ÊÇÔÚSparkContextÖĞµÄ`create`ÖĞ´´½¨µÄ¡£
+BlockManageræ˜¯åœ¨SparkEnvä¸­åˆ›å»ºç”Ÿæˆçš„ã€‚è¿™é‡Œæ’ä¸€å¥SparkContextå’ŒSparkEnvçš„åŒºåˆ«ï¼Œå‰è€…æ˜¯åˆ›å»ºäº†æ•´ä¸ªSparkç³»ç»Ÿçš„ç¯å¢ƒå˜é‡æˆ–è€…è°ƒåº¦å™¨ï¼Œ
+è€Œåè€…æ˜¯é’ˆå¯¹æ¯ä¸ªè¿è¡Œçš„Sparkå®ä½“ï¼ˆmasteræˆ–workerï¼‰åˆ›å»ºäº†è¿è¡Œæ—¶ç¯å¢ƒå¯¹è±¡ï¼ˆå¦‚åºåˆ—åŒ–å™¨ã€RpcEnvã€block managerã€map output trackerç­‰ï¼‰ã€‚
+å½“ç„¶SparkEnvä¹Ÿæ˜¯åœ¨SparkContextä¸­çš„`create`ä¸­åˆ›å»ºçš„ã€‚
 
-ÕâÀïµÄBlockºÍHDFSÖĞÌ¸µ½µÄBlock¿éÊÇÓĞ±¾ÖÊÇø±ğ£ºHDFSÖĞÊÇ¶Ô´óÎÄ¼ş½øĞĞ·ÖBlock½øĞĞ´æ´¢£¬Block´óĞ¡¹Ì¶¨Îª512MµÈ£»¶øSparkÖĞµÄBlockÊÇÓÃ»§
-µÄ²Ù×÷µ¥Î»£¬ Ò»¸öBlock¶ÔÓ¦Ò»¿éÓĞ×éÖ¯µÄÄÚ´æ£¬Ò»¸öÍêÕûµÄÎÄ¼ş»òÎÄ¼şµÄÇø¼ä¶Ë£¬²¢Ã»ÓĞ¹Ì¶¨Ã¿¸öBlock´óĞ¡µÄ×ö·¨¡£
+è¿™é‡Œçš„Blockå’ŒHDFSä¸­è°ˆåˆ°çš„Blockå—æ˜¯æœ‰æœ¬è´¨åŒºåˆ«ï¼šHDFSä¸­æ˜¯å¯¹å¤§æ–‡ä»¶è¿›è¡Œåˆ†Blockè¿›è¡Œå­˜å‚¨ï¼ŒBlockå¤§å°å›ºå®šä¸º512Mç­‰ï¼›è€ŒSparkä¸­çš„Blockæ˜¯ç”¨æˆ·
+çš„æ“ä½œå•ä½ï¼Œ ä¸€ä¸ªBlockå¯¹åº”ä¸€å—æœ‰ç»„ç»‡çš„å†…å­˜ï¼Œä¸€ä¸ªå®Œæ•´çš„æ–‡ä»¶æˆ–æ–‡ä»¶çš„åŒºé—´ç«¯ï¼Œå¹¶æ²¡æœ‰å›ºå®šæ¯ä¸ªBlockå¤§å°çš„åšæ³•ã€‚
 
 	private[spark] class BlockManager(
 		executorId: String,
@@ -27,14 +27,14 @@ BlockManagerÊÇÔÚSparkEnvÖĞ´´½¨Éú³ÉµÄ¡£ÕâÀï²åÒ»¾äSparkContextºÍSparkEnvµÄÇø±ğ£¬Ç°
 	  extends BlockDataManager with BlockEvictionHandler with Logging {
 	}
 	
-¿´BlockManagerµÄ¹¹Ôìº¯Êı£¬¿ÉÒÔ·¢ÏÖÆäÖ÷Òª°üº¬ÁË£ºexecutorId£¬rpcEnv£¬blockManagerMaster£¬serializerManager£¬SparkConf£¬
-[memoryManager][3]£¬[mapOutputTracker][1]£¬[shuffleManager][2]£¬blockTransferService£¨ÓÃÓÚÒ»´ÎÀ­È¡Ò»×éblocks£©£¬
-securityManager£¬numUsableCores£¨¿ÉÓÃºËÊı£©¡£
+çœ‹BlockManagerçš„æ„é€ å‡½æ•°ï¼Œå¯ä»¥å‘ç°å…¶ä¸»è¦åŒ…å«äº†ï¼šexecutorIdï¼ŒrpcEnvï¼ŒblockManagerMasterï¼ŒserializerManagerï¼ŒSparkConfï¼Œ
+[memoryManager][3]ï¼Œ[mapOutputTracker][1]ï¼Œ[shuffleManager][2]ï¼ŒblockTransferServiceï¼ˆç”¨äºä¸€æ¬¡æ‹‰å–ä¸€ç»„blocksï¼‰ï¼Œ
+securityManagerï¼ŒnumUsableCoresï¼ˆå¯ç”¨æ ¸æ•°ï¼‰ã€‚
 
-##BlockÏà¹ØÖªÊ¶
+##Blockç›¸å…³çŸ¥è¯†
 
-ÉÏÃæÌ¸µ½£¬BlockÊÇÓÃ»§µÄ²Ù×÷µ¥Î»£¬¶øÕâ¸ö²Ù×÷¶ÔÓ¦µÄkey¾ÍÊÇÕâÀïBlockID£¬valueÄÚÈİÎªManagerBuffer¡£Ïò¿´Ò»ÏÂBlockDataManager
-Õâ¸öÌØÖÊ£¨½Ó¿Ú£©£¬BlockManager¾Í¼Ì³ĞÁËËü¡£Ëü¶ÔÍâÌá¹©ÁË¶ÔBlockµÄ²Ù×÷£¬»ñÈ¡»òÕßÌí¼Ó¡£
+ä¸Šé¢è°ˆåˆ°ï¼ŒBlockæ˜¯ç”¨æˆ·çš„æ“ä½œå•ä½ï¼Œè€Œè¿™ä¸ªæ“ä½œå¯¹åº”çš„keyå°±æ˜¯è¿™é‡ŒBlockIDï¼Œvalueå†…å®¹ä¸ºManagerBufferã€‚å‘çœ‹ä¸€ä¸‹BlockDataManager
+è¿™ä¸ªç‰¹è´¨ï¼ˆæ¥å£ï¼‰ï¼ŒBlockManagerå°±ç»§æ‰¿äº†å®ƒã€‚å®ƒå¯¹å¤–æä¾›äº†å¯¹Blockçš„æ“ä½œï¼Œè·å–æˆ–è€…æ·»åŠ ã€‚
 
 	trait BlockDataManager {
 	  def getBlockData(blockId: BlockId): ManagedBuffer
@@ -48,10 +48,10 @@ securityManager£¬numUsableCores£¨¿ÉÓÃºËÊı£©¡£
 	  def releaseLock(blockId: BlockId): Unit
 	}
 
-`getBlockData`ÊÇ´ÓBlockManagerÖĞ»ñÈ¡¶ÔÓ¦IdµÄManagerBuffer£¬`putBlockData`ÊÇ½«Ò»¸öManagerBuffer»úÆ÷Id°´ÕÕ´æ´¢²ã¼¶Ìí¼Óµ½
-BlockManagerÖĞ¡£
+`getBlockData`æ˜¯ä»BlockManagerä¸­è·å–å¯¹åº”Idçš„ManagerBufferï¼Œ`putBlockData`æ˜¯å°†ä¸€ä¸ªManagerBufferæœºå™¨IdæŒ‰ç…§å­˜å‚¨å±‚çº§æ·»åŠ åˆ°
+BlockManagerä¸­ã€‚
 
-*BlockId*Æä±¾ÖÊÉÏÀ´Ëµ¾ÍÊÇÒ»¸ö×Ö·û´®¡£Ö»ÊÇÕë¶Ô²»Í¬µÄBlockÃüÃû·½Ê½²»Í¬¡£*ManagerBuffer*Êµ¼ÊÉÏÊÇ¶ÔByteBufferµÄ·â×°¡£
+*BlockId*å…¶æœ¬è´¨ä¸Šæ¥è¯´å°±æ˜¯ä¸€ä¸ªå­—ç¬¦ä¸²ã€‚åªæ˜¯é’ˆå¯¹ä¸åŒçš„Blockå‘½åæ–¹å¼ä¸åŒã€‚*ManagerBuffer*å®é™…ä¸Šæ˜¯å¯¹ByteBufferçš„å°è£…ã€‚
 
 	public abstract class ManagedBuffer {
 
@@ -68,43 +68,43 @@ BlockManagerÖĞ¡£
 	  public abstract Object convertToNetty() throws IOException;
 	}
 
-ÓÉÓÚBuffer²»ÄÜ³¤¾Ã´æÔÚÓÚÄÚ´æÖĞ²»½øĞĞÊÍ·Å£¬ËùÒÔÕâÀïÓĞ`retain`ºÍ`release`Á½¸ö·½·¨·Ö±ğÓÃÓÚÌí¼Ó»òÊÍ·Å¶Ô¸ÃBufferµÄÒıÓÃÊıÄ¿¡£¶Ô¸ÃBuffer
-µÄ¶ÔÍâ·ÃÎÊ½Ó¿Ú¾ÍÊÇ`createInputStream`ºÍ`nioByteBuffer`£¬Ç°ÕßÊÇ½«bufferÖĞµÄÊı¾İ×÷ÎªInputStream±©Â¶³öÀ´£¬ºóÕßÊÇ×÷Îª
-NIO ByteBuffer±©Â¶¡£×¢ÒâÕâ¸önioByteBufferº¯ÊıÊÇÃ¿´Îµ÷ÓÃ½«»á·µ»ØÒ»¸öĞÂµÄByteBuffer,¶ÔËüµÄ²Ù×÷²»Ó°Ïì ÕæÊµµÄBufferµÄoffsetºÍlong¡£
-Õâ¸ö½Ó¿ÚÓĞ3¸öÊµÏÖ£¬FileSegmentManagedBuffer¡¢NettyManagedBuffer¡¢NioManagedBufferºÍBlockManagerManagedBuffer£¬ÓÉÀàÃû¾Í¿ÉÒÔÖªµÀ£¬Çø±ğÔÚÓÚ
-»ñÈ¡ByteBufferµÄÀ´Ô´²»Í¬£¬FileSegmentManagedBufferÊÇ±£´æÁËÒ»¸öFileÀàĞÍµÄ±äÁ¿£¬ËùÒÔÊÇ¶ÁÈ¡`file`ÀïµÄÄÚÈİÉú³ÉByeBuffer£¬
-NettyManagedBufferÊÇÍ¨¹ıByteBuf¶ÁÈ¡µÄ£¬NioManagedBuffer±£´æµÄÖ±½Ó¾ÍÊÇByteBuffer£¬BlockManagerManagedBufferÊÇÍ¨¹ıChunkedByteBuffer£¨spark.util.io£©¡£
+ç”±äºBufferä¸èƒ½é•¿ä¹…å­˜åœ¨äºå†…å­˜ä¸­ä¸è¿›è¡Œé‡Šæ”¾ï¼Œæ‰€ä»¥è¿™é‡Œæœ‰`retain`å’Œ`release`ä¸¤ä¸ªæ–¹æ³•åˆ†åˆ«ç”¨äºæ·»åŠ æˆ–é‡Šæ”¾å¯¹è¯¥Bufferçš„å¼•ç”¨æ•°ç›®ã€‚å¯¹è¯¥Buffer
+çš„å¯¹å¤–è®¿é—®æ¥å£å°±æ˜¯`createInputStream`å’Œ`nioByteBuffer`ï¼Œå‰è€…æ˜¯å°†bufferä¸­çš„æ•°æ®ä½œä¸ºInputStreamæš´éœ²å‡ºæ¥ï¼Œåè€…æ˜¯ä½œä¸º
+NIO ByteBufferæš´éœ²ã€‚æ³¨æ„è¿™ä¸ªnioByteBufferå‡½æ•°æ˜¯æ¯æ¬¡è°ƒç”¨å°†ä¼šè¿”å›ä¸€ä¸ªæ–°çš„ByteBuffer,å¯¹å®ƒçš„æ“ä½œä¸å½±å“ çœŸå®çš„Bufferçš„offsetå’Œlongã€‚
+è¿™ä¸ªæ¥å£æœ‰3ä¸ªå®ç°ï¼ŒFileSegmentManagedBufferã€NettyManagedBufferã€NioManagedBufferå’ŒBlockManagerManagedBufferï¼Œç”±ç±»åå°±å¯ä»¥çŸ¥é“ï¼ŒåŒºåˆ«åœ¨äº
+è·å–ByteBufferçš„æ¥æºä¸åŒï¼ŒFileSegmentManagedBufferæ˜¯ä¿å­˜äº†ä¸€ä¸ªFileç±»å‹çš„å˜é‡ï¼Œæ‰€ä»¥æ˜¯è¯»å–`file`é‡Œçš„å†…å®¹ç”ŸæˆByeBufferï¼Œ
+NettyManagedBufferæ˜¯é€šè¿‡ByteBufè¯»å–çš„ï¼ŒNioManagedBufferä¿å­˜çš„ç›´æ¥å°±æ˜¯ByteBufferï¼ŒBlockManagerManagedBufferæ˜¯é€šè¿‡ChunkedByteBufferï¼ˆspark.util.ioï¼‰ã€‚
 
-##Block×´Ì¬Î¬»¤
+##BlockçŠ¶æ€ç»´æŠ¤
 
-Ê×ÏÈÀ´¿´StorageLevel£¬ÔÚSparkÖĞ£¬¶ÔÓ¦RDDµÄcacheÓĞºÜ¶àlevelÑ¡Ôñ£¬ÕâÀïÌ¸µ½µÄStorageLevel¾ÍÊÇÕâ¿éÄÚÈİ¡£Ê×ÏÈÎÒÃÇÀ´¿´´æ´¢µÄ¼¶±ğ£º
+é¦–å…ˆæ¥çœ‹StorageLevelï¼Œåœ¨Sparkä¸­ï¼Œå¯¹åº”RDDçš„cacheæœ‰å¾ˆå¤šlevelé€‰æ‹©ï¼Œè¿™é‡Œè°ˆåˆ°çš„StorageLevelå°±æ˜¯è¿™å—å†…å®¹ã€‚é¦–å…ˆæˆ‘ä»¬æ¥çœ‹å­˜å‚¨çš„çº§åˆ«ï¼š
 
-* DISK£¬¼´ÎÄ¼ş´æ´¢¡£
-* Memory£¬ÄÚ´æ´æ´¢,ÕâÀïµÄÄÚ´æÖ¸µÄÊÇJvmÖĞµÄ¶ÑÄÚ´æ,¼´onHeap¡£
-* OffHeap£¬·ÇJVMÖĞHeapµÄÄÚ´æ´æ´¢£¬ÆäÒâË¼ÊÇ*ĞòÁĞ»¯*²¢cacheµ½off-heapÄÚ´æ¡£
+* DISKï¼Œå³æ–‡ä»¶å­˜å‚¨ã€‚
+* Memoryï¼Œå†…å­˜å­˜å‚¨,è¿™é‡Œçš„å†…å­˜æŒ‡çš„æ˜¯Jvmä¸­çš„å †å†…å­˜,å³onHeapã€‚
+* OffHeapï¼ŒéJVMä¸­Heapçš„å†…å­˜å­˜å‚¨ï¼Œå…¶æ„æ€æ˜¯*åºåˆ—åŒ–*å¹¶cacheåˆ°off-heapå†…å­˜ã€‚
 
-¶ÔÓÚDISKºÍMemoryÁ½ÖÖ¼¶±ğÊÇ¿ÉÒÔÍ¬Ê±³öÏÖµÄ¡£
+å¯¹äºDISKå’ŒMemoryä¸¤ç§çº§åˆ«æ˜¯å¯ä»¥åŒæ—¶å‡ºç°çš„ã€‚
 
-¹ØÓÚOffHeap£¨±Ï¾¹ÊÇÊµÑéÊÒÀïµÄ×÷Æ·£©ÕâÀï¶àËµÁ½¾ä£ºJVMÖĞÈç¹ûÖ±½Ó½øĞĞÄÚ´æ·ÖÅä¶¼ÊÇÊÜJVMÀ´¹ÜÀí£¬Ê¹ÓÃµÄÊÇJVMÖĞÄÚ´æ¶Ñ£¬µ«ÊÇÏÖÔÚÓĞºÜ
-¶à¼¼Êõ¿ÉÒÔÔÚJVM´úÂëÖĞ·ÃÎÊ²»ÊÜJVM¹ÜÀíµÄÄÚ´æ£¬¼´OffHeapÄÚ´æ¡£OffHeap×î´óµÄºÃ´¦¾ÍÊÇ½«ÄÚ´æµÄ¹ÜÀí¹¤×÷´ÓJVMµÄGC¹ÜÀíÆ÷°şÀë³öÀ´ÓÉ×Ô¼º
-½øĞĞ¹ÜÀí£¬ÌØ±ğÊÇ´ó¶ÔÏó£¬×Ô¶¨ÒåÉúÃüÖÜÆÚµÄ¶ÔÏóÀ´ËµOffHeapºÜÊµÓÃ£¬¿ÉÒÔ¼õÉÙGCµÄ´úÏú¡£¾ßÌåÊµÏÖÊÇ»ùÓÚSparkµÄOff-heapÊµÏÖµÄ£¨Ëµµ½µ×ÊÇ
-Í¨¹ıJavaÖ±½Óµ÷JVMÖ®ÍâµÄÄÚ´æ£¬¹ıÈ¥ÊÇ»ùÓÚAlluxio¡ª¡ªÇ°Tachyon¡ª¡ª×öµÄ£¬ÔÚSPARK-12667ÖĞ±»ÒÆ³ıÁË£¬¸ÃÎÊÌâµÄÃèÊö¼û[SPARK-13992][4]£©¡£
+å…³äºOffHeapï¼ˆæ¯•ç«Ÿæ˜¯å®éªŒå®¤é‡Œçš„ä½œå“ï¼‰è¿™é‡Œå¤šè¯´ä¸¤å¥ï¼šJVMä¸­å¦‚æœç›´æ¥è¿›è¡Œå†…å­˜åˆ†é…éƒ½æ˜¯å—JVMæ¥ç®¡ç†ï¼Œä½¿ç”¨çš„æ˜¯JVMä¸­å†…å­˜å †ï¼Œä½†æ˜¯ç°åœ¨æœ‰å¾ˆ
+å¤šæŠ€æœ¯å¯ä»¥åœ¨JVMä»£ç ä¸­è®¿é—®ä¸å—JVMç®¡ç†çš„å†…å­˜ï¼Œå³OffHeapå†…å­˜ã€‚OffHeapæœ€å¤§çš„å¥½å¤„å°±æ˜¯å°†å†…å­˜çš„ç®¡ç†å·¥ä½œä»JVMçš„GCç®¡ç†å™¨å‰¥ç¦»å‡ºæ¥ç”±è‡ªå·±
+è¿›è¡Œç®¡ç†ï¼Œç‰¹åˆ«æ˜¯å¤§å¯¹è±¡ï¼Œè‡ªå®šä¹‰ç”Ÿå‘½å‘¨æœŸçš„å¯¹è±¡æ¥è¯´OffHeapå¾ˆå®ç”¨ï¼Œå¯ä»¥å‡å°‘GCçš„ä»£é”€ã€‚å…·ä½“å®ç°æ˜¯åŸºäºSparkçš„Off-heapå®ç°çš„ï¼ˆè¯´åˆ°åº•æ˜¯
+é€šè¿‡Javaç›´æ¥è°ƒJVMä¹‹å¤–çš„å†…å­˜ï¼Œè¿‡å»æ˜¯åŸºäºAlluxioâ€”â€”å‰Tachyonâ€”â€”åšçš„ï¼Œåœ¨SPARK-12667ä¸­è¢«ç§»é™¤äº†ï¼Œè¯¥é—®é¢˜çš„æè¿°è§[SPARK-13992][4]ï¼‰ã€‚
 
-StorageLevel»¹Ìá¹©ÁËÁíÍâÁ½¸öÅäÖÃÏî£º
+StorageLevelè¿˜æä¾›äº†å¦å¤–ä¸¤ä¸ªé…ç½®é¡¹ï¼š
 
-* _deserialized£ºÊÇ·ñĞèÒª·´ĞòÁĞ»¯¡£
-* _replication£º¸±±¾ÊıÄ¿¡£
+* _deserializedï¼šæ˜¯å¦éœ€è¦ååºåˆ—åŒ–ã€‚
+* _replicationï¼šå‰¯æœ¬æ•°ç›®ã€‚
 
-´æ´¢ÔÚÖĞBlockManager¿ÉÒÔÊÇ¸÷ÖÖ¶ÔÏó£¬ÊÇ·ñÖ§³ÖĞòÁĞ»¯Ó°ÏìÁË¶ÔÕâ¸ö¶ÔÏóµÄ·ÃÎÊÒÔ¼°ÄÚ´æµÄÑ¹Ëõ£¬`_deserialized`±»±ê¼ÇÎª`true`Ö®ºó£¬¾Í²»»á
-¶ÔÊı¾İ½øĞĞĞòÁĞ»¯ÁË¡£
+å­˜å‚¨åœ¨ä¸­BlockManagerå¯ä»¥æ˜¯å„ç§å¯¹è±¡ï¼Œæ˜¯å¦æ”¯æŒåºåˆ—åŒ–å½±å“äº†å¯¹è¿™ä¸ªå¯¹è±¡çš„è®¿é—®ä»¥åŠå†…å­˜çš„å‹ç¼©ï¼Œ`_deserialized`è¢«æ ‡è®°ä¸º`true`ä¹‹åï¼Œå°±ä¸ä¼š
+å¯¹æ•°æ®è¿›è¡Œåºåˆ—åŒ–äº†ã€‚
 
 ***
 
-¶ÔÓÚBlockManagerÖĞÃ¿´Î`putBlockData`²»Ò»¶¨¶¼»á³É¹¦£¬Ã¿´Î`getBlockData`²»Ò»¶¨¿ÉÒÔÂíÉÏ¿ÉÒÔ·µ»Ø½á¹û£¬ÒòÎªputÓĞµÈ´ıµÄ¹ı³Ì£¬¶øÇÒ¿ÉÄÜ×îºó»¹ÊÇÊ§°Ü¡£
+å¯¹äºBlockManagerä¸­æ¯æ¬¡`putBlockData`ä¸ä¸€å®šéƒ½ä¼šæˆåŠŸï¼Œæ¯æ¬¡`getBlockData`ä¸ä¸€å®šå¯ä»¥é©¬ä¸Šå¯ä»¥è¿”å›ç»“æœï¼Œå› ä¸ºputæœ‰ç­‰å¾…çš„è¿‡ç¨‹ï¼Œè€Œä¸”å¯èƒ½æœ€åè¿˜æ˜¯å¤±è´¥ã€‚
 
-BlockManagerÍ¨¹ıBlockInfoÀ´Î¬»¤Ã¿¸öBlockµÄ×´Ì¬£¬ÔÚBlockManagerÖĞ`blockInfoManager`£¨BlockInfoManagerÀàĞÍ£©À´±£´æBlockIdºÍBlockInfoµÄÓ³Éä£¬
-BlockInfoManagerÆäÊµ¾ÍÊÇ¶ÔÓ³Éä±íµÄÓÖÒ»²ã·â×°£¬Ö»ÊÇÔö¼ÓÁËÈÎÎñ·ÃÎÊËø£¨Ğ´ËøºÍ¶ÁËø£©À´±£Ö¤»¥³âĞ´¡¢Í¬²½¶ÁĞ´£¨²»ÒªÔÚ¶ÁµÄÊ±ºòĞ´£©¡£
-ÏÂÃæÀ´¿´Ò»ÏÂ`putBlockData`£¬ÆäÊµ¼ÊÉÏ×îÖÕµ÷ÓÃµÄÊÇ`doPutBytes`
+BlockManageré€šè¿‡BlockInfoæ¥ç»´æŠ¤æ¯ä¸ªBlockçš„çŠ¶æ€ï¼Œåœ¨BlockManagerä¸­`blockInfoManager`ï¼ˆBlockInfoManagerç±»å‹ï¼‰æ¥ä¿å­˜BlockIdå’ŒBlockInfoçš„æ˜ å°„ï¼Œ
+BlockInfoManagerå…¶å®å°±æ˜¯å¯¹æ˜ å°„è¡¨çš„åˆä¸€å±‚å°è£…ï¼Œåªæ˜¯å¢åŠ äº†ä»»åŠ¡è®¿é—®é”ï¼ˆå†™é”å’Œè¯»é”ï¼‰æ¥ä¿è¯äº’æ–¥å†™ã€åŒæ­¥è¯»å†™ï¼ˆä¸è¦åœ¨è¯»çš„æ—¶å€™å†™ï¼‰ã€‚
+ä¸‹é¢æ¥çœ‹ä¸€ä¸‹`putBlockData`ï¼Œå…¶å®é™…ä¸Šæœ€ç»ˆè°ƒç”¨çš„æ˜¯`doPutBytes`
 
 	private def doPutBytes[T](
 		  blockId: BlockId,
@@ -173,31 +173,31 @@ BlockInfoManagerÆäÊµ¾ÍÊÇ¶ÔÓ³Éä±íµÄÓÖÒ»²ã·â×°£¬Ö»ÊÇÔö¼ÓÁËÈÎÎñ·ÃÎÊËø£¨Ğ´ËøºÍ¶ÁËø£©
 		result
 	}
 	
-`doPutBytes`Ö÷ÒªÊÇÒÀ¿¿`doPut`À´Íê³ÉµÄ£¬`doPutBytes`Ìá¹©¶ÔBlockInfoµÄ´¦Àí£¨°üÀ¨BlockµÄ¾ßÌå´æ´¢£©£¬`doPut`ÔòÓÃÀ´
-Éú³ÉBlockInfo¡£`doPutBytes`ÖĞ»áÏÈÅĞ¶ÏBlockµÄ´æ´¢²ã¼¶£¬È»ºó¾ÍÊÇÊÇ·ñĞèÒªĞòÁĞ»¯£¬×îºó¾ÍÊÇÀûÓÃ¾ßÌåµÄBlockStore£¨`memoryStore`
-»ò`diskStore`£¬[Ö®ºó»á½éÉÜ](##BlockStore)£©µÄ`putBytes`·½·¨ÊµÏÖBlockµÄ´æ´¢¡£ÉÏÃæµÄ´úÂëÊ¡ÂÔÁËÕë¶Ô¸±±¾ºÍ×¢²áµÈ¹ı³Ì¡£
+`doPutBytes`ä¸»è¦æ˜¯ä¾é `doPut`æ¥å®Œæˆçš„ï¼Œ`doPutBytes`æä¾›å¯¹BlockInfoçš„å¤„ç†ï¼ˆåŒ…æ‹¬Blockçš„å…·ä½“å­˜å‚¨ï¼‰ï¼Œ`doPut`åˆ™ç”¨æ¥
+ç”ŸæˆBlockInfoã€‚`doPutBytes`ä¸­ä¼šå…ˆåˆ¤æ–­Blockçš„å­˜å‚¨å±‚çº§ï¼Œç„¶åå°±æ˜¯æ˜¯å¦éœ€è¦åºåˆ—åŒ–ï¼Œæœ€åå°±æ˜¯åˆ©ç”¨å…·ä½“çš„BlockStoreï¼ˆ`memoryStore`
+æˆ–`diskStore`ï¼Œ[ä¹‹åä¼šä»‹ç»](##BlockStore)ï¼‰çš„`putBytes`æ–¹æ³•å®ç°Blockçš„å­˜å‚¨ã€‚ä¸Šé¢çš„ä»£ç çœç•¥äº†é’ˆå¯¹å‰¯æœ¬å’Œæ³¨å†Œç­‰è¿‡ç¨‹ã€‚
 
-BlockInfoÖĞµÄBlockµÄ×´Ì¬ÊÇÍ¨¹ıËøÀ´¿ØÖÆµÄ£¬¼´Í¨¹ı»ñÈ¡µ±Ç°¸ÃBlockµÄreaderÊıÁ¿£¨¶ÁµÄÊ±ºòĞ´£©»òwriter£¨Ğ´µÄÊ±ºò¶Á£©À´¿ØÖÆ¶ÁĞ´Í¬²½£¬
-Í¨¹ı±£Ö¤Í¬Ê±Ö»ÓĞÒ»¸öwriterÀ´±£Ö¤»¥³âĞ´¡£BlockÊÇ·ñ´æ´¢³É¹¦ÊÇÍ¨¹ı`doPutBytes`ÖĞµÄ`blockWasSuccessfullyStored`±äÁ¿À´¿ØÖÆµÄ£¬
-ÆäÊÇÍ¨¹ı`getCurrentBlockStatus`À´»ñÈ¡¶ÔÓ¦IdµÄBlockµÄ´æ´¢×´Ì¬£¨¾ÍÊÇ¸ÃBlockÄÚ´æ´æÁË¶àÉÙ£¬´ÅÅÌ´æÁË¶àÉÙ£¬ÒÔ¼°Ê²Ã´´æ´¢²ã¼¶£©À´ÅĞ¶ÏµÄ¡£
+BlockInfoä¸­çš„Blockçš„çŠ¶æ€æ˜¯é€šè¿‡é”æ¥æ§åˆ¶çš„ï¼Œå³é€šè¿‡è·å–å½“å‰è¯¥Blockçš„readeræ•°é‡ï¼ˆè¯»çš„æ—¶å€™å†™ï¼‰æˆ–writerï¼ˆå†™çš„æ—¶å€™è¯»ï¼‰æ¥æ§åˆ¶è¯»å†™åŒæ­¥ï¼Œ
+é€šè¿‡ä¿è¯åŒæ—¶åªæœ‰ä¸€ä¸ªwriteræ¥ä¿è¯äº’æ–¥å†™ã€‚Blockæ˜¯å¦å­˜å‚¨æˆåŠŸæ˜¯é€šè¿‡`doPutBytes`ä¸­çš„`blockWasSuccessfullyStored`å˜é‡æ¥æ§åˆ¶çš„ï¼Œ
+å…¶æ˜¯é€šè¿‡`getCurrentBlockStatus`æ¥è·å–å¯¹åº”Idçš„Blockçš„å­˜å‚¨çŠ¶æ€ï¼ˆå°±æ˜¯è¯¥Blockå†…å­˜å­˜äº†å¤šå°‘ï¼Œç£ç›˜å­˜äº†å¤šå°‘ï¼Œä»¥åŠä»€ä¹ˆå­˜å‚¨å±‚çº§ï¼‰æ¥åˆ¤æ–­çš„ã€‚
 
 ##BlockStore
 
-BlockStore¼´BlockÕæÕıµÄ´æ´¢Æ÷¡£µ«ÔÚSparkÖĞ£¬BlockStore¼È²»ÊÇÒ»¸öÌØÖÊÒ²²»ÊÇÒ»¸öÀà£¬ÕâÀïÖ»ÊÇÓÃÓÚÍ³³Æ¡£¹²·ÖÎªMemoryStoreºÍDiskStore
-Á½¸öÀàĞÍ¡£
+BlockStoreå³BlockçœŸæ­£çš„å­˜å‚¨å™¨ã€‚ä½†åœ¨Sparkä¸­ï¼ŒBlockStoreæ—¢ä¸æ˜¯ä¸€ä¸ªç‰¹è´¨ä¹Ÿä¸æ˜¯ä¸€ä¸ªç±»ï¼Œè¿™é‡Œåªæ˜¯ç”¨äºç»Ÿç§°ã€‚å…±åˆ†ä¸ºMemoryStoreå’ŒDiskStore
+ä¸¤ä¸ªç±»å‹ã€‚
 
 ###MemoryStore
 
-MemoryStoreÖĞÓĞÁ½ÕÅÓ³Éä±í£º`onHeapUnrollMemoryMap`ºÍ`offHeapUnrollMemoryMap`¡£Ç°ÕßÊÇ´ÓÈÎÎñ³¢ÊÔµÄIdµ½*¡°Unroll¡±*Ò»¸öBlockËùÓÃÄÚ´æµÄÓ³Éä£¬
-ºóÕßÒâË¼ÏàÍ¬£¬²»Í¬µÄÊÇÇ°ÕßÊÇon-heapÄ£Ê½£¬ºóÕßµÄÊÇoff-heapÄ£Ê½¡£ÄÇÃ´Ê²Ã´ÊÇ¡°Unroll¡±£¿ÒòÎªÓĞµÄÊ±ºòÄÚ´æÖĞµÄÊı¾İÒ²»á½øĞĞ
-ĞòÁĞ»¯´æ´¢ÒÔ¼õÉÙ¶ÔÄÚ´æµÄÏûºÄ£¬µ«ÊÇ×îÖÕ»¹ÊÇÒª·´ĞòÁĞ»¯£¬ÓÉÓÚĞòÁĞ»¯Ö®ºóÕ¼ÓÃµÄµÄÄÚ´æĞ¡£¬·´ĞòÁĞ»¯Ö®ºó±ØÈ»»áÅòÕÍ£¬ÄÇÃ´¾ÍÒªÔ¤Áô³öÒ»²¿·ÖÄÚ´æ
-À´±£Ö¤·´ĞòÁĞ»¯Ö®ºóµÄÊı¾İÓĞ´æ´¢¿Õ¼ä£¬ËùÒÔÊı¾İ·´ĞòÁĞ»¯Ö®ºóËùĞèµÄÄÚ´æ¾ÍÊÇ¡°Unroll¡±ÄÚ´æ£¨[±ğÈËµÄÀí½â£¬²»¹ıÊÇSpark1.3][5]£©¡£»¹ÓĞÒ»ÖÖÇé¿ö¾ÍÊÇBlock²¢²»ÊÇÒ»´ÎĞÔÈ«²¿¶ÁÈëÄÚ´æµÄ£¬¶øÊÇ
-ÒÔÁ÷µÄĞÎÊ½Ò»²¿·ÖÒ»²¿·Ö¶ÁÈëµÄ£¬ËùÒÔÒ²ĞèÒªÒ»²¿·ÖÄÚ´æÓÃÓÚ°ÑBlockÖĞµÄÊı¾İ¡°Õ¹¿ª¡±£¨×Ô¼ºµÄÀí½â£©¡£ÔõÃ´²ÅÄÜ±£Ö¤²»»á³öÏÖOOMÄØ£¿·½·¨¾ÍÊÇÖÜÆÚĞÔµØ¼ì²éÊÇ·ñÓĞ×ã¹»
-µÄ¿ÕÓàÄÚ´æ£¬Èç¹û¿ÉÒÔ½âÑ¹£¬¾ÍÔÚ¡°×ª»»¡±µ½ÄÚ´æÆÚ¼äÊ¹ÓÃÁÙÊ±µÄ¡°Unroll¡±ÄÚ´æ¡£
+MemoryStoreä¸­æœ‰ä¸¤å¼ æ˜ å°„è¡¨ï¼š`onHeapUnrollMemoryMap`å’Œ`offHeapUnrollMemoryMap`ã€‚å‰è€…æ˜¯ä»ä»»åŠ¡å°è¯•çš„Idåˆ°*â€œUnrollâ€*ä¸€ä¸ªBlockæ‰€ç”¨å†…å­˜çš„æ˜ å°„ï¼Œ
+åè€…æ„æ€ç›¸åŒï¼Œä¸åŒçš„æ˜¯å‰è€…æ˜¯on-heapæ¨¡å¼ï¼Œåè€…çš„æ˜¯off-heapæ¨¡å¼ã€‚é‚£ä¹ˆä»€ä¹ˆæ˜¯â€œUnrollâ€ï¼Ÿå› ä¸ºæœ‰çš„æ—¶å€™å†…å­˜ä¸­çš„æ•°æ®ä¹Ÿä¼šè¿›è¡Œ
+åºåˆ—åŒ–å­˜å‚¨ä»¥å‡å°‘å¯¹å†…å­˜çš„æ¶ˆè€—ï¼Œä½†æ˜¯æœ€ç»ˆè¿˜æ˜¯è¦ååºåˆ—åŒ–ï¼Œç”±äºåºåˆ—åŒ–ä¹‹åå ç”¨çš„çš„å†…å­˜å°ï¼Œååºåˆ—åŒ–ä¹‹åå¿…ç„¶ä¼šè†¨èƒ€ï¼Œé‚£ä¹ˆå°±è¦é¢„ç•™å‡ºä¸€éƒ¨åˆ†å†…å­˜
+æ¥ä¿è¯ååºåˆ—åŒ–ä¹‹åçš„æ•°æ®æœ‰å­˜å‚¨ç©ºé—´ï¼Œæ‰€ä»¥æ•°æ®ååºåˆ—åŒ–ä¹‹åæ‰€éœ€çš„å†…å­˜å°±æ˜¯â€œUnrollâ€å†…å­˜ï¼ˆ[åˆ«äººçš„ç†è§£ï¼Œä¸è¿‡æ˜¯Spark1.3][5]ï¼‰ã€‚è¿˜æœ‰ä¸€ç§æƒ…å†µå°±æ˜¯Blockå¹¶ä¸æ˜¯ä¸€æ¬¡æ€§å…¨éƒ¨è¯»å…¥å†…å­˜çš„ï¼Œè€Œæ˜¯
+ä»¥æµçš„å½¢å¼ä¸€éƒ¨åˆ†ä¸€éƒ¨åˆ†è¯»å…¥çš„ï¼Œæ‰€ä»¥ä¹Ÿéœ€è¦ä¸€éƒ¨åˆ†å†…å­˜ç”¨äºæŠŠBlockä¸­çš„æ•°æ®â€œå±•å¼€â€ï¼ˆè‡ªå·±çš„ç†è§£ï¼‰ã€‚æ€ä¹ˆæ‰èƒ½ä¿è¯ä¸ä¼šå‡ºç°OOMå‘¢ï¼Ÿæ–¹æ³•å°±æ˜¯å‘¨æœŸæ€§åœ°æ£€æŸ¥æ˜¯å¦æœ‰è¶³å¤Ÿ
+çš„ç©ºä½™å†…å­˜ï¼Œå¦‚æœå¯ä»¥è§£å‹ï¼Œå°±åœ¨â€œè½¬æ¢â€åˆ°å†…å­˜æœŸé—´ä½¿ç”¨ä¸´æ—¶çš„â€œUnrollâ€å†…å­˜ã€‚
 
-ÏÂÃæÀ´¿´ÔõÃ´´æ´¢Êı¾İ£¨´úÂëÌ«³¤£¬¼ò¶øÑÔÖ®£©£¬ÔÚ½«Êı¾İ´æÈëmemoryÊ±Òª¼ì²éÊÇ·ñÓĞ×ã¹»µÄÄÚ´æ£¬ÎªÊ²Ã´ĞòÁĞ»¯»¹ÒªÉêÇëÄÚ´æÄØ£¿ÎÒÏëÓ¦¸ÃÊÇBlockÃ»ÓĞÒ»´ÎĞÔ
-¡°Unroll¡±£¬Ò»¿ªÊ¼Ä¬ÈÏµÄ¸øÒ»²¿·ÖÄÚ´æÓÃÓÚBlockµÄ¡°Unroll¡±£¬¡°Unroll¡±¹ı³ÌÖĞÔÙ²»¶ÏÉêÇëÄÚ´æ¡£
-Ë³×Å`MemoryStore.reserveUnrollMemoryForThisTask`->`UnifiedMemoryManager.acquireUnrollMemory`->`UnifiedMemoryManager.acquireUnrollMemory`¿´Ò»ÏÂÉêÇëÄÚ´æµÄº¯Êı¡£
+ä¸‹é¢æ¥çœ‹æ€ä¹ˆå­˜å‚¨æ•°æ®ï¼ˆä»£ç å¤ªé•¿ï¼Œç®€è€Œè¨€ä¹‹ï¼‰ï¼Œåœ¨å°†æ•°æ®å­˜å…¥memoryæ—¶è¦æ£€æŸ¥æ˜¯å¦æœ‰è¶³å¤Ÿçš„å†…å­˜ï¼Œä¸ºä»€ä¹ˆåºåˆ—åŒ–è¿˜è¦ç”³è¯·å†…å­˜å‘¢ï¼Ÿæˆ‘æƒ³åº”è¯¥æ˜¯Blockæ²¡æœ‰ä¸€æ¬¡æ€§
+â€œUnrollâ€ï¼Œä¸€å¼€å§‹é»˜è®¤çš„ç»™ä¸€éƒ¨åˆ†å†…å­˜ç”¨äºBlockçš„â€œUnrollâ€ï¼Œâ€œUnrollâ€è¿‡ç¨‹ä¸­å†ä¸æ–­ç”³è¯·å†…å­˜ã€‚
+é¡ºç€`MemoryStore.reserveUnrollMemoryForThisTask`->`UnifiedMemoryManager.acquireUnrollMemory`->`UnifiedMemoryManager.acquireUnrollMemory`çœ‹ä¸€ä¸‹ç”³è¯·å†…å­˜çš„å‡½æ•°ã€‚
 
 	override def acquireStorageMemory(
 		  blockId: BlockId,
@@ -226,13 +226,13 @@ MemoryStoreÖĞÓĞÁ½ÕÅÓ³Éä±í£º`onHeapUnrollMemoryMap`ºÍ`offHeapUnrollMemoryMap`¡£Ç°
 		storagePool.acquireMemory(blockId, numBytes)
 	}
 	
-ÕâÀïÒÔUnifiedMemoryManager¾ÙÀı£¬ÒòÎªÆä°üº¬ÁËoff-heapºÍon-heapÄÚ´æµÄÉêÇë£¬¿ÉÒÔ·¢ÏÖÕë¶ÔÕâ¶şÕßÓĞ²»Í¬µÄÄÚ´æ³Ø£¬µ±È»»¹¿ÉÒÔ¿´µ½
-ÔËĞĞÄÚ´æ£¬¶øÇÒÎÒÃÇ·¢ÏÖ»¹ÓĞoff-heapµÄÔËĞĞÄÚ´æ£¨ºÍÓÃÓÚ´æ´¢µÄÊÇÁ½¸ö¸ÅÄî£¬¶Ôoff-heapÄÚ´æµÄÊ¹ÓÃ²¢²»ÊÇÖ¸ÔËĞĞ£©¡£Ê×ÏÈÅĞ¶ÏÉêÇëµÄ
-ÄÚ´æ´óĞ¡ÊÇ·ñ³¬¹ıÁËÉÏÏŞ£¬Èç¹ûÃ»³¬¹ı¼ÌĞø¿´µ±Ç°ÓÃÓÚ´æ´¢µÄÄÚ´æ³ØÖĞµÄ¿Õ¼äÊÇ·ñÂú×ãÇëÇó£¬Èç¹û²»Âú×ã¾Í½«ÓÃÓÚÔËĞĞµÄÄÚ´æ³ØÖĞµÄÒ»²¿
-·ÖÄÚ´æÄÃ³öÀ´ÓÃÓÚ´æ´¢¡£½øÈëStorageMemoryPoolµÄ`acquireMemory`£¬·¢ÏÖ×îºóµÄÌÚ³öÄÚ´æµÄ²Ù×÷ÊÇMemoryStoreÔÚ`evictBlocksToFreeSpace`
-ÖĞÍê³ÉµÄ£¬·½·¨¾ÍÊÇÕÒµ½Ä³¸ö¿ÉÒÔÌæ»»¿é£¨ÏÈÀûÓÃĞ´ËøÕ¼ÓĞ£¬±£Ö¤Ã»ÓĞreaderºÍwriter£©£¬É¾³ıµôÆä¶ÔÓ¦µÄĞÅÏ¢¡£
+è¿™é‡Œä»¥UnifiedMemoryManagerä¸¾ä¾‹ï¼Œå› ä¸ºå…¶åŒ…å«äº†off-heapå’Œon-heapå†…å­˜çš„ç”³è¯·ï¼Œå¯ä»¥å‘ç°é’ˆå¯¹è¿™äºŒè€…æœ‰ä¸åŒçš„å†…å­˜æ± ï¼Œå½“ç„¶è¿˜å¯ä»¥çœ‹åˆ°
+è¿è¡Œå†…å­˜ï¼Œè€Œä¸”æˆ‘ä»¬å‘ç°è¿˜æœ‰off-heapçš„è¿è¡Œå†…å­˜ï¼ˆå’Œç”¨äºå­˜å‚¨çš„æ˜¯ä¸¤ä¸ªæ¦‚å¿µï¼Œå¯¹off-heapå†…å­˜çš„ä½¿ç”¨å¹¶ä¸æ˜¯æŒ‡è¿è¡Œï¼‰ã€‚é¦–å…ˆåˆ¤æ–­ç”³è¯·çš„
+å†…å­˜å¤§å°æ˜¯å¦è¶…è¿‡äº†ä¸Šé™ï¼Œå¦‚æœæ²¡è¶…è¿‡ç»§ç»­çœ‹å½“å‰ç”¨äºå­˜å‚¨çš„å†…å­˜æ± ä¸­çš„ç©ºé—´æ˜¯å¦æ»¡è¶³è¯·æ±‚ï¼Œå¦‚æœä¸æ»¡è¶³å°±å°†ç”¨äºè¿è¡Œçš„å†…å­˜æ± ä¸­çš„ä¸€éƒ¨
+åˆ†å†…å­˜æ‹¿å‡ºæ¥ç”¨äºå­˜å‚¨ã€‚è¿›å…¥StorageMemoryPoolçš„`acquireMemory`ï¼Œå‘ç°æœ€åçš„è…¾å‡ºå†…å­˜çš„æ“ä½œæ˜¯MemoryStoreåœ¨`evictBlocksToFreeSpace`
+ä¸­å®Œæˆçš„ï¼Œæ–¹æ³•å°±æ˜¯æ‰¾åˆ°æŸä¸ªå¯ä»¥æ›¿æ¢å—ï¼ˆå…ˆåˆ©ç”¨å†™é”å æœ‰ï¼Œä¿è¯æ²¡æœ‰readerå’Œwriterï¼‰ï¼Œåˆ é™¤æ‰å…¶å¯¹åº”çš„ä¿¡æ¯ã€‚
 
-ÔÚMemoryStoreÖĞµÄ`putIteratorAsBytes`ÉêÇëµÄoff-heapÄÚ´æÊÇÔõÃ´ÊµÏÖµÄÄØ£¿
+åœ¨MemoryStoreä¸­çš„`putIteratorAsBytes`ç”³è¯·çš„off-heapå†…å­˜æ˜¯æ€ä¹ˆå®ç°çš„å‘¢ï¼Ÿ
 
 	//MemoryStore
 	private[storage] def putIteratorAsBytes[T](
@@ -271,21 +271,21 @@ MemoryStoreÖĞÓĞÁ½ÕÅÓ³Éä±í£º`onHeapUnrollMemoryMap`ºÍ`offHeapUnrollMemoryMap`¡£Ç°
 		throw new IllegalStateException("unreachable");
 	}
 
-¿´µ½`allocateDirectBuffer`ÖĞµÄ`cleaner`ºÍ`freeMemory`·½·¨ÁË°É¡£¼´Ê¹ÕâÀïÍê³Éoff-heapÄÚ´æÉêÇëµÄ¡£ËùÒÔÕâÀï·µ
-»ØµÄ`allocator`ÒÑ¾­ÊÇÒ»¸öoff-heapÄÚ´æµÄByteBufferÁË¡£
+çœ‹åˆ°`allocateDirectBuffer`ä¸­çš„`cleaner`å’Œ`freeMemory`æ–¹æ³•äº†å§ã€‚å³ä½¿è¿™é‡Œå®Œæˆoff-heapå†…å­˜ç”³è¯·çš„ã€‚æ‰€ä»¥è¿™é‡Œè¿”
+å›çš„`allocator`å·²ç»æ˜¯ä¸€ä¸ªoff-heapå†…å­˜çš„ByteBufferäº†ã€‚
 
 ###DiskStore
 
-DiskStore¼´»ùÓÚÎÄ¼şÀ´´æ´¢Block¡£»ùÓÚDiskÀ´´æ´¢£¬Ê×ÏÈ±ØĞëÒª½â¾öÒ»¸öÎÊÌâ¾ÍÊÇ´ÅÅÌÎÄ¼şµÄ¹ÜÀí£º´ÅÅÌÄ¿Â¼½á¹¹µÄ×é³É£¬Ä¿Â¼µÄÇåÀíµÈ£¬
-ÔÚSpark¶Ô´ÅÅÌÎÄ¼şµÄ¹ÜÀíÊÇÍ¨¹ıDiskBlockManagerÀ´½øĞĞ¹ÜÀíµÄ£¬Òò´Ë¶ÔDiskStore½øĞĞ·ÖÎöÖ®Ç°£¬Ê×ÏÈ±ØĞë¶ÔDiskBlockManager½øĞĞ·ÖÎö¡£
+DiskStoreå³åŸºäºæ–‡ä»¶æ¥å­˜å‚¨Blockã€‚åŸºäºDiskæ¥å­˜å‚¨ï¼Œé¦–å…ˆå¿…é¡»è¦è§£å†³ä¸€ä¸ªé—®é¢˜å°±æ˜¯ç£ç›˜æ–‡ä»¶çš„ç®¡ç†ï¼šç£ç›˜ç›®å½•ç»“æ„çš„ç»„æˆï¼Œç›®å½•çš„æ¸…ç†ç­‰ï¼Œ
+åœ¨Sparkå¯¹ç£ç›˜æ–‡ä»¶çš„ç®¡ç†æ˜¯é€šè¿‡DiskBlockManageræ¥è¿›è¡Œç®¡ç†çš„ï¼Œå› æ­¤å¯¹DiskStoreè¿›è¡Œåˆ†æä¹‹å‰ï¼Œé¦–å…ˆå¿…é¡»å¯¹DiskBlockManagerè¿›è¡Œåˆ†æã€‚
 
-ÔÚSparkµÄÅäÖÃĞÅÏ¢ÖĞ£¬Í¨¹ı"SPARK_LOCAL_DIRS"¿ÉÒÔÅäÖÃSparkÔËĞĞ¹ı³ÌÖĞÁÙÊ±Ä¿Â¼¡£ÓĞ¼¸µãĞèÒªÇ¿µ÷Ò»ÏÂ£º
+åœ¨Sparkçš„é…ç½®ä¿¡æ¯ä¸­ï¼Œé€šè¿‡"SPARK_LOCAL_DIRS"å¯ä»¥é…ç½®Sparkè¿è¡Œè¿‡ç¨‹ä¸­ä¸´æ—¶ç›®å½•ã€‚æœ‰å‡ ç‚¹éœ€è¦å¼ºè°ƒä¸€ä¸‹ï¼š
 
-* `SPARK_LOCAL_DIRS`ÅäÖÃµÄÊÇ¼¯ºÏ£¬¼´¿ÉÒÔÅäÖÃ¶à¸öLocalDir£¬ÓÃ","·Ö¿ª£»Õâ¸öºÍHadoopÖĞµÄÁÙÊ±Ä¿Â¼µÈÒ»Ñù£¬¿ÉÒÔÔÚ¶à¸ö´ÅÅÌÖĞ´´½¨localdir£¬´Ó¶ø·ÖÉ¢´ÅÅÌµÄ¶ÁĞ´Ñ¹Á¦¡£
-* sparkÔËĞĞ¹ı³ÌÖĞÉú³ÉµÄ×ÓÎÄ¼ş¹ı³Ì²»¿É¹À¼Æ£¬ÕâÑùºÜÈİÒ×¾Í»á³öÏÖÒ»¸ölocalDirÖĞ×ÓÎÄ¼ş¹ı¶à£¬µ¼ÖÂ¶ÁĞ´Ğ§ÂÊºÜ²î£¬Õë¶ÔÕâ¸öÎÊÌâ£¬SparkÔÚÃ¿¸öLocalDirÖĞ
-´´½¨ÁË64¸ö×ÓÄ¿Â¼£¬À´·ÖÉ¢ÎÄ¼ş¡£¾ßÌåµÄ×ÓÄ¿Â¼¸öÊı£¬¿ÉÒÔÍ¨¹ı`spark.diskStore.subDirectories`½øĞĞÅäÖÃ¡£
+* `SPARK_LOCAL_DIRS`é…ç½®çš„æ˜¯é›†åˆï¼Œå³å¯ä»¥é…ç½®å¤šä¸ªLocalDirï¼Œç”¨","åˆ†å¼€ï¼›è¿™ä¸ªå’ŒHadoopä¸­çš„ä¸´æ—¶ç›®å½•ç­‰ä¸€æ ·ï¼Œå¯ä»¥åœ¨å¤šä¸ªç£ç›˜ä¸­åˆ›å»ºlocaldirï¼Œä»è€Œåˆ†æ•£ç£ç›˜çš„è¯»å†™å‹åŠ›ã€‚
+* sparkè¿è¡Œè¿‡ç¨‹ä¸­ç”Ÿæˆçš„å­æ–‡ä»¶è¿‡ç¨‹ä¸å¯ä¼°è®¡ï¼Œè¿™æ ·å¾ˆå®¹æ˜“å°±ä¼šå‡ºç°ä¸€ä¸ªlocalDirä¸­å­æ–‡ä»¶è¿‡å¤šï¼Œå¯¼è‡´è¯»å†™æ•ˆç‡å¾ˆå·®ï¼Œé’ˆå¯¹è¿™ä¸ªé—®é¢˜ï¼ŒSparkåœ¨æ¯ä¸ªLocalDirä¸­
+åˆ›å»ºäº†64ä¸ªå­ç›®å½•ï¼Œæ¥åˆ†æ•£æ–‡ä»¶ã€‚å…·ä½“çš„å­ç›®å½•ä¸ªæ•°ï¼Œå¯ä»¥é€šè¿‡`spark.diskStore.subDirectories`è¿›è¡Œé…ç½®ã€‚
 
-DiskBlockManagerÍ¨¹ıhashÀ´·Ö±ğÈ·¶¨localDirÒÔ¼°subdir¡£
+DiskBlockManageré€šè¿‡hashæ¥åˆ†åˆ«ç¡®å®šlocalDirä»¥åŠsubdirã€‚
 
 	def getFile(filename: String): File = {
 		// Figure out which local directory it hashes to, and which subdirectory in that
@@ -311,42 +311,49 @@ DiskBlockManagerÍ¨¹ıhashÀ´·Ö±ğÈ·¶¨localDirÒÔ¼°subdir¡£
 		new File(subDir, filename)
 	}
 	
-DiskBlockManagerµÄºËĞÄ¹¤×÷¾ÍÊÇÕâ¸ö£¬¼´Ìá¹©`getFile`½Ó¿Ú£¬¸ù¾İfilenameÈ·¶¨Ò»¸öÎÄ¼şµÄÂ·¾¶¡£Ê£ÏÂÀ´µÄ¾ÍÊÇÄ¿Â¼ÇåÀíµÈ¹¤×÷¡£¶¼±È½Ï¼òµ¥ÕâÀï¾Í²»½øĞĞÏêÏ¸·ÖÎö¡£
+DiskBlockManagerçš„æ ¸å¿ƒå·¥ä½œå°±æ˜¯è¿™ä¸ªï¼Œå³æä¾›`getFile`æ¥å£ï¼Œæ ¹æ®filenameç¡®å®šä¸€ä¸ªæ–‡ä»¶çš„è·¯å¾„ã€‚å‰©ä¸‹æ¥çš„å°±æ˜¯ç›®å½•æ¸…ç†ç­‰å·¥ä½œã€‚éƒ½æ¯”è¾ƒç®€å•è¿™é‡Œå°±ä¸è¿›è¡Œè¯¦ç»†åˆ†æã€‚
 
-ÖÁÓÚDiskStore£¬¾ÍÊÇ½«ĞòÁĞ»¯ºóµÄÊı¾İ£¨ÀûÓÃBlockManager½øĞĞĞòÁĞ»¯£©Ğ´µ½DiskBlockManager»ñÈ¡µ½µÄÎÄ¼şÎ»ÖÃÖĞ¡£
+è‡³äºDiskStoreï¼Œå°±æ˜¯å°†åºåˆ—åŒ–åçš„æ•°æ®ï¼ˆåˆ©ç”¨BlockManagerè¿›è¡Œåºåˆ—åŒ–ï¼‰å†™åˆ°DiskBlockManagerè·å–åˆ°çš„æ–‡ä»¶ä½ç½®ä¸­ã€‚
 
-##BlockManagerµÄ·şÎñ½á¹¹
+##BlockManagerçš„æœåŠ¡ç»“æ„
 
-BlockManager·ÖÉ¢ÔÚ¸÷¸ö½ÚµãÉÏ£¬ËùÒÔÒªÓĞÒ»¸öMasterÀ´ÊÕ¼¯¸÷¸ö½ÚµãµÄBlockĞÅÏ¢¡£ÕâÀïÒÀÈ»ÀûÓÃRPCµ÷ÓÃ£¨Ã¿¸ö½Úµã±£ÁôÒ»¸ö¶ÔMasterµÄÒıÓÃ£¬ÏëÆä·¢ËÍĞÅÏ¢£©¡£
+BlockManageråˆ†æ•£åœ¨å„ä¸ªèŠ‚ç‚¹ä¸Šï¼Œæ‰€ä»¥è¦æœ‰ä¸€ä¸ªMasteræ¥æ”¶é›†å„ä¸ªèŠ‚ç‚¹çš„Blockä¿¡æ¯ã€‚è¿™é‡Œä¾ç„¶åˆ©ç”¨RPCè°ƒç”¨ï¼ˆæ¯ä¸ªèŠ‚ç‚¹ä¿ç•™ä¸€ä¸ªå¯¹Masterçš„å¼•ç”¨ï¼Œæƒ³å…¶å‘é€ä¿¡æ¯ï¼‰ã€‚
 
-###BlockManagerMaster·şÎñ
+###BlockManagerMasteræœåŠ¡
 
-ÆäÊÇÔÚSparkEnvÖĞ´´½¨µÄ£¬Æä¹¦ÄÜÍ¨¹ıº¯ÊıÃû¿ÉÒÔÒ»Ä¿ÁËÈ»¡£Ö÷Òª×÷ÓÃÓĞ£º
+å…¶æ˜¯åœ¨SparkEnvä¸­åˆ›å»ºçš„ï¼Œå…¶åŠŸèƒ½é€šè¿‡å‡½æ•°åå¯ä»¥ä¸€ç›®äº†ç„¶ã€‚ä¸»è¦ä½œç”¨æœ‰ï¼š
 
-* ÒÆ³ıËÀExecutor¡¢Ä³RDDµÄËùÓĞBlock¡¢Ä³ShuffleµÄËùÓĞBlock¡¢ÌØ¶¨BlockºÍÄ³¹ã²¥±äÁ¿µÄËùÓĞBlock¡£
-* »ñÈ¡Ã¿¸öBlockManager IdËù¹ÜÀíµÄÄÚ´æ×´Ì¬»ò´æ´¢×´Ì¬¡£
-* ¸üĞÂÄ³BlockManagerµÄÖĞÄ³BlockµÄ×´Ì¬¡£
-* ×¢²áBlockmanager¡£
-* »ñÈ¡Ä³BlockµÄÎ»ÖÃ¡£
+* ç§»é™¤æ­»Executorã€æŸRDDçš„æ‰€æœ‰Blockã€æŸShuffleçš„æ‰€æœ‰Blockã€ç‰¹å®šBlockå’ŒæŸå¹¿æ’­å˜é‡çš„æ‰€æœ‰Blockã€‚
+* è·å–æ¯ä¸ªBlockManager Idæ‰€ç®¡ç†çš„å†…å­˜çŠ¶æ€æˆ–å­˜å‚¨çŠ¶æ€ã€‚
+* æ›´æ–°æŸBlockManagerçš„ä¸­æŸBlockçš„çŠ¶æ€ã€‚
+* æ³¨å†ŒBlockmanagerã€‚
+* è·å–æŸBlockçš„ä½ç½®ã€‚
+
+å‰é¢è¯´BlockManageræ˜¯å¯¹åº”äºExecutorçš„ï¼Œé‚£ä¹ˆæ˜¯ä»€ä¹ˆæ—¶å€™ä»¥åŠåœ¨å“ªé‡Œå¯åŠ¨çš„å‘¢ï¼Ÿæµç¨‹å°±æ˜¯:
+
+1. ä»»åŠ¡åˆ†é…åˆ°å„èŠ‚ç‚¹ï¼›
+2. Executoråˆå§‹åŒ–ï¼›
+3. BlockManageråˆå§‹åŒ–ä¸­ï¼Œå…ˆæ ¹æ®ä¸»æœºåã€ç«¯å£åå’ŒExecutor Idç”ŸæˆBlockManagerIdï¼Œç„¶åè°ƒç”¨BlockManagerMasterçš„`registerBlockManager`æ¥æ³¨å†Œæœ¬æœºçš„BlockManagerï¼›
+4. `registerBlockManager`ä¸­é€šè¿‡RPCè°ƒç”¨æ¥å‘Masteræ³¨å†ŒBlockManagerã€‚
 
 ###BlockManagerSlaveEndpoint
 
-Ã¿¸öBlockManagerÖĞ¶¼ÓĞÒ»¸öBlockManagerSlaveEndpointÀàĞÍµÄ±äÁ¿`slaveEndpoint`ÓÃÓÚºÍMasterÍ¨ĞÅ£¬×÷ÓÃÎŞ·Ç¾ÍÊÇÊÕµ½MasterµÄÏûÏ¢½øĞĞÏàÓ¦´¦Àí£¬ÕâÀï²»ÔÙ×¸Êö¡£
+æ¯ä¸ªBlockManagerä¸­éƒ½æœ‰ä¸€ä¸ªBlockManagerSlaveEndpointç±»å‹çš„å˜é‡`slaveEndpoint`ç”¨äºå’ŒMasteré€šä¿¡ï¼Œä½œç”¨æ— éå°±æ˜¯æ”¶åˆ°Masterçš„æ¶ˆæ¯è¿›è¡Œç›¸åº”å¤„ç†ï¼Œè¿™é‡Œä¸å†èµ˜è¿°ã€‚
 
 ###BlockTransferService
 
-»á·¢ÏÖÔÚBlockManagerÖĞ»¹ÓĞÒ»¸öBlockTransferServiceÀàĞÍµÄ±äÁ¿`blockTransferService`£¬Æä×÷ÓÃÊÇ´ÓÔ¶³ÌÖ÷»úÉÏ°ÑÊı¾İÇ¨ÒÆ¹ıÀ´¡£
-Ö÷ÒªµÄº¯ÊıÓĞ
+ä¼šå‘ç°åœ¨BlockManagerä¸­è¿˜æœ‰ä¸€ä¸ªBlockTransferServiceç±»å‹çš„å˜é‡`blockTransferService`ï¼Œå…¶ä½œç”¨æ˜¯ä»è¿œç¨‹ä¸»æœºä¸ŠæŠŠæ•°æ®è¿ç§»è¿‡æ¥ã€‚
+ä¸»è¦çš„å‡½æ•°æœ‰
 
-* `fetchBlocks`£º´ÓÖ¸¶¨µÄÔ¶³ÌµÄÖ÷»úÉÏ½«Ö¸¶¨µÄBlockÀ­¹ıÀ´¡£Shuffle¹ı³Ì»áÓÃµ½¡£
-* `uploadBlock`£º°Ñ±¾Ì¨Ö÷»úÉÏµÄÒ»¸öBlock´«ËÍµ½Ö¸¶¨µÄÔ¶³ÌÖ÷»ú¡£
-* `fetchBlockSync`ºÍ`uploadBlockSync`ÓëÉÏÃæÁ½¸ö·½·¨×÷ÓÃÒ»Ñù£¬µ«ÊÇ»á×èÈû¡£
+* `fetchBlocks`ï¼šä»æŒ‡å®šçš„è¿œç¨‹çš„ä¸»æœºä¸Šå°†æŒ‡å®šçš„Blockæ‹‰è¿‡æ¥ã€‚Shuffleè¿‡ç¨‹ä¼šç”¨åˆ°ã€‚
+* `uploadBlock`ï¼šæŠŠæœ¬å°ä¸»æœºä¸Šçš„ä¸€ä¸ªBlockä¼ é€åˆ°æŒ‡å®šçš„è¿œç¨‹ä¸»æœºã€‚
+* `fetchBlockSync`å’Œ`uploadBlockSync`ä¸ä¸Šé¢ä¸¤ä¸ªæ–¹æ³•ä½œç”¨ä¸€æ ·ï¼Œä½†æ˜¯ä¼šé˜»å¡ã€‚
 
-¾ßÌåµÄÎÄ¼şÀ­È¡²Ù×÷ÔÚOneForOneBlockFetcherµÄ`start`·½·¨£¨±»NettyBlockTransferServiceµÄ`fetchBlocks`µ÷ÓÃ£©ÖĞ¡£·¢ËÍ²Ù×÷ÔÚNettyBlockTransferServiceµÄ`uploadBlock`ÖĞ¡£
+å…·ä½“çš„æ–‡ä»¶æ‹‰å–æ“ä½œåœ¨OneForOneBlockFetcherçš„`start`æ–¹æ³•ï¼ˆè¢«NettyBlockTransferServiceçš„`fetchBlocks`è°ƒç”¨ï¼‰ä¸­ã€‚å‘é€æ“ä½œåœ¨NettyBlockTransferServiceçš„`uploadBlock`ä¸­ã€‚
 
 
 [1]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/spark_shuffle.md
 [2]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/spark_sort_shuffle.md
-[3]:https://github.com/ColZer/DigAndBuried/blob/master/spark/spark-memory-manager.md
+[3]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/memory_manager.md
 [4]:https://github.com/apache/spark/pull/11805
 [5]:https://0x0fff.com/spark-architecture/
