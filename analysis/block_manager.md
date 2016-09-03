@@ -332,7 +332,7 @@ BlockManager分散在各个节点上，所以要有一个Master来收集各个�
 前面说BlockManager是对应于Executor的，那么是什么时候以及在哪里启动的呢？流程就是:
 
 1. 任务分配到各节点；
-2. Executor初始化；
+2. Executor初始化，其中就包含了BlockManager的初始化；
 3. BlockManager初始化中，先根据主机名、端口名和Executor Id生成BlockManagerId，然后调用BlockManagerMaster的`registerBlockManager`来注册本机的BlockManager；
 4. `registerBlockManager`中通过RPC调用来向Master注册BlockManager。
 
