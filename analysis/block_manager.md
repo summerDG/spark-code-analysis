@@ -350,9 +350,18 @@ BlockManager分散在各个节点上，所以要有一个Master来收集各个�
 
 具体的文件拉取操作在OneForOneBlockFetcher的`start`方法（被NettyBlockTransferService的`fetchBlocks`调用）中。发送操作在NettyBlockTransferService的`uploadBlock`中。
 
+##与任务和persist操作的关系
+
+到这里我们只分子了Block管理的部分，那么它与Task的关系是什么样的呢？Excutor中有对应的BlockManager，在运行函数`run`中会调用。下面就是调用关系图：
+
+![Task与BlockManager的关系][task-block]
+
+至于persist操作，其实这个操作只是将对应的RDD标记为persist（cache）到哪里，实际上并没有马上执行相关的BlockStore操作。只是在取用的时候，会调用BlockManager的
+`getOrElseUpdate`方法，如果这个块本还没有被persist，那么才会调用`doPutIterator`来执行BlockStore操作。这也就是为什么调用`persist`之后还要有具体操作来触发。
 
 [1]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/spark_shuffle.md
 [2]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/spark_sort_shuffle.md
 [3]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/memory_manager.md
 [4]:https://github.com/apache/spark/pull/11805
 [5]:https://0x0fff.com/spark-architecture/
+[task-block]:../pic/task-block.png
