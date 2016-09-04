@@ -1,64 +1,64 @@
-#SparkµÄÈÎÎñµ÷¶È»úÖÆ
-##´ÓTaskScheduler¿ªÊ¼
-TaskSchedulerµÄÖ÷Òª×÷ÓÃ¾ÍÊÇ»ñµÃĞèÒª´¦ÀíµÄÈÎÎñ¼¯ºÏ£¬²¢½«Æä·¢ËÍµ½¼¯Èº½øĞĞ´¦Àí¡£²¢ÇÒ»¹ÓĞ»ã±¨ÈÎÎñÔËĞĞ×´Ì¬µÄ×÷ÓÃ¡£
-ËùÒÔÆäÊÇÔÚMaster¶Ë¡£¾ßÌåÓĞÒÔÏÂ4¸ö×÷ÓÃ£º
+#Sparkçš„ä»»åŠ¡è°ƒåº¦æœºåˆ¶
+##ä»TaskSchedulerå¼€å§‹
+TaskSchedulerçš„ä¸»è¦ä½œç”¨å°±æ˜¯è·å¾—éœ€è¦å¤„ç†çš„ä»»åŠ¡é›†åˆï¼Œå¹¶å°†å…¶å‘é€åˆ°é›†ç¾¤è¿›è¡Œå¤„ç†ã€‚å¹¶ä¸”è¿˜æœ‰æ±‡æŠ¥ä»»åŠ¡è¿è¡ŒçŠ¶æ€çš„ä½œç”¨ã€‚
+æ‰€ä»¥å…¶æ˜¯åœ¨Masterç«¯ã€‚å…·ä½“æœ‰ä»¥ä¸‹4ä¸ªä½œç”¨ï¼š
 
-* ½ÓÊÕÀ´×ÔExecutorµÄĞÄÌøĞÅÏ¢£¬Ê¹MasterÖªµÀ¸ÃExecuterµÄBlockManager»¹¡°»î×Å¡±¡£
-* ¶ÔÓÚÊ§°ÜµÄÈÎÎñ½øĞĞÖØÊÔ¡£
-* ¶ÔÓÚstragglers£¨ÍÏºóÍÈµÄÈÎÎñ£©·Åµ½ÆäËûµÄ½ÚµãÖ´ĞĞ¡£
-* Ïò¼¯ÈºÌá½»ÈÎÎñ¼¯£¬½»¸ø¼¯ÈºÔËĞĞ¡£
+* æ¥æ”¶æ¥è‡ªExecutorçš„å¿ƒè·³ä¿¡æ¯ï¼Œä½¿MasterçŸ¥é“è¯¥Executerçš„BlockManagerè¿˜â€œæ´»ç€â€ã€‚
+* å¯¹äºå¤±è´¥çš„ä»»åŠ¡è¿›è¡Œé‡è¯•ã€‚
+* å¯¹äºstragglersï¼ˆæ‹–åè…¿çš„ä»»åŠ¡ï¼‰æ”¾åˆ°å…¶ä»–çš„èŠ‚ç‚¹æ‰§è¡Œã€‚
+* å‘é›†ç¾¤æäº¤ä»»åŠ¡é›†ï¼Œäº¤ç»™é›†ç¾¤è¿è¡Œã€‚
 
-###TaskScheduler´´½¨
-¶ÔÓÚµ÷¶ÈÆ÷£¬¶¼ÊÇÔÚSparkContextÖĞ½øĞĞ´´½¨µÄ¡£
+###TaskScheduleråˆ›å»º
+å¯¹äºè°ƒåº¦å™¨ï¼Œéƒ½æ˜¯åœ¨SparkContextä¸­è¿›è¡Œåˆ›å»ºçš„ã€‚
 
-    // SparkContext³õÊ¼»¯¿éÖĞ
+    // SparkContextåˆå§‹åŒ–å—ä¸­
     val (sched, ts) = SparkContext.createTaskScheduler(this, master, deployMode)
     _schedulerBackend = sched
     _taskScheduler = ts
-`createTaskScheduler(this, master, deployMode)`ÊÇÀûÓÃ²¿Êğ·½Ê½´´½¨¾ßÌåµÄTaskScheduler£¬ÕâÀïÎÒÃÇ·¢ÏÖÓĞÒ»¸ö`sched`
-±äÁ¿£¬SchedulerBackendÀàĞÍ£¬¸ÃÀàĞÍ±íÊ¾²»Í¬µÄºó¶Ëµ÷¶È£¬Ê²Ã´ÊÇºó¶Ëµ÷¶È£¬ÀıÈç£ºLocal£¬Standalone£¬Yarn¡¢MesosµÈ¡£
-¶ÔÓÚÍâ²¿µÄ£¨ÓëStandalone¶ÔÓ¦£©µÄºó¶Ë£¬Æä¶¼¼Ì³Ğ×ÔCoarseGrainedSchedulerBackend£¬ÃüÃû±íÃ÷ÕâÖ»ÊÇ¸ö´ÖÁ£¶ÈµÄºó¶Ë£¬¾ßÌåµÄ
-Ï¸Á£¶ÈµÄÊµÏÖÔÚ²»Í¬ºó¶ËÏµÍ³Ä£¿éÓĞÊµÏÖ¡£ËùÓĞÍâ²¿µ÷¶ÈÆ÷ºÍºó¶ËµÄÉú³ÉÊÇÒÀÀµClusterManagerÀ´Íê³ÉµÄ£¬Íâ²¿µÄClusterManager
-¶¼¼Ì³Ğ×ÔExternalClusterManager¡£Í¨¹ıExternalClusterManagerµÄ`createTaskScheduler`ºÍ`createSchedulerBackend`À´Íê³É
-¶ÔTaskSchedulerºÍ»¹ÓĞSchedulerBackendµÄÉú³É¡£¾ßÌå¿ÉÒÔÒÔmesosÎªÀı£¬È¥mesosÄ£¿éÏÂÈ¥¿´ÊµÏÖ¡£
-ÖÁÓÚTaskScheduler£¬ÆäÖ÷ÒªµÄÊµÏÖ¾ÍÊÇTaskSchedulerImpl£¬LocalÄ£Ê½¡¢StandaloneÄ£Ê½ºÍMesosÄ£Ê½¶¼ÊÇÓÃµÄÕâ¸öÊµÏÖ¡£ÕâÀïÁĞ¾Ù
-²¿·Ö×éºÏ·½Ê½£º
+`createTaskScheduler(this, master, deployMode)`æ˜¯åˆ©ç”¨éƒ¨ç½²æ–¹å¼åˆ›å»ºå…·ä½“çš„TaskSchedulerï¼Œè¿™é‡Œæˆ‘ä»¬å‘ç°æœ‰ä¸€ä¸ª`sched`
+å˜é‡ï¼ŒSchedulerBackendç±»å‹ï¼Œè¯¥ç±»å‹è¡¨ç¤ºä¸åŒçš„åç«¯è°ƒåº¦ï¼Œä»€ä¹ˆæ˜¯åç«¯è°ƒåº¦ï¼Œä¾‹å¦‚ï¼šLocalï¼ŒStandaloneï¼ŒYarnã€Mesosç­‰ã€‚
+å¯¹äºå¤–éƒ¨çš„ï¼ˆä¸Standaloneå¯¹åº”ï¼‰çš„åç«¯ï¼Œå…¶éƒ½ç»§æ‰¿è‡ªCoarseGrainedSchedulerBackendï¼Œå‘½åè¡¨æ˜è¿™åªæ˜¯ä¸ªç²—ç²’åº¦çš„åç«¯ï¼Œå…·ä½“çš„
+ç»†ç²’åº¦çš„å®ç°åœ¨ä¸åŒåç«¯ç³»ç»Ÿæ¨¡å—æœ‰å®ç°ã€‚æ‰€æœ‰å¤–éƒ¨è°ƒåº¦å™¨å’Œåç«¯çš„ç”Ÿæˆæ˜¯ä¾èµ–ClusterManageræ¥å®Œæˆçš„ï¼Œå¤–éƒ¨çš„ClusterManager
+éƒ½ç»§æ‰¿è‡ªExternalClusterManagerã€‚é€šè¿‡ExternalClusterManagerçš„`createTaskScheduler`å’Œ`createSchedulerBackend`æ¥å®Œæˆ
+å¯¹TaskSchedulerå’Œè¿˜æœ‰SchedulerBackendçš„ç”Ÿæˆã€‚å…·ä½“å¯ä»¥ä»¥mesosä¸ºä¾‹ï¼Œå»mesosæ¨¡å—ä¸‹å»çœ‹å®ç°ã€‚
+è‡³äºTaskSchedulerï¼Œå…¶ä¸»è¦çš„å®ç°å°±æ˜¯TaskSchedulerImplï¼ŒLocalæ¨¡å¼ã€Standaloneæ¨¡å¼å’ŒMesosæ¨¡å¼éƒ½æ˜¯ç”¨çš„è¿™ä¸ªå®ç°ã€‚è¿™é‡Œåˆ—ä¸¾
+éƒ¨åˆ†ç»„åˆæ–¹å¼ï¼š
 
-* LocalÄ£Ê½£ºTaskSchedulerImpl+LocalSchedulerBackend
-* Spark Standalone¼¯ÈºÄ£Ê½£ºTaskSchedulerImpl+StandaloneSchedulerBackend
-* Mesos¼¯ÈºÄ£Ê½£ºTaskSchedulerImpl+MesosFineGrainedSchedulerBackend»òMesosCoarseGrainedSchedulerBackend
-* Yarn¼¯ÈºÄ£Ê½£ºYarnClusterScheduler+YarnClusterSchedulerBackend
+* Localæ¨¡å¼ï¼šTaskSchedulerImpl+LocalSchedulerBackend
+* Spark Standaloneé›†ç¾¤æ¨¡å¼ï¼šTaskSchedulerImpl+StandaloneSchedulerBackend
+* Mesosé›†ç¾¤æ¨¡å¼ï¼šTaskSchedulerImpl+MesosFineGrainedSchedulerBackendæˆ–MesosCoarseGrainedSchedulerBackend
+* Yarné›†ç¾¤æ¨¡å¼ï¼šYarnClusterScheduler+YarnClusterSchedulerBackend
 
-TaskSchedulerºÍSchedulerBackend¶ÔÏóÉú³ÉÖ®ºó£¬»áÀûÓÃ`scheduler.initialize(backend)`½«¶şÕßÅäÌ×¡£
+TaskSchedulerå’ŒSchedulerBackendå¯¹è±¡ç”Ÿæˆä¹‹åï¼Œä¼šåˆ©ç”¨`scheduler.initialize(backend)`å°†äºŒè€…é…å¥—ã€‚
 
-ÕâÀïÓĞ¸öÎÊÌâÃ»ÓĞ´¦Àí£¬¾ÍÊÇÖ®Ç°Ëµ¹ıTaskSchedulerÖĞ»á½ÓÊÕĞÄÌøĞÅÏ¢£¬ÄÇÃ´Í¨ĞÅ¹ı³ÌÊÇÔÚÄÄÀïÊµÏÖµÄÄØ£¿´ğ°¸ÊÇHeartbeatReceiverÖĞ£¬
-HeartbeatReceiverÊÇÒ»¸öSparkListener£¬²¢ÇÒÊÇÒ»¸öRPCÍ¨ĞÅµÄÈë¿Ú£¬ÔÚÆä`receiveAndReply`ÖĞ»áÓĞ
+è¿™é‡Œæœ‰ä¸ªé—®é¢˜æ²¡æœ‰å¤„ç†ï¼Œå°±æ˜¯ä¹‹å‰è¯´è¿‡TaskSchedulerä¸­ä¼šæ¥æ”¶å¿ƒè·³ä¿¡æ¯ï¼Œé‚£ä¹ˆé€šä¿¡è¿‡ç¨‹æ˜¯åœ¨å“ªé‡Œå®ç°çš„å‘¢ï¼Ÿç­”æ¡ˆæ˜¯HeartbeatReceiverä¸­ï¼Œ
+HeartbeatReceiveræ˜¯ä¸€ä¸ªSparkListenerï¼Œå¹¶ä¸”æ˜¯ä¸€ä¸ªRPCé€šä¿¡çš„å…¥å£ï¼Œåœ¨å…¶`receiveAndReply`ä¸­ä¼šæœ‰
 
 	case TaskSchedulerIsSet =>
       scheduler = sc.taskScheduler
       context.reply(true)
 
-Õâ¾ä½«ÆäTaskScheduler½øĞĞ³õÊ¼»¯£¬ÄÇÃ´ĞÄÌøµÄ½ÓÊÕÒÔ¼°´¦Àí¾ÍÊµÏÖÁË¡£Í¬Ê±¶ÔÓÚ¶ªÊ§ExecutorµÄ´¦ÀíÒ²ÊÇÔÚHeartbeatReceiverÖĞÍê³ÉµÄ¡£
+è¿™å¥å°†å…¶TaskSchedulerè¿›è¡Œåˆå§‹åŒ–ï¼Œé‚£ä¹ˆå¿ƒè·³çš„æ¥æ”¶ä»¥åŠå¤„ç†å°±å®ç°äº†ã€‚åŒæ—¶å¯¹äºä¸¢å¤±Executorçš„å¤„ç†ä¹Ÿæ˜¯åœ¨HeartbeatReceiverä¸­å®Œæˆçš„ã€‚
 
-###TaskSchedulerÆô¶¯
+###TaskSchedulerå¯åŠ¨
 
-TaskSchedulerµÄÆô¶¯Ò²ÊÇÔÚSparkContext³õÊ¼»¯¿éÖĞÍê³ÉµÄ¡£ÒÔTaskSchedulerImplºÍStandaloneSchedulerBackendÎªÀı£¬·ÖÎöÆ÷Æô¶¯¹ı³Ì¡£
-TaskSchedulerµÄÆô¶¯º¯ÊıÊ×ÏÈ»áÆô¶¯`backend`£¬²¢Æô¶¯Ò»¸ö`speculationScheduler`ÊØ»¤Ïß³Ì£¬ÓÃÓÚ¼ì²âµ±Ç°JobµÄspeculatable tasks¡£
-speculatable tasksµÄÓ¦ÓÃ³¡¾°ÊÇ£¬Èç¹ûÒ»¸öÈÎÎñÖ´ĞĞÊ±¼ä¹ı³¤£¬ÄÇÃ´¾Í½«ÆäÅĞ¶ÏÎªspeculatable tasks£¨ÍÏºóÍÈÁË£©£¬È»ºó½«Õâ¸öÈÎÎñ·ÖÅäÔÚ
-ÁíÍâÒ»Ì¨»úÆ÷ÉÏ£¬ÕâÊ±Í¬Ò»¸öÈÎÎñ»áÓĞÁ½¸öÖ´ĞĞ£¬ÆäÖĞÒ»Ì¨»úÆ÷³É¹¦·µ»ØÖ®ºó£¬»áÍ¨ÖªÁíÍâÒ»Ì¨»úÆ÷½áÊøÈÎÎñ¡£
+TaskSchedulerçš„å¯åŠ¨ä¹Ÿæ˜¯åœ¨SparkContextåˆå§‹åŒ–å—ä¸­å®Œæˆçš„ã€‚ä»¥TaskSchedulerImplå’ŒStandaloneSchedulerBackendä¸ºä¾‹ï¼Œåˆ†æå™¨å¯åŠ¨è¿‡ç¨‹ã€‚
+TaskSchedulerçš„å¯åŠ¨å‡½æ•°é¦–å…ˆä¼šå¯åŠ¨`backend`ï¼Œå¹¶å¯åŠ¨ä¸€ä¸ª`speculationScheduler`å®ˆæŠ¤çº¿ç¨‹ï¼Œç”¨äºæ£€æµ‹å½“å‰Jobçš„speculatable tasksã€‚
+speculatable tasksçš„åº”ç”¨åœºæ™¯æ˜¯ï¼Œå¦‚æœä¸€ä¸ªä»»åŠ¡æ‰§è¡Œæ—¶é—´è¿‡é•¿ï¼Œé‚£ä¹ˆå°±å°†å…¶åˆ¤æ–­ä¸ºspeculatable tasksï¼ˆæ‹–åè…¿äº†ï¼‰ï¼Œç„¶åå°†è¿™ä¸ªä»»åŠ¡åˆ†é…åœ¨
+å¦å¤–ä¸€å°æœºå™¨ä¸Šï¼Œè¿™æ—¶åŒä¸€ä¸ªä»»åŠ¡ä¼šæœ‰ä¸¤ä¸ªæ‰§è¡Œï¼Œå…¶ä¸­ä¸€å°æœºå™¨æˆåŠŸè¿”å›ä¹‹åï¼Œä¼šé€šçŸ¥å¦å¤–ä¸€å°æœºå™¨ç»“æŸä»»åŠ¡ã€‚
 
-½øÈëStandaloneSchedulerBackendµÄ`start`º¯Êı£¬Ê×ÏÈÍ¨¹ıÅäÖÃÉú³ÉDirverµÄrpc·ÃÎÊµã¡£SchedulerBackendµÄ×÷ÓÃÈçÏÂ£º
+è¿›å…¥StandaloneSchedulerBackendçš„`start`å‡½æ•°ï¼Œé¦–å…ˆé€šè¿‡é…ç½®ç”ŸæˆDirverçš„rpcè®¿é—®ç‚¹ã€‚SchedulerBackendçš„ä½œç”¨å¦‚ä¸‹ï¼š
 
-* Ïòcluster managerÇëÇóÆô¶¯ĞÂµÄExecutor£¬»ò¹Ø±ÕÌØ¶¨µÄExecutor¡£
-* ¹Ø±ÕÌØ¶¨ExecutorÉÏµÄÌØ¶¨ÈÎÎñ¡£
-* ÊÕ¼¯WorkerĞÅÏ¢£¬±ÈÈçÈÎÎñµÄ³¢ÊÔ´ÎÊı£¬¼ÆËã×ÊÔ´£¨¾ÍÊÇCPUºËÊı£©µÈ¡£
+* å‘cluster managerè¯·æ±‚å¯åŠ¨æ–°çš„Executorï¼Œæˆ–å…³é—­ç‰¹å®šçš„Executorã€‚
+* å…³é—­ç‰¹å®šExecutorä¸Šçš„ç‰¹å®šä»»åŠ¡ã€‚
+* æ”¶é›†Workerä¿¡æ¯ï¼Œæ¯”å¦‚ä»»åŠ¡çš„å°è¯•æ¬¡æ•°ï¼Œè®¡ç®—èµ„æºï¼ˆå°±æ˜¯CPUæ ¸æ•°ï¼‰ç­‰ã€‚
 
-TaskSchedulerÔòÊÇÍ¨¹ıÊÕ¼¯µÄ`backend`ÊÕ¼¯µÄ×ÊÔ´ĞÅÏ¢Õë¶ÔÈÎÎñ×÷³öºÏÀíµÄ×ÊÔ´·ÖÅä¡£ÔÚÀûÓÃ`backend`³õÊ¼»¯µÄÊ±ºò£¬ÆäÒÑ¾­ÀûÓÃ²»Í¬
-µÄµ÷¶ÈÄ£Ê½½¨Á¢ÁË¶ÔÓ¦µÄÈÎÎñ³Ø£¨Pool£©£¬¿ÉÒÔ½«Æä¼òµ¥Àí½âÎªÒ»×é×ñÑ­ÌØ¶¨µ÷¶ÈËã·¨µÄÈÎÎñ¡£
+TaskScheduleråˆ™æ˜¯é€šè¿‡æ”¶é›†çš„`backend`æ”¶é›†çš„èµ„æºä¿¡æ¯é’ˆå¯¹ä»»åŠ¡ä½œå‡ºåˆç†çš„èµ„æºåˆ†é…ã€‚åœ¨åˆ©ç”¨`backend`åˆå§‹åŒ–çš„æ—¶å€™ï¼Œå…¶å·²ç»åˆ©ç”¨ä¸åŒ
+çš„è°ƒåº¦æ¨¡å¼å»ºç«‹äº†å¯¹åº”çš„ä»»åŠ¡æ± ï¼ˆPoolï¼‰ï¼Œå¯ä»¥å°†å…¶ç®€å•ç†è§£ä¸ºä¸€ç»„éµå¾ªç‰¹å®šè°ƒåº¦ç®—æ³•çš„ä»»åŠ¡ã€‚
 
-###TaskSchedulerÌá½»ÈÎÎñ¼¯
+###TaskScheduleræäº¤ä»»åŠ¡é›†
 
-ÓÉÓÚTaskSchedulerµÄº¯ÊıºÜ¶à£¬µ«×îÎªÖØÒªµÄ±Ï¾¹ÊÇÌá½»ÈÎÎñ¸ø¼¯Èº½øĞĞ´¦Àí¡£
+ç”±äºTaskSchedulerçš„å‡½æ•°å¾ˆå¤šï¼Œä½†æœ€ä¸ºé‡è¦çš„æ¯•ç«Ÿæ˜¯æäº¤ä»»åŠ¡ç»™é›†ç¾¤è¿›è¡Œå¤„ç†ã€‚
 
 	override def submitTasks(taskSet: TaskSet) {
 		val tasks = taskSet.tasks
@@ -77,9 +77,9 @@ TaskSchedulerÔòÊÇÍ¨¹ıÊÕ¼¯µÄ`backend`ÊÕ¼¯µÄ×ÊÔ´ĞÅÏ¢Õë¶ÔÈÎÎñ×÷³öºÏÀíµÄ×ÊÔ´·ÖÅä¡£ÔÚ
 		backend.reviveOffers()
 	}
 
-Ê×ÏÈ×¢Òâµ½Ëü»áÕë¶ÔÃ¿¸öÈÎÎñ¼¯£¨Ò»¸öStageµÄËùÓĞÈÎÎñ£©Éú³É¶ÔÓ¦µÄTaskSetManager£¬¸ÃÀà»á¸ú×ÙÃ¿¸öÈÎÎñ£¬Èç¹ûÆäÊ§°Ü»á
-½øĞĞÖØÊÔ£¬ÒÔ¼°¶ÔÓÚ¸ÃÈÎÎñ¼¯Í¨¹ıÑÓ³Ùµ÷¶ÈÀ´Ê¹Æä¾¡Á¿±£Ö¤ÊÇ±¾µØµ÷¶È¡£¸ÃÀàµÄÖ÷Òª·½·¨¾ÍÊÇ`resourceOffer`£¬ÆäÖ÷ÒªÊÇÅĞ¶Ï
-taskµÄlocality²¢×îÖÕµ÷ÓÃ`addRunningTask`À´Ìí¼ÓÔËĞĞµÄÈÎÎñ£¬²¢µ÷ÓÃDAGSchedulerÀ´Æô¶¯ÈÎÎñ£¬ÒÔÏÂÊÇÔ´Âë£º
+é¦–å…ˆæ³¨æ„åˆ°å®ƒä¼šé’ˆå¯¹æ¯ä¸ªä»»åŠ¡é›†ï¼ˆä¸€ä¸ªStageçš„æ‰€æœ‰ä»»åŠ¡ï¼‰ç”Ÿæˆå¯¹åº”çš„TaskSetManagerï¼Œè¯¥ç±»ä¼šè·Ÿè¸ªæ¯ä¸ªä»»åŠ¡ï¼Œå¦‚æœå…¶å¤±è´¥ä¼š
+è¿›è¡Œé‡è¯•ï¼Œä»¥åŠå¯¹äºè¯¥ä»»åŠ¡é›†é€šè¿‡å»¶è¿Ÿè°ƒåº¦æ¥ä½¿å…¶å°½é‡ä¿è¯æ˜¯æœ¬åœ°è°ƒåº¦ã€‚è¯¥ç±»çš„ä¸»è¦æ–¹æ³•å°±æ˜¯`resourceOffer`ï¼Œå…¶ä¸»è¦æ˜¯åˆ¤æ–­
+taskçš„localityå¹¶æœ€ç»ˆè°ƒç”¨`addRunningTask`æ¥æ·»åŠ è¿è¡Œçš„ä»»åŠ¡ï¼Œå¹¶è°ƒç”¨DAGScheduleræ¥å¯åŠ¨ä»»åŠ¡ï¼Œä»¥ä¸‹æ˜¯æºç ï¼š
 
 	def resourceOffer(
 		  execId: String,
@@ -121,17 +121,17 @@ taskµÄlocality²¢×îÖÕµ÷ÓÃ`addRunningTask`À´Ìí¼ÓÔËĞĞµÄÈÎÎñ£¬²¢µ÷ÓÃDAGSchedulerÀ´Æô
 		None
 	}
 
-ÕâÀï³öÏÖÁËTaskLocality£¬ÄÇËüÊÇÈçºÎ¶¨ÒåµÄÄØ£¿ÆäÊµÊÇÒ»¸öÃ¶¾ÙÀà£¬¹²·ÖÎªPROCESS_LOCAL£¬NODE_LOCAL£¬NO_PREF£¬
-RACK_LOCAL£¬ANY£¬·Ö±ğ±íÊ¾Í¬¸ö½ø³ÌÀï£¬Í¬¸önode(¼´»úÆ÷)ÉÏ£¬Í¬»ú¼Ü£¬ËæÒâ£¬ºÜÃ÷ÏÔÓÅÏÈ¼¶ÒÑ´ïµ½Ğ¡¡£`dequeueTask`
-ÊÇÊ¹ÈÎÎñ´ÓµÈ´ıµÄÈÎÎñ¶ÓÁĞÖĞ³öÁĞ£¬·µ»ØÈÎÎñµÄË÷Òı¡¢locality£¨ÒòÎª´«ÈëÁËExecutor IdºÍ½ÚµãId£¬ËùÒÔ¿ÉÒÔÅĞ¶Ï£©ºÍÊÇ
-·ñÊÇspeculativeÈÎÎñ¡£È»ºóÉú³É¶ÔÓ¦µÄÈÎÎñĞÅÏ¢£¬²¢°ÑÈÎÎñ½øĞĞĞòÁĞ»¯¡£½«¸ÃÈÎÎñ¼ÓÈëÕıÔÚÔËĞĞµÄÈÎÎñ¼¯ºÏÖĞÖ®ºó£¬Í¨¹ı
-DAGSchedulerÀ´Æô¶¯ÈÎÎñ¡£µ«ÊÇÕâÀïµÄÆô¶¯½ö½öÖ¸µÄÊÇDriver¶ËÈÏÎªÆäÆô¶¯ÁË¡£ÕæÕıºÍSlaveÊÇÈçºÎÍ¨ĞÅµÄÄØ£¿ÆäÊµÀûÓÃµÄ
-¾ÍÊÇ`backend`£¬ÏÂÃæÎÒÃÇÒ»²½²½·ÖÎö¡£
+è¿™é‡Œå‡ºç°äº†TaskLocalityï¼Œé‚£å®ƒæ˜¯å¦‚ä½•å®šä¹‰çš„å‘¢ï¼Ÿå…¶å®æ˜¯ä¸€ä¸ªæšä¸¾ç±»ï¼Œå…±åˆ†ä¸ºPROCESS_LOCALï¼ŒNODE_LOCALï¼ŒNO_PREFï¼Œ
+RACK_LOCALï¼ŒANYï¼Œåˆ†åˆ«è¡¨ç¤ºåŒä¸ªè¿›ç¨‹é‡Œï¼ŒåŒä¸ªnode(å³æœºå™¨)ä¸Šï¼ŒåŒæœºæ¶ï¼Œéšæ„ï¼Œå¾ˆæ˜æ˜¾ä¼˜å…ˆçº§å·²è¾¾åˆ°å°ã€‚`dequeueTask`
+æ˜¯ä½¿ä»»åŠ¡ä»ç­‰å¾…çš„ä»»åŠ¡é˜Ÿåˆ—ä¸­å‡ºåˆ—ï¼Œè¿”å›ä»»åŠ¡çš„ç´¢å¼•ã€localityï¼ˆå› ä¸ºä¼ å…¥äº†Executor Idå’ŒèŠ‚ç‚¹Idï¼Œæ‰€ä»¥å¯ä»¥åˆ¤æ–­ï¼‰å’Œæ˜¯
+å¦æ˜¯speculativeä»»åŠ¡ã€‚ç„¶åç”Ÿæˆå¯¹åº”çš„ä»»åŠ¡ä¿¡æ¯ï¼Œå¹¶æŠŠä»»åŠ¡è¿›è¡Œåºåˆ—åŒ–ã€‚å°†è¯¥ä»»åŠ¡åŠ å…¥æ­£åœ¨è¿è¡Œçš„ä»»åŠ¡é›†åˆä¸­ä¹‹åï¼Œé€šè¿‡
+DAGScheduleræ¥å¯åŠ¨ä»»åŠ¡ã€‚ä½†æ˜¯è¿™é‡Œçš„å¯åŠ¨ä»…ä»…æŒ‡çš„æ˜¯Driverç«¯è®¤ä¸ºå…¶å¯åŠ¨äº†ã€‚çœŸæ­£å’ŒSlaveæ˜¯å¦‚ä½•é€šä¿¡çš„å‘¢ï¼Ÿå…¶å®åˆ©ç”¨çš„
+å°±æ˜¯`backend`ï¼Œä¸‹é¢æˆ‘ä»¬ä¸€æ­¥æ­¥åˆ†æã€‚
 
-`submitTasks`ÖĞ´´½¨TaskSetManagerÖĞÖ®ºó»á½«Æä¼ÓÈë`schedulableBuilder`ÖĞ£¬ÆäÊµ¾ÍÊÇ`schedulableBuilder`µÄ`rootPool`
-ÖĞ¡£ÕâÑùTaskSetManager¾ÍËãÌá½»ÁË£¬ÄÇÊ²Ã´Ê±ºò²Å»á´¥·¢Ö´ĞĞ²Ù×÷ÄØ£¿
+`submitTasks`ä¸­åˆ›å»ºTaskSetManagerä¸­ä¹‹åä¼šå°†å…¶åŠ å…¥`schedulableBuilder`ä¸­ï¼Œå…¶å®å°±æ˜¯`schedulableBuilder`çš„`rootPool`
+ä¸­ã€‚è¿™æ ·TaskSetManagerå°±ç®—æäº¤äº†ï¼Œé‚£ä»€ä¹ˆæ—¶å€™æ‰ä¼šè§¦å‘æ‰§è¡Œæ“ä½œå‘¢ï¼Ÿ
 
-Ë³×Å`rootPool`->`TaskSchedulerImpl.resourceOffers`->`CoarseGrainedSchedulerBackend.launchTasks`->`CoarseGrainedSchedulerBackend.makeOffers`->`CoarseGrainedSchedulerBackend.receive`¡£
+é¡ºç€`rootPool`->`TaskSchedulerImpl.resourceOffers`->`CoarseGrainedSchedulerBackend.launchTasks`->`CoarseGrainedSchedulerBackend.makeOffers`->`CoarseGrainedSchedulerBackend.receive`ã€‚
 
 	//CoarseGrainedSchedulerBackend
 	override def receive: PartialFunction[Any, Unit] = {
@@ -151,10 +151,10 @@ DAGSchedulerÀ´Æô¶¯ÈÎÎñ¡£µ«ÊÇÕâÀïµÄÆô¶¯½ö½öÖ¸µÄÊÇDriver¶ËÈÏÎªÆäÆô¶¯ÁË¡£ÕæÕıºÍSlav
 		...
 	}
 	
-·¢ÏÖÊÇÔÚÈÎÎñµÄ×´Ì¬¸üĞÂÖ®ºó»òÕßÊÕµ½`ReviveOffers`ÏûÏ¢Ö®ºó£¬Õâ¸öÏûÏ¢ÊÇÍ¨¹ı`reviveOffers`·½·¨·¢ËÍµÄ£¬ÕıºÃÎÒÃÇÔÚ`submitTasks`
-µÄ×îºóÒ»¾ä·¢ÏÖÓĞ`backend.reviveOffers()`£¬ËùÒÔÒ²¾ÍÊÇÕâÊ±´¥·¢ÁËÉêÇë×ÊÔ´µÄ²Ù×÷¡£
+å‘ç°æ˜¯åœ¨ä»»åŠ¡çš„çŠ¶æ€æ›´æ–°ä¹‹åæˆ–è€…æ”¶åˆ°`ReviveOffers`æ¶ˆæ¯ä¹‹åï¼Œè¿™ä¸ªæ¶ˆæ¯æ˜¯é€šè¿‡`reviveOffers`æ–¹æ³•å‘é€çš„ï¼Œæ­£å¥½æˆ‘ä»¬åœ¨`submitTasks`
+çš„æœ€åä¸€å¥å‘ç°æœ‰`backend.reviveOffers()`ï¼Œæ‰€ä»¥ä¹Ÿå°±æ˜¯è¿™æ—¶è§¦å‘äº†ç”³è¯·èµ„æºçš„æ“ä½œã€‚
 
-½øÈë`makeOffers`
+è¿›å…¥`makeOffers`
 
 	//CoarseGrainedSchedulerBackend
 	private def makeOffers() {
@@ -166,7 +166,7 @@ DAGSchedulerÀ´Æô¶¯ÈÎÎñ¡£µ«ÊÇÕâÀïµÄÆô¶¯½ö½öÖ¸µÄÊÇDriver¶ËÈÏÎªÆäÆô¶¯ÁË¡£ÕæÕıºÍSlav
 		  launchTasks(scheduler.resourceOffers(workOffers))
 	}
 
-Ê×ÏÈ½«»îÔ¾µÄ½Úµã¼°ÉÏÃæµÄ¿ÕÏĞºËÊıµÈĞÅÏ¢ÌáÈ¡³öÀ´£¬ÉêÇë×ÊÔ´£¬Éú³ÉÈÎÎñĞÅÏ¢£¬´«Èë`launchTasks`¡£ÏÈ·ÖÎö×ÊÔ´ÉêÇëµÄ¹ı³Ì¡£
+é¦–å…ˆå°†æ´»è·ƒçš„èŠ‚ç‚¹åŠä¸Šé¢çš„ç©ºé—²æ ¸æ•°ç­‰ä¿¡æ¯æå–å‡ºæ¥ï¼Œç”³è¯·èµ„æºï¼Œç”Ÿæˆä»»åŠ¡ä¿¡æ¯ï¼Œä¼ å…¥`launchTasks`ã€‚å…ˆåˆ†æèµ„æºç”³è¯·çš„è¿‡ç¨‹ã€‚
 
 	//TaskSchedulerImpl
 	def resourceOffers(offers: Seq[WorkerOffer]): Seq[Seq[TaskDescription]] = synchronized {
@@ -192,9 +192,9 @@ DAGSchedulerÀ´Æô¶¯ÈÎÎñ¡£µ«ÊÇÕâÀïµÄÆô¶¯½ö½öÖ¸µÄÊÇDriver¶ËÈÏÎªÆäÆô¶¯ÁË¡£ÕæÕıºÍSlav
 		return tasks
 	}
 	
-ÉÏÃæµÄ´úÂëÖ»±£ÁôÁËºËĞÄ´úÂë£¬Ê×ÏÈ¸Ã·½·¨»á¶Ô¿ÉÓÃµÄWorker´òÂÒË³Ğò£¬ÒòÎªÕâ¿É±ÜÃâÃ¿´Î¶¼°ÑÈÎÎñ·ÖÅä¸øÊı×éÇ°ÃæµÄWorker£¬
-È»ºóÉú³É¶ÔÓ¦µÄÈÎÎñÃèÊöĞÅÏ¢£¬ÀûÓÃ`rootPool`ÖĞµÄµ÷¶È·½Ê½¶ÔÈÎÎñ½øĞĞÅÅĞò£¬È»ºó½øÈë`resourceOfferSingleTaskSet`Õë¶Ô
-Ã¿¸öÈÎÎñ¼¯ÉêÇë×ÊÔ´¡£
+ä¸Šé¢çš„ä»£ç åªä¿ç•™äº†æ ¸å¿ƒä»£ç ï¼Œé¦–å…ˆè¯¥æ–¹æ³•ä¼šå¯¹å¯ç”¨çš„Workeræ‰“ä¹±é¡ºåºï¼Œå› ä¸ºè¿™å¯é¿å…æ¯æ¬¡éƒ½æŠŠä»»åŠ¡åˆ†é…ç»™æ•°ç»„å‰é¢çš„Workerï¼Œ
+ç„¶åç”Ÿæˆå¯¹åº”çš„ä»»åŠ¡æè¿°ä¿¡æ¯ï¼Œåˆ©ç”¨`rootPool`ä¸­çš„è°ƒåº¦æ–¹å¼å¯¹ä»»åŠ¡è¿›è¡Œæ’åºï¼Œç„¶åè¿›å…¥`resourceOfferSingleTaskSet`é’ˆå¯¹
+æ¯ä¸ªä»»åŠ¡é›†ç”³è¯·èµ„æºã€‚
 
 	private def resourceOfferSingleTaskSet(
 		  taskSet: TaskSetManager,
@@ -223,8 +223,8 @@ DAGSchedulerÀ´Æô¶¯ÈÎÎñ¡£µ«ÊÇÕâÀïµÄÆô¶¯½ö½öÖ¸µÄÊÇDriver¶ËÈÏÎªÆäÆô¶¯ÁË¡£ÕæÕıºÍSlav
 		return launchedTask
 	}
 	
-¸Ã·½·¨Ö÷ÒªÊÇµ÷ÓÃÉÏÃæÌáµ½µÄTaskSetManagerµÄ`resourceOffer`£¬ËùÒÔ»á·µ»ØĞòÁĞ»¯ºóµÄÈÎÎñĞÅÏ¢¡£È»ºó¼ÓÈëµ½`tasks`ÖĞ£¬
-ÕâÑùTaskSchedulerImplµÄ`resourceOffers`Ò²Íê³ÉÁË¡£ÏÖÔÚÀ´¿´`launchTasks`µÄ´¦Àí¹ı³Ì¡£
+è¯¥æ–¹æ³•ä¸»è¦æ˜¯è°ƒç”¨ä¸Šé¢æåˆ°çš„TaskSetManagerçš„`resourceOffer`ï¼Œæ‰€ä»¥ä¼šè¿”å›åºåˆ—åŒ–åçš„ä»»åŠ¡ä¿¡æ¯ã€‚ç„¶ååŠ å…¥åˆ°`tasks`ä¸­ï¼Œ
+è¿™æ ·TaskSchedulerImplçš„`resourceOffers`ä¹Ÿå®Œæˆäº†ã€‚ç°åœ¨æ¥çœ‹`launchTasks`çš„å¤„ç†è¿‡ç¨‹ã€‚
 
 	//CoarseGrainedSchedulerBackend
 	private def launchTasks(tasks: Seq[Seq[TaskDescription]]) {
@@ -241,8 +241,8 @@ DAGSchedulerÀ´Æô¶¯ÈÎÎñ¡£µ«ÊÇÕâÀïµÄÆô¶¯½ö½öÖ¸µÄÊÇDriver¶ËÈÏÎªÆäÆô¶¯ÁË¡£ÕæÕıºÍSlav
 		  }
 	}
 
-Ê×ÏÈÈ¡³öĞòÁĞ»¯ÈÎÎñµÄĞÅÏ¢£¬È»ºóÈ¡³ö·ÖÅä¸ø¸ÃÈÎÎñµÄExecutor£¬È»ºóÏò¸ÃExecutor·¢ËÍÆô¶¯ÈÎÎñµÄÏûÏ¢¡£¸ÃÏûÏ¢±»Executor¶ËµÄ
-CoarseGrainedExecutorBackend½ÓÊÕµ½
+é¦–å…ˆå–å‡ºåºåˆ—åŒ–ä»»åŠ¡çš„ä¿¡æ¯ï¼Œç„¶åå–å‡ºåˆ†é…ç»™è¯¥ä»»åŠ¡çš„Executorï¼Œç„¶åå‘è¯¥Executorå‘é€å¯åŠ¨ä»»åŠ¡çš„æ¶ˆæ¯ã€‚è¯¥æ¶ˆæ¯è¢«Executorç«¯çš„
+CoarseGrainedExecutorBackendæ¥æ”¶åˆ°
 
 	//CoarseGrainedExecutorBackend
 	override def receive: PartialFunction[Any, Unit] = {
@@ -258,7 +258,7 @@ CoarseGrainedExecutorBackend½ÓÊÕµ½
 		...
 	}
 	
-ÊÕµ½Æô¶¯ÈÎÎñµÄĞÅÏ¢ºó£¬»áÏÈ½øĞĞÈÎÎñĞÅÏ¢µÄ·´ĞòÁĞ»¯£¬È»ºó¸Ã`executor`Æô¶¯ÈÎÎñ£¬ExecutorÓĞÒ»×éÏß³Ì×é³É¡£
+æ”¶åˆ°å¯åŠ¨ä»»åŠ¡çš„ä¿¡æ¯åï¼Œä¼šå…ˆè¿›è¡Œä»»åŠ¡ä¿¡æ¯çš„ååºåˆ—åŒ–ï¼Œç„¶åè¯¥`executor`å¯åŠ¨ä»»åŠ¡ï¼ŒExecutoræœ‰ä¸€ç»„çº¿ç¨‹ç»„æˆã€‚
 
 	//Executor
 	def launchTask(
@@ -273,7 +273,7 @@ CoarseGrainedExecutorBackend½ÓÊÕµ½
 		threadPool.execute(tr)
 	}
 
-¸Ã·½·¨»á´ÓÏß³Ì³ØÖĞÑ¡Ôñ¿ÉÓÃÏß³ÌÔËĞĞÈÎÎñ¡£
+è¯¥æ–¹æ³•ä¼šä»çº¿ç¨‹æ± ä¸­é€‰æ‹©å¯ç”¨çº¿ç¨‹è¿è¡Œä»»åŠ¡ã€‚
 
 	//ThreadPoolExecutor
 	public void execute(Runnable command) {
@@ -295,10 +295,10 @@ CoarseGrainedExecutorBackend½ÓÊÕµ½
 				reject(command);
 	}
 
-µÚ1¸öÅĞ¶Ï±íÊ¾£¬Èç¹ûÏÖÔÚÔËĞĞµÄÏß³ÌÊıĞ¡ÓÚ¸Ã½ÚµãµÄºËÊı£¬»áÖØÆôÒ»¸öÏß³ÌÀ´Ö´ĞĞÈÎÎñ¡£µÚ2¸öÇé¿ö±íÊ¾£¬Èç¹û¸ÃÈÎÎñ¿ÉÒÔ³É¹¦½øÈë
-¶ÓÁĞ£¬¼ì²éÁ½´ÎÊ±ºòÒÑ¾­Ìí¼ÓÁËÏß³Ì£¨¿ÉÄÜ´æÔÚµÚÒ»´Î¼ì²éÖ®ºó¸ÃÏß³Ì½áÊø£©£¬²¢¼ì²é½øÈë¸Ã·½·¨Ö®ºóÏß³Ì³ØÊÇ·ñ±»¹Ø±ÕÁË¡£µÚ
-Èı²½¾ÍÊÇ¼ÓÈëÎŞ·¨½øÈëÈÎÎñ¶ÓÁĞ£¬ÄÇÃ´¾Í¾¡Á¿ÎªÆä´´½¨Ïß³Ì£¬Èç¹ûÊ§°Ü£¬¾Í·ÅÆúµô¸ÃÈÎÎñ¡£µ«3²½¶¼»áÎªÈÎÎñ´´½¨Ïß³Ì£¬ËùÒÔ½øÈë
-`addWorker`¡£
+ç¬¬1ä¸ªåˆ¤æ–­è¡¨ç¤ºï¼Œå¦‚æœç°åœ¨è¿è¡Œçš„çº¿ç¨‹æ•°å°äºè¯¥èŠ‚ç‚¹çš„æ ¸æ•°ï¼Œä¼šé‡å¯ä¸€ä¸ªçº¿ç¨‹æ¥æ‰§è¡Œä»»åŠ¡ã€‚ç¬¬2ä¸ªæƒ…å†µè¡¨ç¤ºï¼Œå¦‚æœè¯¥ä»»åŠ¡å¯ä»¥æˆåŠŸè¿›å…¥
+é˜Ÿåˆ—ï¼Œæ£€æŸ¥ä¸¤æ¬¡æ˜¯å¦å·²ç»æ·»åŠ äº†çº¿ç¨‹ï¼ˆå¯èƒ½å­˜åœ¨ç¬¬ä¸€æ¬¡æ£€æŸ¥ä¹‹åè¯¥çº¿ç¨‹ç»“æŸï¼‰ï¼Œå¹¶æ£€æŸ¥è¿›å…¥è¯¥æ–¹æ³•ä¹‹åçº¿ç¨‹æ± æ˜¯å¦è¢«å…³é—­äº†ã€‚ç¬¬
+ä¸‰æ­¥å°±æ˜¯åŠ å…¥æ— æ³•è¿›å…¥ä»»åŠ¡é˜Ÿåˆ—ï¼Œé‚£ä¹ˆå°±å°½é‡ä¸ºå…¶åˆ›å»ºçº¿ç¨‹ï¼Œå¦‚æœå¤±è´¥ï¼Œå°±æ”¾å¼ƒæ‰è¯¥ä»»åŠ¡ã€‚ä½†3æ­¥éƒ½ä¼šä¸ºä»»åŠ¡åˆ›å»ºçº¿ç¨‹ï¼Œæ‰€ä»¥è¿›å…¥
+`addWorker`ã€‚
 
 	private boolean addWorker(Runnable firstTask, boolean core) {
 			retry:
@@ -342,39 +342,39 @@ CoarseGrainedExecutorBackend½ÓÊÕµ½
 			return workerStarted;
 	}
 
-É¾³ı²¿·Ö´úÂë£¬ÏÈ»ñÈ¡¸ÃÏß³ÌµÄÔËĞĞ×´Ì¬£¬Ã»ÓĞ¹Ø±Õ»òÕßÃ»ÓĞÆô¶¯µÄÇé¿öÏÂ£¬½«¸ÃÈÎÎñ¼ÓÈëµ½Ïß³ÌÁĞ±í£¬È»ºóÆô¶¯¸ÃÏß³Ì£¬
-¼´ÕæÕıÔËĞĞÈÎÎñ¡£ÓÉÓÚWorkerÀàµÄÔËĞĞº¯ÊıÊµ¼ÊÉÏÊÇ`firstTask`µÄÔËĞĞº¯Êı£¬¼´TaskRunnerÀàµÄÔËĞĞº¯Êı£¬ËùÒÔ½øÈë¸Ãº¯ÊıÒ»
-Ì½¾¿¾¹¡£ÓÉÓÚ´úÂëÌ«¶à£¬ËùÒÔÕâÀï¼òÊöÒ»ÏÂ£¬Ê×ÏÈÔËĞĞ¸ÃÈÎÎñ»ñÈ¡ÈÎÎñµÄ½á¹û£¨¾ÍÊÇResultTask»òÕßShuffleMapTaskµÄ`run`º¯Êı£¬ÏêÇé¼û[Spark»ù´¡¼°ShuffleÊµÏÖ][1]£©¡£
-È»ºó¾ÍÊÇĞòÁĞ»¯ÈÎÎñ½á¹û£¬½«Æä½»¸ø`ExecutorBackend`£¨µ÷ÓÃCoarseGrainedExecutorBackend.statusUpdate£©£¬ÓÉ`ExecutorBackend`
-½«½á¹û·µ»Ø¸øDriver¶ËµÄSchedulerBackend£¨CoarseGrainedSchedulerBackend.receive£©£¬ÆäÊÕµ½»á¸üĞÂ×´Ì¬£¬¼´`statusUpdate`
-·½·¨¡£
+åˆ é™¤éƒ¨åˆ†ä»£ç ï¼Œå…ˆè·å–è¯¥çº¿ç¨‹çš„è¿è¡ŒçŠ¶æ€ï¼Œæ²¡æœ‰å…³é—­æˆ–è€…æ²¡æœ‰å¯åŠ¨çš„æƒ…å†µä¸‹ï¼Œå°†è¯¥ä»»åŠ¡åŠ å…¥åˆ°çº¿ç¨‹åˆ—è¡¨ï¼Œç„¶åå¯åŠ¨è¯¥çº¿ç¨‹ï¼Œ
+å³çœŸæ­£è¿è¡Œä»»åŠ¡ã€‚ç”±äºWorkerç±»çš„è¿è¡Œå‡½æ•°å®é™…ä¸Šæ˜¯`firstTask`çš„è¿è¡Œå‡½æ•°ï¼Œå³TaskRunnerç±»çš„è¿è¡Œå‡½æ•°ï¼Œæ‰€ä»¥è¿›å…¥è¯¥å‡½æ•°ä¸€
+æ¢ç©¶ç«Ÿã€‚ç”±äºä»£ç å¤ªå¤šï¼Œæ‰€ä»¥è¿™é‡Œç®€è¿°ä¸€ä¸‹ï¼Œé¦–å…ˆè¿è¡Œè¯¥ä»»åŠ¡è·å–ä»»åŠ¡çš„ç»“æœï¼ˆå°±æ˜¯ResultTaskæˆ–è€…ShuffleMapTaskçš„`run`å‡½æ•°ï¼Œè¯¦æƒ…è§[SparkåŸºç¡€åŠShuffleå®ç°][1]ï¼‰ã€‚
+ç„¶åå°±æ˜¯åºåˆ—åŒ–ä»»åŠ¡ç»“æœï¼Œå°†å…¶äº¤ç»™`ExecutorBackend`ï¼ˆè°ƒç”¨CoarseGrainedExecutorBackend.statusUpdateï¼‰ï¼Œç”±`ExecutorBackend`
+å°†ç»“æœè¿”å›ç»™Driverç«¯çš„SchedulerBackendï¼ˆCoarseGrainedSchedulerBackend.receiveï¼‰ï¼Œå…¶æ”¶åˆ°ä¼šæ›´æ–°çŠ¶æ€ï¼Œå³`statusUpdate`
+æ–¹æ³•ã€‚
 
-def statusUpdate(tid: Long, state: TaskState, serializedData: ByteBuffer) {
-    var failedExecutor: Option[String] = None
-    synchronized {
-      try {
-        ...
-        taskIdToTaskSetManager.get(tid) match {
-          case Some(taskSet) =>
-            if (TaskState.isFinished(state)) {
-              ...
-            }
-            if (state == TaskState.FINISHED) {
-              taskSet.removeRunningTask(tid)
-              taskResultGetter.enqueueSuccessfulTask(taskSet, tid, serializedData)
-            } else if (Set(TaskState.FAILED, TaskState.KILLED, TaskState.LOST).contains(state)) {
-              ...
-            }
-          case None =>
-            ...
-        }
-	  }
-	  ...
+	def statusUpdate(tid: Long, state: TaskState, serializedData: ByteBuffer) {
+	    var failedExecutor: Option[String] = None
+	    synchronized {
+	      try {
+	        ...
+	        taskIdToTaskSetManager.get(tid) match {
+	          case Some(taskSet) =>
+	            if (TaskState.isFinished(state)) {
+	              ...
+	            }
+	            if (state == TaskState.FINISHED) {
+	              taskSet.removeRunningTask(tid)
+	              taskResultGetter.enqueueSuccessfulTask(taskSet, tid, serializedData)
+	            } else if (Set(TaskState.FAILED, TaskState.KILLED, TaskState.LOST).contains(state)) {
+	              ...
+	            }
+	          case None =>
+	            ...
+	        }
+		  }
+		  ...
+		}
+		...
 	}
-	...
-}
 
-ÕâÀï½ö±£ÁôÈÎÎñ³É¹¦½áÊøµÄ´¦ÀíÇé¿ö£¬¿ÉÒÔ·¢ÏÖÊ×ÏÈÊÇÒÆ³ıµôÈÎÎñ±àºÅ£¬È»ºóÈ¡³öÈÎÎñ½á¹û¡£
+è¿™é‡Œä»…ä¿ç•™ä»»åŠ¡æˆåŠŸç»“æŸçš„å¤„ç†æƒ…å†µï¼Œå¯ä»¥å‘ç°é¦–å…ˆæ˜¯ç§»é™¤æ‰ä»»åŠ¡ç¼–å·ï¼Œç„¶åå–å‡ºä»»åŠ¡ç»“æœã€‚
 
 	def enqueueSuccessfulTask(
 		  taskSetManager: TaskSetManager,
@@ -405,10 +405,10 @@ def statusUpdate(tid: Long, state: TaskState, serializedData: ByteBuffer) {
 		})
 	}
 
-È¡³öÈÎÎñ½á¹ûºó£¬½»¸øTaskSchedulerÀ´´¦Àí³É¹¦µÄÈÎÎñ£¬ÆäÊµÊÇµ÷ÓÃTaskSetManagerµÄ`handleSuccessfulTask`·½·¨¡£¸Ã·½·¨
-µ÷ÓÃDAGSchedulerµÄ`taskEnded`·½·¨À´·¢ËÍCompletionEventÀàĞÍµÄÏûÏ¢£¨¼ò¶øÑÔÖ®¾ÍÊÇTaskSetManagerÏòDAGScheduler·¢ËÍÏûÏ¢£©£¬
-DAGSchedulerÊÕµ½¸ÃÏûÏ¢ºó¾Í»áµ÷ÓÃ`handleTaskCompletion`·½·¨½øĞĞ´¦Àí£¨¼û[Spark»ù´¡¼°ShuffleÊµÏÖ][1]£©¡£
+å–å‡ºä»»åŠ¡ç»“æœåï¼Œäº¤ç»™TaskScheduleræ¥å¤„ç†æˆåŠŸçš„ä»»åŠ¡ï¼Œå…¶å®æ˜¯è°ƒç”¨TaskSetManagerçš„`handleSuccessfulTask`æ–¹æ³•ã€‚è¯¥æ–¹æ³•
+è°ƒç”¨DAGSchedulerçš„`taskEnded`æ–¹æ³•æ¥å‘é€CompletionEventç±»å‹çš„æ¶ˆæ¯ï¼ˆç®€è€Œè¨€ä¹‹å°±æ˜¯TaskSetManagerå‘DAGSchedulerå‘é€æ¶ˆæ¯ï¼‰ï¼Œ
+DAGScheduleræ”¶åˆ°è¯¥æ¶ˆæ¯åå°±ä¼šè°ƒç”¨`handleTaskCompletion`æ–¹æ³•è¿›è¡Œå¤„ç†ï¼ˆè§[SparkåŸºç¡€åŠShuffleå®ç°][1]ï¼‰ã€‚
 
-ÖÁ´ËÈÎÎñµÄÌá½»´¦ÀíµÄÕû¸ö¹ı³Ì¾Í×ßÍ¨ÁË¡£
+è‡³æ­¤ä»»åŠ¡çš„æäº¤å¤„ç†çš„æ•´ä¸ªè¿‡ç¨‹å°±èµ°é€šäº†ã€‚
 
 [1]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/spark_shuffle.md
