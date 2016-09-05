@@ -191,11 +191,11 @@ BlockStore即Block真正的存储器。但在Spark中，BlockStore既不是一�
 MemoryStore中有两张映射表：`onHeapUnrollMemoryMap`和`offHeapUnrollMemoryMap`。前者是从任务尝试的Id到*“Unroll”*一个Block所用内存的映射，
 后者意思相同，不同的是前者是on-heap模式，后者的是off-heap模式。那么什么是“Unroll”？因为有的时候内存中的数据也会进行
 序列化存储以减少对内存的消耗，但是最终还是要反序列化，由于序列化之后占用的的内存小，反序列化之后必然会膨胀，那么就要预留出一部分内存
-来保证反序列化之后的数据有存储空间，所以用于预留反序列化的内存就是“Unroll”内存，其对应于一块特定的内存（[别人的理解，不过是Spark1.3][5]）。在Spark 2.0.0中情况就是Block是以流的形式一部分一部分读入的，不论是序列化的操作还是反序列化的操作都不是马上完成的，所以要判断“展开”该Block所需的内存（自己的理解）。怎么才能保证不会出现OOM呢？方法就是周期性地检查是否有足够
-的空余内存，如果满足“Unroll”的内存要求，就在“转换”到内存期间使用临时的“Unroll”内存。实际上2.0.0中“Unroll”内存就是用于Block“展开”，这两个映射中“UnrollMemory”指的是Block“展开”需要的内存。所以个人认为*“Unroll”内存（Spark 1.3）和用于Block“Unroll”的内存（Spark 2.0.0）是不同的概念*
+来保证反序列化之后的数据有存储空间，所以用于预留反序列化的内存就是“Unroll”内存，其对应于一块特定的内存（[对应的是Spark1.3][5]）。在Spark 2.0.0中情况就是Block是以流的形式一部分一部分读入的，反序列化的操作都不是马上完成的，所以要判断反序列化“展开”该Block所需的内存（自己的理解）。怎么才能保证不会出现OOM呢？方法就是周期性地检查是否有足够
+的空余内存，如果满足“Unroll”的内存要求，就在“转换”到内存期间使用临时的“Unroll”内存。实际上2.0.0中“Unroll”内存就是用于Block反序列化“展开”，这两个映射中“UnrollMemory”指的是Block反序列化“展开”需要的内存。所以个人认为*“Unroll”内存（Spark 1.3，特定区域）和用于Block“Unroll”的内存（Spark 2.0.0）稍有不同*。
 
-下面来看怎么存储数据（代码太长，简而言之），在将数据存入memory时要检查是否有足够的内存，为什么序列化还要申请内存呢？还是前面提到的原因，因为序列化不会一次性完成，所以要时刻检测当前的空闲内存是否满足剩余的序列化工作。
-“Unroll”，一开始默认的给一部分内存用于Block的“Unroll”，“Unroll”过程中再检测是否有足够内存满足剩余的序列化工作。
+下面来看怎么存储数据（代码太长，简而言之），在将数据反序列化存入memory时要检查是否有足够的内存，那过程中为什么还要不断查看可用内存呢？还是前面提到的原因，因为反序列化不会一次性完成，开始给定的内存也不一定能满足完整的反序列化的工作，所以要时刻检测当前的空闲内存是否满足剩余的反序列化工作。
+“Unroll”过程开始时会默认给一部分内存用于Block的“Unroll”，“Unroll”过程中再检测是否有足够内存满足剩余的反序列化工作。
 顺着`MemoryStore.reserveUnrollMemoryForThisTask`->`UnifiedMemoryManager.acquireUnrollMemory`->`UnifiedMemoryManager.acquireUnrollMemory`看一下申请内存的函数。
 
 	override def acquireStorageMemory(
@@ -228,7 +228,7 @@ MemoryStore中有两张映射表：`onHeapUnrollMemoryMap`和`offHeapUnrollMemor
 这里以UnifiedMemoryManager举例，因为其包含了off-heap和on-heap内存的申请，可以发现针对这二者有不同的内存池，当然还可以看到
 运行内存，而且我们发现还有off-heap的运行内存（和用于存储的是两个概念，对off-heap内存的使用并不是指运行）。首先判断申请的
 内存大小是否超过了上限，如果没超过继续看当前用于存储的内存池中的空间是否满足请求，如果不满足就将用于运行的内存池中的一部
-分内存拿出来用于存储。进入StorageMemoryPool的`acquireMemory`，发现最后的腾出内存的操作是MemoryStore在`evictBlocksToFreeSpace`
+分*空闲内存*拿出来用于存储。进入StorageMemoryPool的`acquireMemory`，发现最后的腾出内存的操作是MemoryStore在`evictBlocksToFreeSpace`
 中完成的，方法就是找到某个可以替换块（先利用写锁占有，保证没有reader和writer），删除掉其对应的信息。
 
 在MemoryStore中的`putIteratorAsBytes`申请的off-heap内存是怎么实现的呢？
