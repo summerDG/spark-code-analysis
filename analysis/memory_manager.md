@@ -67,7 +67,7 @@ private[spark] abstract class MemoryManager(
 
 上面列举出其最重要的4个成员变量，分别是on-heap和off-heap版本的StorageMemoryPool和ExecutionMemoryPool。
 
-***StorageMemoryPool
+###StorageMemoryPool
 
 先分析StorageMemoryPool。
 
@@ -134,7 +134,7 @@ private[memory] class StorageMemoryPool(
 只存在于MemoryStore的`putIteratorAsBytes`中，进一步往回找，发现只有在BlockManager的`doPutIterator`中hi调用此函数，而且该函数只会被
 BlockManager的`getOrElseUpdate`调用，也就是触发persist（cache）操作的时候。所以off-heap只会用于persist操作。
 
-***ExecutionMemoryPool
+###ExecutionMemoryPool
 
 接下来分析ExecutionMemoryPool，该类除了像StorageMemoryPool存储数据（只是用途不同），还提供了一组策略来保证每个任务都可以得到一部分
 合理的内存。
@@ -159,7 +159,7 @@ ExecutionMemoryPool，只是维护一个可用内存指标，接受指标的申�
 
 了解了Shuffle与ExecutionMemoryPool的关系之后，现在分析一下TaskMemoryManager。
 
-****TaskMemoryManager
+####TaskMemoryManager
 
 这个类很复杂，其中大部分是将off-heap地址转换成64-bit的long型。在off-heap模式下，内存可以直接用64-bit的long值处理。
 在on-heap模式下，内存可以通过对象引用和一个64-bit的long值的offset来处理（最初想法）。当想存储其他数据结构中包含的数据结构指针时，
