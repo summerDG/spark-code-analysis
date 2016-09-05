@@ -275,7 +275,7 @@ MemoryBlock，也就是一页，因为页中有偏移量，长度，所以可以
 
 剩下的就是`encodePageNumberAndOffset`、`decodePageNumber`、`decodeOffset`，这几个很容易理解。`encodePageNumberAndOffset`是针对on-heap和off-heap中的页和页内偏移进行编码的。`getPage`是获得页的引用（只针对on-heap有效，因为off-heap并没有页引用）。这些函数在UnsafeExternalSorter和新数据结构中有大量应用，这里不再赘述。
 
-**JIT编译
+##JIT编译
 
 实际上Tungtsen借用`sun.misc.Unsafe`管理内存后，其内存操作（申请、插入、释放）都是原生的，即直接通过JIT编译编译成机器指令，而无需JVM将 Java字节码解释后再运行。所以执行速度也会有提升。
 	
