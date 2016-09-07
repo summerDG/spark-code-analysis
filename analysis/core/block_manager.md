@@ -364,4 +364,4 @@ BlockManager分散在各个节点上，所以要有一个Master来收集各个�
 [3]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/memory_manager.md
 [4]:https://github.com/apache/spark/pull/11805
 [5]:https://0x0fff.com/spark-architecture/
-[task-block]:../pic/task-block.png
+[task-block]:../../pic/task-block.png
