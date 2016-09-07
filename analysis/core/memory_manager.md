@@ -285,5 +285,5 @@ MemoryBlock，也就是一页，因为页中有偏移量，长度，所以可以
 [4]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/block_manager.md
 [5]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/spark_shuffle.md
 [6]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/spark_sort_shuffle.md
-[Spark-Memory-Management-1.6.0]:../pic/Spark-Memory-Management-1.6.0.png
-[new-memory-offheap]:../pic/new-memory-offheap.png
+[Spark-Memory-Management-1.6.0]:../../pic/Spark-Memory-Management-1.6.0.png
+[new-memory-offheap]:../../pic/new-memory-offheap.png
