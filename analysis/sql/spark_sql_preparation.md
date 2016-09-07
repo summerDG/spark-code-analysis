@@ -1,209 +1,209 @@
-#Spark SQL »ù´¡ÖªÊ¶
+#Spark SQL åŸºç¡€çŸ¥è¯†
 
-±¾ÎÄ²Î¿¼×Ô[Spark CatalystµÄÊµÏÖ·ÖÎö][1]¡£ÏÈÉÏÒ»ÕÅËùÓĞCatalystµÄÁ÷³ÌÍ¼¡£ËäÈ»±¾ÎÄ²»»áÉæ¼°Á÷³Ì£¬µ«ÊÇÖ®ºóµÄ·ÖÎö»áÒÔ¸ÃÍ¼ÎªÖ¸µ¼¡£
+æœ¬æ–‡å‚è€ƒè‡ª[Spark Catalystçš„å®ç°åˆ†æ][1]ã€‚å…ˆä¸Šä¸€å¼ æ‰€æœ‰Catalystçš„æµç¨‹å›¾ã€‚è™½ç„¶æœ¬æ–‡ä¸ä¼šæ¶‰åŠæµç¨‹ï¼Œä½†æ˜¯ä¹‹åçš„åˆ†æä¼šä»¥è¯¥å›¾ä¸ºæŒ‡å¯¼ã€‚
 
-[Catalyst][calalyst_flow]
+![Catalyst][calalyst_flow]
 
-±¾ÎÄ×ÅÖØ½éÉÜ¼¸¸öSQLÖĞµÄ¼¸¸öÖØÒª¸ÅÄî£¬²»¶ÔÆä·ÖÎö½øĞĞÕ¹¿ª¡£
+æœ¬æ–‡ç€é‡ä»‹ç»å‡ ä¸ªSQLä¸­çš„å‡ ä¸ªé‡è¦æ¦‚å¿µï¼Œä¸å¯¹å…¶åˆ†æè¿›è¡Œå±•å¼€ã€‚
 
 ##Row
 
-±íÊ¾¹ØÏµÔËËãµÄÒ»ĞĞÊä³ö¡£ÆäÊÇÒ»¸öTrait£¬ËùÒÔÓĞºÜ¶à¾ßÌåÊµÏÖ¡£Êµ¼ÊÉÏ±¾ÖÊÉÏÀ´Ëµ¾ÍÊÇÒ»¸öÊı×é¡£µ«ÊÇºÍRDD²»Í¬µÄÊÇ£¬
-RDDÖĞµÄÀàĞÍ¿ÉÒÔÊÇÈÎÒâµÄ£¬¶øDataFrameÖĞÃ¿ÌõÊı¾İµÄÀàĞÍÖ»ÄÜÊÇRow¡£ÔÚSpark1.6Ö®ºóDataFrame¾Í±ä³ÉÁËDataSet[Row]µÄ±ğÃû¡£
+è¡¨ç¤ºå…³ç³»è¿ç®—çš„ä¸€è¡Œè¾“å‡ºã€‚å…¶æ˜¯ä¸€ä¸ªTraitï¼Œæ‰€ä»¥æœ‰å¾ˆå¤šå…·ä½“å®ç°ã€‚å®é™…ä¸Šæœ¬è´¨ä¸Šæ¥è¯´å°±æ˜¯ä¸€ä¸ªæ•°ç»„ã€‚ä½†æ˜¯å’ŒRDDä¸åŒçš„æ˜¯ï¼Œ
+RDDä¸­çš„ç±»å‹å¯ä»¥æ˜¯ä»»æ„çš„ï¼Œè€ŒDataFrameä¸­æ¯æ¡æ•°æ®çš„ç±»å‹åªèƒ½æ˜¯Rowã€‚åœ¨Spark1.6ä¹‹åDataFrameå°±å˜æˆäº†DataSet[Row]çš„åˆ«åã€‚
 
-Row±íÊ¾µÄÖ»ÄÜÊÇÒ»ĞĞ½á¹¹»¯Êı¾İ£¬·Ç½á¹¹»¯²»ºÏ·¨¡£Row±¾ÉíÓĞ`schema`£¬ÓÃÓÚÖ¸Ã÷¸÷¸ö×Ö¶ÎµÄÀàĞÍºÍÁĞÃû¡£
-µ«ÊÇÖ§³ÖµÄÊı¾İ½á¹¹²¢²»ÊÇÈÎÒâµÄ£¬¶øÊÇ±ØĞë¼Ì³Ğ×ÔDataType£¬Sparl SQLÖĞÒÑ¾­ÊµÏÖÁËÊı¾İ¿â×Ö¶ÎµÄ»ù±¾ÀàĞÍ¡£
-ÆäÒ²ÔÊĞí¼Ì³ĞUserDefinedTypeÀ´¶¨Òå×Ô¼ºµÄÀàĞÍ£¬Õâ¸öÀàÖĞÒªÊµÏÖ×Ô¼ºµÄĞòÁĞ»¯ºÍ·´ĞòÁĞ»¯²Ù×÷¡£Èç¹û²»¶¨Òå`schema`
-¾Í»áÊ¹ÓÃ·º»¯µÄGet²Ù×÷£¬²¢ÇÒ²»¿ÉÒÔÍ¨¹ıÁĞÃû½øĞĞ²Ù×÷¡£µ«ÊÇËüÊÇÀàĞÍ²»°²È«µÄ£¬ÒòÎªÊı¾İµÄÀàĞÍ¸ù±¾²»»áÊÜµ½`schema`µÄÔ¼Êø¡£
+Rowè¡¨ç¤ºçš„åªèƒ½æ˜¯ä¸€è¡Œç»“æ„åŒ–æ•°æ®ï¼Œéç»“æ„åŒ–ä¸åˆæ³•ã€‚Rowæœ¬èº«æœ‰`schema`ï¼Œç”¨äºæŒ‡æ˜å„ä¸ªå­—æ®µçš„ç±»å‹å’Œåˆ—åã€‚
+ä½†æ˜¯æ”¯æŒçš„æ•°æ®ç»“æ„å¹¶ä¸æ˜¯ä»»æ„çš„ï¼Œè€Œæ˜¯å¿…é¡»ç»§æ‰¿è‡ªDataTypeï¼ŒSparl SQLä¸­å·²ç»å®ç°äº†æ•°æ®åº“å­—æ®µçš„åŸºæœ¬ç±»å‹ã€‚
+å…¶ä¹Ÿå…è®¸ç»§æ‰¿UserDefinedTypeæ¥å®šä¹‰è‡ªå·±çš„ç±»å‹ï¼Œè¿™ä¸ªç±»ä¸­è¦å®ç°è‡ªå·±çš„åºåˆ—åŒ–å’Œååºåˆ—åŒ–æ“ä½œã€‚å¦‚æœä¸å®šä¹‰`schema`
+å°±ä¼šä½¿ç”¨æ³›åŒ–çš„Getæ“ä½œï¼Œå¹¶ä¸”ä¸å¯ä»¥é€šè¿‡åˆ—åè¿›è¡Œæ“ä½œã€‚ä½†æ˜¯å®ƒæ˜¯ç±»å‹ä¸å®‰å…¨çš„ï¼Œå› ä¸ºæ•°æ®çš„ç±»å‹æ ¹æœ¬ä¸ä¼šå—åˆ°`schema`çš„çº¦æŸã€‚
 
-DataSetÊÇSpark1.6Ö®ºó°æ±¾µÄ¸ÅÄî¡£DataSetºÍRDD¡¢DataFrameÒ»Ñù£¬¶¼ÊÇ·Ö²¼Ê½Êı¾İ½á¹¹µÄ¸ÅÄî¡£
-Çø±ğÔÚÓÚDataSet¿ÉÒÔÃæÏòÌØ¶¨ÀàĞÍ£¬Ò²¾ÍÊÇÆäÎŞĞè½«ÊäÈëÊı¾İÀàĞÍÏŞÖÆÎªRow£¬»òÕßÒÀÀµ`Row.fromSeq`½«ÆäËûÀàĞÍ×ª»»ÎªRow¡£
-µ«Êµ¼ÊÉÏ£¬DataSetµÄÊäÈëÀàĞÍÒ²±ØĞëÊÇÓëRowÏàËÆµÄÀàĞÍ£¨ÈçSeq¡¢Array¡¢Product£¬IntµÈ£©£¬×îÖÕÕâĞ©ÀàĞÍ¶¼±»×ª»¯ÎªCatalyst
-ÄÚ²¿µÄInternalRowºÍUnsafeRow¡£
+DataSetæ˜¯Spark1.6ä¹‹åç‰ˆæœ¬çš„æ¦‚å¿µã€‚DataSetå’ŒRDDã€DataFrameä¸€æ ·ï¼Œéƒ½æ˜¯åˆ†å¸ƒå¼æ•°æ®ç»“æ„çš„æ¦‚å¿µã€‚
+åŒºåˆ«åœ¨äºDataSetå¯ä»¥é¢å‘ç‰¹å®šç±»å‹ï¼Œä¹Ÿå°±æ˜¯å…¶æ— éœ€å°†è¾“å…¥æ•°æ®ç±»å‹é™åˆ¶ä¸ºRowï¼Œæˆ–è€…ä¾èµ–`Row.fromSeq`å°†å…¶ä»–ç±»å‹è½¬æ¢ä¸ºRowã€‚
+ä½†å®é™…ä¸Šï¼ŒDataSetçš„è¾“å…¥ç±»å‹ä¹Ÿå¿…é¡»æ˜¯ä¸Rowç›¸ä¼¼çš„ç±»å‹ï¼ˆå¦‚Seqã€Arrayã€Productï¼ŒIntç­‰ï¼‰ï¼Œæœ€ç»ˆè¿™äº›ç±»å‹éƒ½è¢«è½¬åŒ–ä¸ºCatalyst
+å†…éƒ¨çš„InternalRowå’ŒUnsafeRowã€‚
 
-DataSetµÄºËĞÄ¸ÅÄî¾ÍÊÇEncoder£¬Õâ¸ö¹¤¾ß³ä·ÖÀûÓÃÁËÒşÊ½×ª»»ºÍÉÏÏÂÎÄ½ç¶¨£¨¹ıÈ¥²»ÁË½âÉÏÏÂÎÄ½ç¶¨º¯ÊıÖĞÆäÊµÓĞÒ»¸öÄ¬ÈÏµÄ²ÎÊı¾ÍÊÇ´«ÈëÒ»¸öÏàÓ¦µÄÒşÊ½Öµ£¬
-»ñÈ¡Æä±¾Éí£»Æä¶¼ÊÇ×÷Îªº¯ÊıµÄ×îºóÒ»¸ö²ÎÊı´«ÈëµÄ£©¡£ÀıÈç£º
+DataSetçš„æ ¸å¿ƒæ¦‚å¿µå°±æ˜¯Encoderï¼Œè¿™ä¸ªå·¥å…·å……åˆ†åˆ©ç”¨äº†éšå¼è½¬æ¢å’Œä¸Šä¸‹æ–‡ç•Œå®šï¼ˆè¿‡å»ä¸äº†è§£ä¸Šä¸‹æ–‡ç•Œå®šå‡½æ•°ä¸­å…¶å®æœ‰ä¸€ä¸ªé»˜è®¤çš„å‚æ•°å°±æ˜¯ä¼ å…¥ä¸€ä¸ªç›¸åº”çš„éšå¼å€¼ï¼Œ
+è·å–å…¶æœ¬èº«ï¼›å…¶éƒ½æ˜¯ä½œä¸ºå‡½æ•°çš„æœ€åä¸€ä¸ªå‚æ•°ä¼ å…¥çš„ï¼‰ã€‚ä¾‹å¦‚ï¼š
 
 	private[sql] implicit val exprEnc: ExpressionEncoder[T] = encoderFor(encoder)
 
-ÓÉÓÚ´ÓµÀÀíÉÏËµ£¬·ºĞÍ¿ÉÒÔ´«ÈëÈÎÒâÀàĞÍ£¬µ«ÊÇÊµ¼ÊÉÏµÄ¶ø´¦Àíº¯Êı²»¿ÉÄÜÊµÏÖËùÓĞ¿ÉÄÜ£¬ËùÒÔ´æÔÚÀàĞÍ½ç¶¨¡£ÔÚJavaÖĞÕâ¸ö¹¦ÄÜ¾Í±È½ÏÈõÁË£¬
-ËüÖ»ÄÜÈ·¶¨ÀàĞÍµÄÉÏÏÂ½ç¡£scalaÖĞ³ıÁË¿ÉÒÔÏŞ¶¨ÉÏÏÂ½ç£¬»¹¿ÉÒÔÀûÓÃÊÓÍ¼½ç¶¨ºÍÉÏÏÂÎÄ½ç¶¨¡£ºóÁ½ÕßµÄÄ¿µÄÊÇÒ»ÑùµÄ£¬¾ÍÊÇÓÃÓÚÏŞ¶¨ÌØ¶¨µÄÀàĞÍ£¬
-²»ÊÇÉÏÏÂ½çÖ®ÄÚµÄ£¬¶øÊÇÒşÊ½¶¨Òå¹ıµÄ¡£Çø±ğÔÚÓÚÇ°ÕßĞèÒª¶¨ÒåÒşÊ½×ª»»£¨ÀàËÆ`implicit ev: A => B`£©£¬ºóÕßĞèÒª¶¨ÒåÒşÊ½Öµ£¨ÀàËÆ`implicit ev: B[A]`£©¡£
+ç”±äºä»é“ç†ä¸Šè¯´ï¼Œæ³›å‹å¯ä»¥ä¼ å…¥ä»»æ„ç±»å‹ï¼Œä½†æ˜¯å®é™…ä¸Šçš„è€Œå¤„ç†å‡½æ•°ä¸å¯èƒ½å®ç°æ‰€æœ‰å¯èƒ½ï¼Œæ‰€ä»¥å­˜åœ¨ç±»å‹ç•Œå®šã€‚åœ¨Javaä¸­è¿™ä¸ªåŠŸèƒ½å°±æ¯”è¾ƒå¼±äº†ï¼Œ
+å®ƒåªèƒ½ç¡®å®šç±»å‹çš„ä¸Šä¸‹ç•Œã€‚scalaä¸­é™¤äº†å¯ä»¥é™å®šä¸Šä¸‹ç•Œï¼Œè¿˜å¯ä»¥åˆ©ç”¨è§†å›¾ç•Œå®šå’Œä¸Šä¸‹æ–‡ç•Œå®šã€‚åä¸¤è€…çš„ç›®çš„æ˜¯ä¸€æ ·çš„ï¼Œå°±æ˜¯ç”¨äºé™å®šç‰¹å®šçš„ç±»å‹ï¼Œ
+ä¸æ˜¯ä¸Šä¸‹ç•Œä¹‹å†…çš„ï¼Œè€Œæ˜¯éšå¼å®šä¹‰è¿‡çš„ã€‚åŒºåˆ«åœ¨äºå‰è€…éœ€è¦å®šä¹‰éšå¼è½¬æ¢ï¼ˆç±»ä¼¼`implicit ev: A => B`ï¼‰ï¼Œåè€…éœ€è¦å®šä¹‰éšå¼å€¼ï¼ˆç±»ä¼¼`implicit ev: B[A]`ï¼‰ã€‚
 
-ÏÂÃæÔÙËµÒ»ÏÂScalaÖĞTypeTagÕâ¸öÀà£¨ºÜ¶àµØ·½»áÓÃµ½£¬²Î¿¼[ÕâÀï][2]£©¡£TypeTagÊÇÓÃÓÚ½â¾öScalaµÄ·ºĞÍ»áÔÚ±àÒëµÄÊ±ºò±»²Á³ıµÄÎÊÌâ¡£ÕâÆäÊµÒ²ÊÇJavaµÄÎÊÌâ¡£
-ÎªÁË²»±»²Á³ı£¬¾ÍÓÃTypeTagÕâ¸öÀàÀ´½â¾ö¡£ÀıÈç£º`typeTag[List[Int]]`ÔËĞĞÊ±µÄÖµÎª`TypeTag[scala.List[Int]]`£¬`typeTag[List[Int]].tpe`ºÍ`typeOf[List[Int]]`
-µÄÖµÒ»Ñù£¬ÊÇ`scala.List[Int]`¡£ÓëTypeTagÀàËÆµÄÓĞClassTag£¬µ«CLassTypeÖ»°üº¬ÔËĞĞÊ±¸ø¶¨ÀàµÄÀàĞÍĞÅÏ¢£¬ÀıÈç£º`ClassTag[scala.List[Int]]`¾ÍÊÇ`scala.collection.immutable.List`¡£
-`typeTag[T].mirror`¿ÉÒÔ»ñµÃµ±Ç°»·¾³ÏÂµÄËùÓĞ¿ÉÓÃÀàĞÍ£¨ÀàËÆÓÚclassloader£©¡£ÓÉÓÚCatalystÓÃµ½·´Éä»úÖÆÀ´½âÎöÀàĞÍ£¬ËùÒÔ¹ØÓÚScalaµÄ·´Éä»úÖÆ²Î¿¼[Scala doc][3]¡£
+ä¸‹é¢å†è¯´ä¸€ä¸‹Scalaä¸­TypeTagè¿™ä¸ªç±»ï¼ˆå¾ˆå¤šåœ°æ–¹ä¼šç”¨åˆ°ï¼Œå‚è€ƒ[è¿™é‡Œ][2]ï¼‰ã€‚TypeTagæ˜¯ç”¨äºè§£å†³Scalaçš„æ³›å‹ä¼šåœ¨ç¼–è¯‘çš„æ—¶å€™è¢«æ“¦é™¤çš„é—®é¢˜ã€‚è¿™å…¶å®ä¹Ÿæ˜¯Javaçš„é—®é¢˜ã€‚
+ä¸ºäº†ä¸è¢«æ“¦é™¤ï¼Œå°±ç”¨TypeTagè¿™ä¸ªç±»æ¥è§£å†³ã€‚ä¾‹å¦‚ï¼š`typeTag[List[Int]]`è¿è¡Œæ—¶çš„å€¼ä¸º`TypeTag[scala.List[Int]]`ï¼Œ`typeTag[List[Int]].tpe`å’Œ`typeOf[List[Int]]`
+çš„å€¼ä¸€æ ·ï¼Œæ˜¯`scala.List[Int]`ã€‚ä¸TypeTagç±»ä¼¼çš„æœ‰ClassTagï¼Œä½†CLassTypeåªåŒ…å«è¿è¡Œæ—¶ç»™å®šç±»çš„ç±»å‹ä¿¡æ¯ï¼Œä¾‹å¦‚ï¼š`ClassTag[scala.List[Int]]`å°±æ˜¯`scala.collection.immutable.List`ã€‚
+`typeTag[T].mirror`å¯ä»¥è·å¾—å½“å‰ç¯å¢ƒä¸‹çš„æ‰€æœ‰å¯ç”¨ç±»å‹ï¼ˆç±»ä¼¼äºclassloaderï¼‰ã€‚ç”±äºCatalystç”¨åˆ°åå°„æœºåˆ¶æ¥è§£æç±»å‹ï¼Œæ‰€ä»¥å…³äºScalaçš„åå°„æœºåˆ¶å‚è€ƒ[Scala doc][3]ã€‚
 
-»Øµ½Encoder£¬Æä×÷ÓÃ¾ÍÊÇ½«Íâ²¿ÀàĞÍ×ª»¯ÎªDataSetÄÚ²¿µÄInternalRow¡£µ«ÊÇÕâ¸ö×ª»»ÊÇÓĞÀàĞÍ¼ì²éµÄ¡£ÁíÍâInternalRow»¹ÓĞÒ»¸ö×ÓÀà£¬¼´MutableRow£¬
-¶øÇÒUnsafeRowÒ²ÊÇMutableRowµÄ×ÓÀà£¬Ëü¼´Îª¿ÉĞŞ¸ÄµÄInternalRow£¬ÔÚºÜ¶àµØ·½¶¼»á³öÏÖÕâ¸ö£¬Ô­ÀíºÜ¼òµ¥£¬Ö§³ÖsetµÈ²Ù×÷¶øÒÑ¡£
+å›åˆ°Encoderï¼Œå…¶ä½œç”¨å°±æ˜¯å°†å¤–éƒ¨ç±»å‹è½¬åŒ–ä¸ºDataSetå†…éƒ¨çš„InternalRowã€‚ä½†æ˜¯è¿™ä¸ªè½¬æ¢æ˜¯æœ‰ç±»å‹æ£€æŸ¥çš„ã€‚å¦å¤–InternalRowè¿˜æœ‰ä¸€ä¸ªå­ç±»ï¼Œå³MutableRowï¼Œ
+è€Œä¸”UnsafeRowä¹Ÿæ˜¯MutableRowçš„å­ç±»ï¼Œå®ƒå³ä¸ºå¯ä¿®æ”¹çš„InternalRowï¼Œåœ¨å¾ˆå¤šåœ°æ–¹éƒ½ä¼šå‡ºç°è¿™ä¸ªï¼ŒåŸç†å¾ˆç®€å•ï¼Œæ”¯æŒsetç­‰æ“ä½œè€Œå·²ã€‚
 
 
 ##Expression
 
-ÔÚSQLÓï¾äÖĞ£¬³ıÁËSELECT FROMµÈ¹Ø¼ü×ÖÒÔÍâ£¬ÆäËû´ó²¿·ÖÔªËØ¶¼¿ÉÒÔÀí½âÎªExpression£¬±ÈÈçSELECT sum(a), a£¬ÆäÖĞsum(a)ºÍa¶¼ÎªExpression£¬ÕâÆäÖĞµ±È»Ò²°üº¬±íÃû¡£
-Ã¿Ò»¸öDataSetÔÚ´´½¨µÄÊ±ºò¶¼»áÓĞÒ»¸ö¶ÔÓ¦µÄExpressionEncoder£¬¶øExpressionEncoder´´½¨±ØĞëµÃÓĞÁ½¸öºÍExpressionÏà¹ØµÄ¶ÔÏó£º`serializer: Seq[Expression]`ºÍ
-`deserializer: Expression`£¬Ç°ÕßÓÃÓÚ½«±íÖĞÒ»Ìõ¼ÇÂ¼ÖĞ¸÷¸ö·ÖÁ¿½âÎöºó×ª»¯ÎªCalalystµÄInternalRow£¬ºóÕßÓÃÓÚ½«InternalRow×ª»»Îª¶ÔÓ¦ÀàĞÍ¡£
-ËùÒÔExpression»¹¿ÉÒÔ±íÊ¾³ı±í´ïÊ½Ö®ÍâµÄÀàĞÍÔªËØ£¬ÈçÊôĞÔ¡¢³£Á¿¡¢ĞĞ¡£¶ÔÓÚÈÎºÎÒ»¸öDataSet[T]£¬Ê×ÏÈ»áÉú³ÉÒ»¸öExpressionEncoderµÄÒşÊ½Öµ¡£
-Éú³É¸ÃÒşÊ½ÖµµÄÁ÷³Ì£¨ÔÚScalaReflectionÕâ¸ö¹¤³§ÖĞ£©Îª£º
+åœ¨SQLè¯­å¥ä¸­ï¼Œé™¤äº†SELECT FROMç­‰å…³é”®å­—ä»¥å¤–ï¼Œå…¶ä»–å¤§éƒ¨åˆ†å…ƒç´ éƒ½å¯ä»¥ç†è§£ä¸ºExpressionï¼Œæ¯”å¦‚SELECT sum(a), aï¼Œå…¶ä¸­sum(a)å’Œaéƒ½ä¸ºExpressionï¼Œè¿™å…¶ä¸­å½“ç„¶ä¹ŸåŒ…å«è¡¨åã€‚
+æ¯ä¸€ä¸ªDataSetåœ¨åˆ›å»ºçš„æ—¶å€™éƒ½ä¼šæœ‰ä¸€ä¸ªå¯¹åº”çš„ExpressionEncoderï¼Œè€ŒExpressionEncoderåˆ›å»ºå¿…é¡»å¾—æœ‰ä¸¤ä¸ªå’ŒExpressionç›¸å…³çš„å¯¹è±¡ï¼š`serializer: Seq[Expression]`å’Œ
+`deserializer: Expression`ï¼Œå‰è€…ç”¨äºå°†è¡¨ä¸­ä¸€æ¡è®°å½•ä¸­å„ä¸ªåˆ†é‡è§£æåè½¬åŒ–ä¸ºCalalystçš„InternalRowï¼Œåè€…ç”¨äºå°†InternalRowè½¬æ¢ä¸ºå¯¹åº”ç±»å‹ã€‚
+æ‰€ä»¥Expressionè¿˜å¯ä»¥è¡¨ç¤ºé™¤è¡¨è¾¾å¼ä¹‹å¤–çš„ç±»å‹å…ƒç´ ï¼Œå¦‚å±æ€§ã€å¸¸é‡ã€è¡Œã€‚å¯¹äºä»»ä½•ä¸€ä¸ªDataSet[T]ï¼Œé¦–å…ˆä¼šç”Ÿæˆä¸€ä¸ªExpressionEncoderçš„éšå¼å€¼ã€‚
+ç”Ÿæˆè¯¥éšå¼å€¼çš„æµç¨‹ï¼ˆåœ¨ScalaReflectionè¿™ä¸ªå·¥å‚ä¸­ï¼‰ä¸ºï¼š
 
-1. ½âÎö³öÀàĞÍT£¬ÕâÀïÓ¦¸ÃÊÇÒ»¸öÀàËÆÓÚRow»òÕßProductµÄÀàĞÍ£»
-2. Í¨¹ı¸ÃÀàĞÍ½âÎö³ö¶ÔÓ¦±äÁ¿£¬Éú³É¶ÔÓ¦Óë¸Ã£¨ÀàÊı×é£©±äÁ¿µÄExpression£¬ÆäÊÇÒ»¸öCreateNamedStructÀàĞÍ£¨¼Ì³Ğ×ÔExpression£©£¬
-ÀıÈç£ºÕë¶Ô_FUNC_(name1, val1, name2, val2, ...)ÕâÑùÒ»ÌõÊı¾İ£¬¸Ã¶ÔÏó¾Í¿ÉÒÔÓĞĞ§µØ±íÊ¾Ëü£¬²¢ÇÒ¿ÉÒÔ`flatten`³ÉÎªÒ»×éExpression£¨¶ÔÓ¦`serializer`£©£¬
-Ã¿Ò»¸öExpressionÓÃÓÚ½âÎöÒ»¸ö£¨namei£¬vali£©£»
-3. Ö»Òª¸ø¶¨Ä¿±êÀàĞÍT£¬ÄÇÃ´¾ÍÒ»¶¨»áÉú³ÉÒ»¸ö¶ÔÓ¦µÄExpressionÓÃÓÚ½«ÈÎÒâµÄInternalRow×ª»¯Îª¸ÃÀàĞÍµÄ¶ÔÏó£»
-4. ÀûÓÃ3ºÍ4Éú³ÉµÄ`serializer`ºÍ`deserializer`£¬ÒÔ¼°´ÓT»ñÈ¡µ½µÄSchema£¬ÒÔ¼°T¶ÔÓ¦µÄClassTagÉú³ÉExpressionEncoder¶ÔÏó¡£
+1. è§£æå‡ºç±»å‹Tï¼Œè¿™é‡Œåº”è¯¥æ˜¯ä¸€ä¸ªç±»ä¼¼äºRowæˆ–è€…Productçš„ç±»å‹ï¼›
+2. é€šè¿‡è¯¥ç±»å‹è§£æå‡ºå¯¹åº”å˜é‡ï¼Œç”Ÿæˆå¯¹åº”ä¸è¯¥ï¼ˆç±»æ•°ç»„ï¼‰å˜é‡çš„Expressionï¼Œå…¶æ˜¯ä¸€ä¸ªCreateNamedStructç±»å‹ï¼ˆç»§æ‰¿è‡ªExpressionï¼‰ï¼Œ
+ä¾‹å¦‚ï¼šé’ˆå¯¹_FUNC_(name1, val1, name2, val2, ...)è¿™æ ·ä¸€æ¡æ•°æ®ï¼Œè¯¥å¯¹è±¡å°±å¯ä»¥æœ‰æ•ˆåœ°è¡¨ç¤ºå®ƒï¼Œå¹¶ä¸”å¯ä»¥`flatten`æˆä¸ºä¸€ç»„Expressionï¼ˆå¯¹åº”`serializer`ï¼‰ï¼Œ
+æ¯ä¸€ä¸ªExpressionç”¨äºè§£æä¸€ä¸ªï¼ˆnameiï¼Œvaliï¼‰ï¼›
+3. åªè¦ç»™å®šç›®æ ‡ç±»å‹Tï¼Œé‚£ä¹ˆå°±ä¸€å®šä¼šç”Ÿæˆä¸€ä¸ªå¯¹åº”çš„Expressionç”¨äºå°†ä»»æ„çš„InternalRowè½¬åŒ–ä¸ºè¯¥ç±»å‹çš„å¯¹è±¡ï¼›
+4. åˆ©ç”¨3å’Œ4ç”Ÿæˆçš„`serializer`å’Œ`deserializer`ï¼Œä»¥åŠä»Tè·å–åˆ°çš„Schemaï¼Œä»¥åŠTå¯¹åº”çš„ClassTagç”ŸæˆExpressionEncoderå¯¹è±¡ã€‚
 
-* ExpressionÊÇÒ»¸öTree½á¹¹£¨½á¹¹ÉÏ¿ÉÒÔÓĞÒ»¸ö¡¢Á½¸ö»òÈı¸öchild£¬Ò²¿ÉÒÔÃ»ÓĞ£©¡£¿ÉÒÔÍ¨¹ı¶à¼¶µÄChild ExpressionÀ´×éºÏ³É¸´ÔÓµÄExpression¡£Ç°ÃæÌáµ½µÄ¶ÔÔ­Ê¼Êı¾İ½øĞĞ×ª»»¾ÍÊÇÒ»¸ö¸´ÔÓµÄExpression¡£
-* Expression»ù±¾¹¦ÄÜÊÇÇóÖµ£¬¾ÍÊÇ`eval`·½·¨£¬ÊäÈëInternalRowÈ»ºó·µ»Ø½á¹û¡£
-* ¼ÈÈ»ExpressionµÄ¹¦ÄÜÊÇÇóÖµ£¬ÄÇÃ´Ëü¾ÍÓĞÊäÈëºÍÊä³öÀàĞÍµÄÏŞÖÆ¡£Ã¿¸öExpression¶¼ÓĞdef dataType: DataTypeÀàĞÍ±äÁ¿À´±íÊ¾ËüµÄÊä³öÀàĞÍ£¬ÒÔ¼°def checkInputDataTypes(): 
-TypeCheckResultº¯ÊıÀ´Ğ£Ñéµ±Ç°ExpressionµÄÊäÈë£¨ÎªTree½á¹¹£¬ÄÇÃ´ËüµÄÊäÈë¼´ÎªChild ExpressionÊä³ö£©ÊÇ·ñ·ûºÏÀàĞÍÒªÇó¡£
-* Expression¹¦ÄÜÊÇÕë¶ÔRow½øĞĞ¼Ó¹¤£¬µ«ÊÇ¿ÉÒÔ°Ñ¼Ó¹¤·½·¨·ÖÎªÒÔÏÂ¼¸ÖÖ
-	* Ô­ÉúµÄdef eval(input: InternalRow = null): Anyº¯Êı£»
-	* ¶ÔÓÚ°üº¬×Ó±í´ïÊ½µÄExpression£¨Èç£ºUnaryExpression¡¢BinaryExpression¡¢TernaryExpressionµÈ£©£¬ExpressionµÄ¼ÆËãÊÇ»ùÓÚChild Expression¼ÆËã½á¹û½øĞĞ¶ş´Î¼Ó¹¤µÄ£¬
-	Òò´Ë¶ÔÓÚÕâÀàExpression£¬¶ÔEval½øĞĞÄ¬ÈÏÊµÏÖ£¬×ÓÀàÖ»ĞèÒªÊµÏÖº¯Êı`def nullSafeEval(input: Any): Any`¼´¿ÉÒÔ¡£
-	* ExpressionÒ²¿ÉÄÜÊÇ²»Ö§³ÖevalµÄ£¬¼´UnevaluableÀàĞÍµÄExpression£¬Ò»°ãÓĞÈıÖÖÇé¿ö£º1)ÊÇÕæµÄÎŞ·¨ÇóÖµ£¬±ÈÈç´¦ÓÚUnresolved×´Ì¬µÄExpression£»
-	2)ÊÇ²»Ö§³ÖÍ¨¹ıeval½øĞĞÇóÖµ£¬¶øĞèÒªÍ¨¹ıgencodeµÄ·½Ê½À´ÊµÏÖExpression¹¦ÄÜ£¬º­¸ÇÁË¶ÔÈ«¾Ö²Ù×÷µÄExpression£¬ÀıÈç£ºAggravation¡¢Sorting¡¢Count²Ù×÷;
-	3)ExpressionÎªRuntimeReplaceableÀàĞÍ£¨½öÓĞIfNull£¬NullIf£¬NvlºÍNvl2£©£¬Ëü½ö½öÊÇÔÚparser½×¶ÎÒ»ÖÖÁÙÊ±Expression£¬ÔÚÓÅ»¯½×¶Î£¬»á±»Ìæ»»Îª±ğµÄExpression£¬Òò´ËËü±¾Éí²»ĞèÒªÓĞÖ´ĞĞÂß¼­£¬µ«ÊÇµÃÓĞÌæ»»Ïà¹ØµÄÂß¼­¡£
-	* ProjectionÀàĞÍ£¬Ëü±¾Éí²»ÊÇ´«Í³ÒâÒåÉÏµÄExpression£¬µ«ÊÇËü¿ÉÒÔ¸ù¾İN¸öExpression£¬¶ÔÊäÈërowµÄN¸ö×Ö¶Î·Ö±ğ½øĞĞ¼Ó¹¤£¬Êä³öÒ»¸öĞÂµÄRow£¬¼´ExpressionµÄÈİÆ÷¡£
+* Expressionæ˜¯ä¸€ä¸ªTreeç»“æ„ï¼ˆç»“æ„ä¸Šå¯ä»¥æœ‰ä¸€ä¸ªã€ä¸¤ä¸ªæˆ–ä¸‰ä¸ªchildï¼Œä¹Ÿå¯ä»¥æ²¡æœ‰ï¼‰ã€‚å¯ä»¥é€šè¿‡å¤šçº§çš„Child Expressionæ¥ç»„åˆæˆå¤æ‚çš„Expressionã€‚å‰é¢æåˆ°çš„å¯¹åŸå§‹æ•°æ®è¿›è¡Œè½¬æ¢å°±æ˜¯ä¸€ä¸ªå¤æ‚çš„Expressionã€‚
+* ExpressionåŸºæœ¬åŠŸèƒ½æ˜¯æ±‚å€¼ï¼Œå°±æ˜¯`eval`æ–¹æ³•ï¼Œè¾“å…¥InternalRowç„¶åè¿”å›ç»“æœã€‚
+* æ—¢ç„¶Expressionçš„åŠŸèƒ½æ˜¯æ±‚å€¼ï¼Œé‚£ä¹ˆå®ƒå°±æœ‰è¾“å…¥å’Œè¾“å‡ºç±»å‹çš„é™åˆ¶ã€‚æ¯ä¸ªExpressionéƒ½æœ‰def dataType: DataTypeç±»å‹å˜é‡æ¥è¡¨ç¤ºå®ƒçš„è¾“å‡ºç±»å‹ï¼Œä»¥åŠdef checkInputDataTypes(): 
+TypeCheckResultå‡½æ•°æ¥æ ¡éªŒå½“å‰Expressionçš„è¾“å…¥ï¼ˆä¸ºTreeç»“æ„ï¼Œé‚£ä¹ˆå®ƒçš„è¾“å…¥å³ä¸ºChild Expressionè¾“å‡ºï¼‰æ˜¯å¦ç¬¦åˆç±»å‹è¦æ±‚ã€‚
+* ExpressionåŠŸèƒ½æ˜¯é’ˆå¯¹Rowè¿›è¡ŒåŠ å·¥ï¼Œä½†æ˜¯å¯ä»¥æŠŠåŠ å·¥æ–¹æ³•åˆ†ä¸ºä»¥ä¸‹å‡ ç§
+	* åŸç”Ÿçš„def eval(input: InternalRow = null): Anyå‡½æ•°ï¼›
+	* å¯¹äºåŒ…å«å­è¡¨è¾¾å¼çš„Expressionï¼ˆå¦‚ï¼šUnaryExpressionã€BinaryExpressionã€TernaryExpressionç­‰ï¼‰ï¼ŒExpressionçš„è®¡ç®—æ˜¯åŸºäºChild Expressionè®¡ç®—ç»“æœè¿›è¡ŒäºŒæ¬¡åŠ å·¥çš„ï¼Œ
+	å› æ­¤å¯¹äºè¿™ç±»Expressionï¼Œå¯¹Evalè¿›è¡Œé»˜è®¤å®ç°ï¼Œå­ç±»åªéœ€è¦å®ç°å‡½æ•°`def nullSafeEval(input: Any): Any`å³å¯ä»¥ã€‚
+	* Expressionä¹Ÿå¯èƒ½æ˜¯ä¸æ”¯æŒevalçš„ï¼Œå³Unevaluableç±»å‹çš„Expressionï¼Œä¸€èˆ¬æœ‰ä¸‰ç§æƒ…å†µï¼š1)æ˜¯çœŸçš„æ— æ³•æ±‚å€¼ï¼Œæ¯”å¦‚å¤„äºUnresolvedçŠ¶æ€çš„Expressionï¼›
+	2)æ˜¯ä¸æ”¯æŒé€šè¿‡evalè¿›è¡Œæ±‚å€¼ï¼Œè€Œéœ€è¦é€šè¿‡gencodeçš„æ–¹å¼æ¥å®ç°ExpressionåŠŸèƒ½ï¼Œæ¶µç›–äº†å¯¹å…¨å±€æ“ä½œçš„Expressionï¼Œä¾‹å¦‚ï¼šAggravationã€Sortingã€Countæ“ä½œ;
+	3)Expressionä¸ºRuntimeReplaceableç±»å‹ï¼ˆä»…æœ‰IfNullï¼ŒNullIfï¼ŒNvlå’ŒNvl2ï¼‰ï¼Œå®ƒä»…ä»…æ˜¯åœ¨parseré˜¶æ®µä¸€ç§ä¸´æ—¶Expressionï¼Œåœ¨ä¼˜åŒ–é˜¶æ®µï¼Œä¼šè¢«æ›¿æ¢ä¸ºåˆ«çš„Expressionï¼Œå› æ­¤å®ƒæœ¬èº«ä¸éœ€è¦æœ‰æ‰§è¡Œé€»è¾‘ï¼Œä½†æ˜¯å¾—æœ‰æ›¿æ¢ç›¸å…³çš„é€»è¾‘ã€‚
+	* Projectionç±»å‹ï¼Œå®ƒæœ¬èº«ä¸æ˜¯ä¼ ç»Ÿæ„ä¹‰ä¸Šçš„Expressionï¼Œä½†æ˜¯å®ƒå¯ä»¥æ ¹æ®Nä¸ªExpressionï¼Œå¯¹è¾“å…¥rowçš„Nä¸ªå­—æ®µåˆ†åˆ«è¿›è¡ŒåŠ å·¥ï¼Œè¾“å‡ºä¸€ä¸ªæ–°çš„Rowï¼Œå³Expressionçš„å®¹å™¨ã€‚
 	
-ÏÂÃæ¶ÔExpression½øĞĞ·ÖÀà£º
-**Êı¾İÊäÈë**£ºÕâ²¿·Ö»ù±¾¶¼ÊÇ¼Ì³Ğ×ÔLeafExpression£¬¼´Ã»ÓĞ×Ó±í´ïÊ½£¬ÓÃÓÚÖ±½Ó²úÉúÊı¾İ¡£
+ä¸‹é¢å¯¹Expressionè¿›è¡Œåˆ†ç±»ï¼š
+**æ•°æ®è¾“å…¥**ï¼šè¿™éƒ¨åˆ†åŸºæœ¬éƒ½æ˜¯ç»§æ‰¿è‡ªLeafExpressionï¼Œå³æ²¡æœ‰å­è¡¨è¾¾å¼ï¼Œç”¨äºç›´æ¥äº§ç”Ÿæ•°æ®ã€‚
 
-| Name      | ¹¦ÄÜÃèÊö |
+| Name      | åŠŸèƒ½æè¿° |
 | --------- | -------- |
-| Attribute | CatalystÀïÃæ×îÎªÖØÒªµÄ¸ÅÄî£¬¿ÉÒÔÀí½âÎª±íµÄÊôĞÔ£¬ÔÚsql´¦Àí¸÷¸ö½×¶Î»áÓĞ²»Í¬µÄĞÎÌ¬£¬±ÈÈçUnresolvedAttribute->AttributeReference->BoundReference£¬ºóÃæ»á¾ßÌå·ÖÎö |
-| Literal   | ³£Á¿£¬Ö§³Ö¸÷ÖÖÀàĞÍµÄ³£Á¿ÊäÈë |
-| datetimeExpressions | ¶Ôµ±Ç°Ê±¼äÀàĞÍ³£Á¿µÄÍ³³Æ£¨²¢²»°üº¬Ê±¼ä²Ù×÷£©£¬°üÀ¨`CurrentDate`,`CurrentTimestamp` |
-| randomExpressions | ¸ù¾İÌØ¶¨µÄËæ»ú·Ö²¼Éú³ÉÒ»Ğ©Ëæ»úÊı£¬Ö÷Òª°üÀ¨RDG£¨Éú³ÉËæ»ú·Ö²¼£©|
-| ÆäËûÒ»Ğ©ÊäÈë | ±ÈÈç»ñÈ¡sql¼ÆËã¹ı³ÌÖĞµÄÈÎÎñ¶ÔÓ¦µÄInputFileName£¬SparkPartitionID |
+| Attribute | Catalysté‡Œé¢æœ€ä¸ºé‡è¦çš„æ¦‚å¿µï¼Œå¯ä»¥ç†è§£ä¸ºè¡¨çš„å±æ€§ï¼Œåœ¨sqlå¤„ç†å„ä¸ªé˜¶æ®µä¼šæœ‰ä¸åŒçš„å½¢æ€ï¼Œæ¯”å¦‚UnresolvedAttribute->AttributeReference->BoundReferenceï¼Œåé¢ä¼šå…·ä½“åˆ†æ |
+| Literal   | å¸¸é‡ï¼Œæ”¯æŒå„ç§ç±»å‹çš„å¸¸é‡è¾“å…¥ |
+| datetimeExpressions | å¯¹å½“å‰æ—¶é—´ç±»å‹å¸¸é‡çš„ç»Ÿç§°ï¼ˆå¹¶ä¸åŒ…å«æ—¶é—´æ“ä½œï¼‰ï¼ŒåŒ…æ‹¬`CurrentDate`,`CurrentTimestamp` |
+| randomExpressions | æ ¹æ®ç‰¹å®šçš„éšæœºåˆ†å¸ƒç”Ÿæˆä¸€äº›éšæœºæ•°ï¼Œä¸»è¦åŒ…æ‹¬RDGï¼ˆç”Ÿæˆéšæœºåˆ†å¸ƒï¼‰|
+| å…¶ä»–ä¸€äº›è¾“å…¥ | æ¯”å¦‚è·å–sqlè®¡ç®—è¿‡ç¨‹ä¸­çš„ä»»åŠ¡å¯¹åº”çš„InputFileNameï¼ŒSparkPartitionID |
 
-**»ù±¾¼ÆËã¹¦ÄÜ**£ºÕâ²¿·Ö»ù±¾¶¼°üº¬×Ó±í´ïÊ½£¬ËùÒÔ»ù±¾¶¼ÊÇ¼Ì³Ğ×ÔUnaryExpression¡¢BinaryExpression¡¢BinaryOperatorºÍTernaryExpression¡£
+**åŸºæœ¬è®¡ç®—åŠŸèƒ½**ï¼šè¿™éƒ¨åˆ†åŸºæœ¬éƒ½åŒ…å«å­è¡¨è¾¾å¼ï¼Œæ‰€ä»¥åŸºæœ¬éƒ½æ˜¯ç»§æ‰¿è‡ªUnaryExpressionã€BinaryExpressionã€BinaryOperatorå’ŒTernaryExpressionã€‚
 
-| Name      | ÇóÖµ·½Ê½ | ¹¦ÄÜÃèÊö |
+| Name      | æ±‚å€¼æ–¹å¼ | åŠŸèƒ½æè¿° |
 | --------- | :-------: | -------- |
-| arithmetic | nullSafeEval | ÊıÑ§Expression£¬Ö§³Ö`-`,`+`,`abs`, `+`,`-`,`*`,`/`,`%`,`max`,`min`,`pmod`ÊıÑ§ÔËËã·û |
-| bitwiseExpressions | nullSafeEval | Î»ÔËËãÊı£¬Ö§³ÖIntegralTypeÀàĞÍµÄ`and`,`or`,`not`,`xor`Î»ÔËËã |
-| mathExpressions | nullSafeEval | ÊıÑ§º¯Êı£¬Ö§³Ö`cos`,`Sqrt`Ö®Àà30¶àÖÖ,Ïàµ±ÓÚMath°ü |
-| stringExpressions | nullSafeEval | ×Ö·û´®º¯Êı£¬Ö§³Ö`Substring`,`Length`Ö®Àà30¶àÖÖ£¬Ïàµ±ÓÚString°ü |
-| decimalExpressions | nullSafeEval | DecimalÀàĞÍµÄÖ§³Ö£¬Ö§³Ö`Unscaled`,`MakeDecimal`²Ù×÷ |
-| datetimeExpressions | nullSafeEval | Ê±¼äÀàĞÍµÄÔËËã£¨ºÍÉÏÃæ²»Í¬µÄÊÇ£¬ÕâÀïÖ¸ÔËËã£©|
-| collectionOperations | nullSafeEval | ÈİÆ÷µÄ²Ù×÷£¬ÔİÊ±Ö§³ÖÈİÆ÷`ArrayContains`,`ArraySort`,`Size`£¬`MapKeys`ºÍ`MapValues`5ÖÖ²Ù×÷ |
-| cast | nullSafeEval | Ö§³ÖÊı¾İÀàĞÍµÄ×ª»» |
-| misc | nullSafeEval | ¹¦ÄÜº¯Êı°ü£¬Ö§³ÖMD5£¬crc32Ö®ÀàµÄº¯Êı¹¦ÄÜ |
+| arithmetic | nullSafeEval | æ•°å­¦Expressionï¼Œæ”¯æŒ`-`,`+`,`abs`, `+`,`-`,`*`,`/`,`%`,`max`,`min`,`pmod`æ•°å­¦è¿ç®—ç¬¦ |
+| bitwiseExpressions | nullSafeEval | ä½è¿ç®—æ•°ï¼Œæ”¯æŒIntegralTypeç±»å‹çš„`and`,`or`,`not`,`xor`ä½è¿ç®— |
+| mathExpressions | nullSafeEval | æ•°å­¦å‡½æ•°ï¼Œæ”¯æŒ`cos`,`Sqrt`ä¹‹ç±»30å¤šç§,ç›¸å½“äºMathåŒ… |
+| stringExpressions | nullSafeEval | å­—ç¬¦ä¸²å‡½æ•°ï¼Œæ”¯æŒ`Substring`,`Length`ä¹‹ç±»30å¤šç§ï¼Œç›¸å½“äºStringåŒ… |
+| decimalExpressions | nullSafeEval | Decimalç±»å‹çš„æ”¯æŒï¼Œæ”¯æŒ`Unscaled`,`MakeDecimal`æ“ä½œ |
+| datetimeExpressions | nullSafeEval | æ—¶é—´ç±»å‹çš„è¿ç®—ï¼ˆå’Œä¸Šé¢ä¸åŒçš„æ˜¯ï¼Œè¿™é‡ŒæŒ‡è¿ç®—ï¼‰|
+| collectionOperations | nullSafeEval | å®¹å™¨çš„æ“ä½œï¼Œæš‚æ—¶æ”¯æŒå®¹å™¨`ArrayContains`,`ArraySort`,`Size`ï¼Œ`MapKeys`å’Œ`MapValues`5ç§æ“ä½œ |
+| cast | nullSafeEval | æ”¯æŒæ•°æ®ç±»å‹çš„è½¬æ¢ |
+| misc | nullSafeEval | åŠŸèƒ½å‡½æ•°åŒ…ï¼Œæ”¯æŒMD5ï¼Œcrc32ä¹‹ç±»çš„å‡½æ•°åŠŸèƒ½ |
 
-**»ù±¾Âß¼­¼ÆËã¹¦ÄÜ**£º°üÀ¨Óë»ò·Ç¡¢Ìõ¼ş¡¢Æ¥Åä¡£
+**åŸºæœ¬é€»è¾‘è®¡ç®—åŠŸèƒ½**ï¼šåŒ…æ‹¬ä¸æˆ–éã€æ¡ä»¶ã€åŒ¹é…ã€‚
 
-| Name      | ÇóÖµ·½Ê½ | ¹¦ÄÜÃèÊö |
+| Name      | æ±‚å€¼æ–¹å¼ | åŠŸèƒ½æè¿° |
 | --------- | :-------: | -------- |
-| predicates  | eval/nullSafeEvalÀàĞÍ | Ö§³Ö×ÓExpressionÖ®¼äµÄÂß¼­ÔËËã£¬±ÈÈç`AND`,`In`,`Or`£¬Êä³öblooean |
-| regexpExpressions|nullSafeEval | Ö§³ÖLIKEÏà¹Ø²Ù×÷£¬·µ»Øblooean |
-| conditionalExpressions | eval | Ö§³ÖCase£¨·ÖÎªCaseWhenºÍCaseWhenCodegen£©£¬IfËÄÖÖÂß¼­ÅĞ¶ÏÔËËã |
-| nullExpressions | eval/RuntimeReplaceable | ÓëNULL/NAÏà¹ØµÄÅĞ¶Ï»òÕßIFÅĞ¶Ï¹¦ÄÜ£¬´ó²¿·Ö¶¼ÎªRuntimeReplaceable£¬»á±»½øĞĞÓÅ»¯´¦Àí |
+| predicates  | eval/nullSafeEvalç±»å‹ | æ”¯æŒå­Expressionä¹‹é—´çš„é€»è¾‘è¿ç®—ï¼Œæ¯”å¦‚`AND`,`In`,`Or`ï¼Œè¾“å‡ºblooean |
+| regexpExpressions|nullSafeEval | æ”¯æŒLIKEç›¸å…³æ“ä½œï¼Œè¿”å›blooean |
+| conditionalExpressions | eval | æ”¯æŒCaseï¼ˆåˆ†ä¸ºCaseWhenå’ŒCaseWhenCodegenï¼‰ï¼ŒIfå››ç§é€»è¾‘åˆ¤æ–­è¿ç®— |
+| nullExpressions | eval/RuntimeReplaceable | ä¸NULL/NAç›¸å…³çš„åˆ¤æ–­æˆ–è€…IFåˆ¤æ–­åŠŸèƒ½ï¼Œå¤§éƒ¨åˆ†éƒ½ä¸ºRuntimeReplaceableï¼Œä¼šè¢«è¿›è¡Œä¼˜åŒ–å¤„ç† |
 
-**ÆäËûÀàĞÍ**
+**å…¶ä»–ç±»å‹**
 
-| Name      | ÇóÖµ·½Ê½ | ¹¦ÄÜÃèÊö |
+| Name      | æ±‚å€¼æ–¹å¼ | åŠŸèƒ½æè¿° |
 | --------- | :-------: | -------- |
-| complexTypeCreator | eval | SparkSqlÖ§³Ö¸´ÔÓÊı¾İ½á¹¹£¬±ÈÈçArray£¬Map£¬Struct£¬ÕâÀàExpressionÖ§³ÖÔÚsqlÓï¾äÉÏÉú³ÉËüÃÇ£¬±ÈÈçselect array¡£³£ÓÃÓÚProjectionÀàĞÍ¡£ |
-| Generator | eval | Ö§³ÖflatmapÀàËÆµÄ²Ù×÷£¬¼´½«Row×ª±äÎª¶à¸öRow£¬Ö§³ÖExplodeºÍ×Ô¶¨ÒåUserDefinedGeneratorÁ½ÖÖ£¬ÆäÖĞExplodeÖ§³Ö½«Êı×éºÍmap²ğ¿ªÎª¶à¸öRow¡£|
+| complexTypeCreator | eval | SparkSqlæ”¯æŒå¤æ‚æ•°æ®ç»“æ„ï¼Œæ¯”å¦‚Arrayï¼ŒMapï¼ŒStructï¼Œè¿™ç±»Expressionæ”¯æŒåœ¨sqlè¯­å¥ä¸Šç”Ÿæˆå®ƒä»¬ï¼Œæ¯”å¦‚select arrayã€‚å¸¸ç”¨äºProjectionç±»å‹ã€‚ |
+| Generator | eval | æ”¯æŒflatmapç±»ä¼¼çš„æ“ä½œï¼Œå³å°†Rowè½¬å˜ä¸ºå¤šä¸ªRowï¼Œæ”¯æŒExplodeå’Œè‡ªå®šä¹‰UserDefinedGeneratorä¸¤ç§ï¼Œå…¶ä¸­Explodeæ”¯æŒå°†æ•°ç»„å’Œmapæ‹†å¼€ä¸ºå¤šä¸ªRowã€‚|
 
 ##Attribute
 
-ÉÏÃæÒÑ¾­½éÉÜ¹ı£¬AttributeÆäÊµÒ²ÊÇÒ»ÖÖExpression£¬¼Ì³Ğ×ÔNamedExpression£¬¾ÍÊÇ´øÃû×ÖµÄExpression¡£
-AttributeÖ±ÒëÎªÊôĞÔ£¬ÔÚSQLÖĞ£¬¿ÉÒÔ¼òµ¥Àí½âÎªÊäÈëµÄTableÖĞµÄ×Ö¶Î£¬AttributeÍ¨¹ıName×Ö¶ÎÀ´½øĞĞÃüÃû¡£
-SQLÓï¾äÍ¨¹ıParseÉú³ÉASTÒÔºó£¬SQLÓï¾äÖĞµÄÃ¿¸ö×Ö¶Î¶¼»á½âÎöÎªUnresolvedAttribute£¬ËüÊÇÊôÓÚAttributeµÄÒ»¸ö×ÓÀà£¬±ÈÈçSELECT aÖĞµÄa¾Í±íÊ¾ÎªUnresolvedAttribute("a")¡£
-SQLÓï¾äÖĞµÄ`*`£¬Ëü±íÊ¾ÎªStar£¬¼Ì³Ğ×ÔNamedExpression£¬ËüÓĞÁ½¸ö×ÓÀà£ºUnresolvedStarºÍResolvedStar£¬¶şÕßÔÚanalysis.unresolvedÎÄ¼şÖĞ£¬µ«¶şÕßÆäÊµ²¢Ã»ÓĞ×ª»»¹ØÏµ£¬
-Ç°ÕßÓÃÓÚAST·ÖÎö£¬ºóÕßÓÃÓÚ²éÑ¯¡£
+ä¸Šé¢å·²ç»ä»‹ç»è¿‡ï¼ŒAttributeå…¶å®ä¹Ÿæ˜¯ä¸€ç§Expressionï¼Œç»§æ‰¿è‡ªNamedExpressionï¼Œå°±æ˜¯å¸¦åå­—çš„Expressionã€‚
+Attributeç›´è¯‘ä¸ºå±æ€§ï¼Œåœ¨SQLä¸­ï¼Œå¯ä»¥ç®€å•ç†è§£ä¸ºè¾“å…¥çš„Tableä¸­çš„å­—æ®µï¼ŒAttributeé€šè¿‡Nameå­—æ®µæ¥è¿›è¡Œå‘½åã€‚
+SQLè¯­å¥é€šè¿‡Parseç”ŸæˆASTä»¥åï¼ŒSQLè¯­å¥ä¸­çš„æ¯ä¸ªå­—æ®µéƒ½ä¼šè§£æä¸ºUnresolvedAttributeï¼Œå®ƒæ˜¯å±äºAttributeçš„ä¸€ä¸ªå­ç±»ï¼Œæ¯”å¦‚SELECT aä¸­çš„aå°±è¡¨ç¤ºä¸ºUnresolvedAttribute("a")ã€‚
+SQLè¯­å¥ä¸­çš„`*`ï¼Œå®ƒè¡¨ç¤ºä¸ºStarï¼Œç»§æ‰¿è‡ªNamedExpressionï¼Œå®ƒæœ‰ä¸¤ä¸ªå­ç±»ï¼šUnresolvedStarå’ŒResolvedStarï¼ŒäºŒè€…åœ¨analysis.unresolvedæ–‡ä»¶ä¸­ï¼Œä½†äºŒè€…å…¶å®å¹¶æ²¡æœ‰è½¬æ¢å…³ç³»ï¼Œ
+å‰è€…ç”¨äºASTåˆ†æï¼Œåè€…ç”¨äºæŸ¥è¯¢ã€‚
 
-·ÖÎöĞè¶ÔqueryµÄAST¼Ó¹¤¹ı³ÌÖĞºÜÖØÒªµÄÒ»¸ö²½Öè¾ÍÊÇ½«Õû¸öASTÖĞËùÓĞUnresolvedµÄAttribute¶¼×ª±äÎªresolved×´Ì¬¡£Õâ¸ö¹ı³ÌÔÚASTBuilderºÍAnalyzerÖĞÅäºÏÍê³É£¬
-Ç°ÕßÓÃÓÚÉú³Éunresolved attribute£¨°üÀ¨StarºÍrelationµÈ£©£¬ºóÕßÊÇÍ¨¹ıLogic plan¶ÔÕâĞ©unresolved¶ÔÕâĞ©unresolved attribute½âÎöÉú³É¹Ì¶¨µÄAttributeReference£¨»òrelationµÈ£¬Õë¶Ô²»Í¬ÀàĞÍ×îÖÕ²»Ò»Ñù£¬¸Ã¹ı³ÌÄ¿µÄ¾ÍÊÇ¡°¹Ì¶¨¡±£©¡£
+åˆ†æéœ€å¯¹queryçš„ASTåŠ å·¥è¿‡ç¨‹ä¸­å¾ˆé‡è¦çš„ä¸€ä¸ªæ­¥éª¤å°±æ˜¯å°†æ•´ä¸ªASTä¸­æ‰€æœ‰Unresolvedçš„Attributeéƒ½è½¬å˜ä¸ºresolvedçŠ¶æ€ã€‚è¿™ä¸ªè¿‡ç¨‹åœ¨ASTBuilderå’ŒAnalyzerä¸­é…åˆå®Œæˆï¼Œ
+å‰è€…ç”¨äºç”Ÿæˆunresolved attributeï¼ˆåŒ…æ‹¬Starå’Œrelationç­‰ï¼‰ï¼Œåè€…æ˜¯é€šè¿‡Logic planå¯¹è¿™äº›unresolvedå¯¹è¿™äº›unresolved attributeè§£æç”Ÿæˆå›ºå®šçš„AttributeReferenceï¼ˆæˆ–relationç­‰ï¼Œé’ˆå¯¹ä¸åŒç±»å‹æœ€ç»ˆä¸ä¸€æ ·ï¼Œè¯¥è¿‡ç¨‹ç›®çš„å°±æ˜¯â€œå›ºå®šâ€ï¼‰ã€‚
 
-´ËÍâ£¬resolve²Ù×÷µÄÖ÷Òª¹¦ÄÜ¾ÍÊÇ¹ØÁªSQLÓï¾äËùÓĞÎ»ÖÃÓÃµ½µÄAttribute£¬¼´ÔÚAttributeµÄname»ù´¡ÉÏ£¬Ö¸¶¨Ò»¸öID½øĞĞÎ¨Ò»±êÊ¾£¬
-**Èç¹ûÒ»¸öAttributeÔÚÁ½´¦±»¶à´¦±»ÒıÓÃ£¬ID¼´ÎªÍ¬Ò»¸ö**¡£
+æ­¤å¤–ï¼Œresolveæ“ä½œçš„ä¸»è¦åŠŸèƒ½å°±æ˜¯å…³è”SQLè¯­å¥æ‰€æœ‰ä½ç½®ç”¨åˆ°çš„Attributeï¼Œå³åœ¨Attributeçš„nameåŸºç¡€ä¸Šï¼ŒæŒ‡å®šä¸€ä¸ªIDè¿›è¡Œå”¯ä¸€æ ‡ç¤ºï¼Œ
+**å¦‚æœä¸€ä¸ªAttributeåœ¨ä¸¤å¤„è¢«å¤šå¤„è¢«å¼•ç”¨ï¼ŒIDå³ä¸ºåŒä¸€ä¸ª**ã€‚
 
-> Attribute Resolve²Ù×÷Ê±**´Óµ×µ½¶¥**À´±éÀúÕû¸öAST£¬Ã¿Ò»²½¶¼ÊÇ**¸ù¾İ**µ×²¿**ÒÑ¾­reslovedµÄAttribute**À´¸ø¶¥²¿µÄAttribute¸³Öµ£¬´Ó¶ø±£Ö¤Èç¹ûÁ½¸öAttributeÊÇÖ¸ÏòÍ¬Ò»¸ö£¬ËüÃÇµÄID¿Ï¶¨ÊÇÒ»ÑùµÄ)¡£
+> Attribute Resolveæ“ä½œæ—¶**ä»åº•åˆ°é¡¶**æ¥éå†æ•´ä¸ªASTï¼Œæ¯ä¸€æ­¥éƒ½æ˜¯**æ ¹æ®**åº•éƒ¨**å·²ç»reslovedçš„Attribute**æ¥ç»™é¡¶éƒ¨çš„Attributeèµ‹å€¼ï¼Œä»è€Œä¿è¯å¦‚æœä¸¤ä¸ªAttributeæ˜¯æŒ‡å‘åŒä¸€ä¸ªï¼Œå®ƒä»¬çš„IDè‚¯å®šæ˜¯ä¸€æ ·çš„)ã€‚
 
-¿ÉÒÔÕâÃ´Àí½â£¬×öÕâĞ©ÊÂÇé¶¼ÊÇÎªÁËÓÅ»¯£¬ÎïÀí´æ´¢µÄTable¿ÉÄÜÓĞºÜ¶àAttribute£¬¶øÍ¨¹ıresolve²Ù×÷£¬¾ÍÖ¸¶¨Õû¸ö¼ÆËã¹ı³ÌÖĞĞèÒªÊ¹ÓÃµ½Attribute£¬¼´¿ÉÒÔÖ»´ÓÎïÀí´æ´¢ÖĞ¶ÁÈ¡ÏàÓ¦×Ö¶Î£¬
-ÉÏ²ã¸÷ÖÖExpression¶ÔÕâĞ©×Ö¶Î¶¼×ª±äÎªÒıÓÃ£¬Òò´ËresolveÒÔºóµÄAttribute²»ÊÇ½Ğ×öresolvedAttribute,¶øÊÇ½Ğ×öAttributeReference¡£
+å¯ä»¥è¿™ä¹ˆç†è§£ï¼Œåšè¿™äº›äº‹æƒ…éƒ½æ˜¯ä¸ºäº†ä¼˜åŒ–ï¼Œç‰©ç†å­˜å‚¨çš„Tableå¯èƒ½æœ‰å¾ˆå¤šAttributeï¼Œè€Œé€šè¿‡resolveæ“ä½œï¼Œå°±æŒ‡å®šæ•´ä¸ªè®¡ç®—è¿‡ç¨‹ä¸­éœ€è¦ä½¿ç”¨åˆ°Attributeï¼Œå³å¯ä»¥åªä»ç‰©ç†å­˜å‚¨ä¸­è¯»å–ç›¸åº”å­—æ®µï¼Œ
+ä¸Šå±‚å„ç§Expressionå¯¹è¿™äº›å­—æ®µéƒ½è½¬å˜ä¸ºå¼•ç”¨ï¼Œå› æ­¤resolveä»¥åçš„Attributeä¸æ˜¯å«åšresolvedAttribute,è€Œæ˜¯å«åšAttributeReferenceã€‚
 
-¶ÔÓÚÒ»¸öÖĞ¼ä½ÚµãµÄExpression£¬Èç¹ûËü¶ÔÒ»¸öAttributeÓĞÒıÓÃ£¬±ÈÈçÇóÒ»¸ö×Ö¶ÎÖµµÄ³¤¶Èlength(a)£¬ÕâÀïa¾­¹ıÁËUnresolvedAttributeµ½AttributeReferenceµÄ×ª»¯£¬µ«ÊÇÕë¶ÔÒ»¸öÊäÈëµÄRow£¬
-½øĞĞlengthExpression¼ÆËãÊ±£¬»¹ÊÇÎŞ·¨´ÓAttributeReferenceÖĞ¶ÁÈ¡ÏàÓ¦ÔÚRowÖĞµÄÖµ£¬ÎªÊ²Ã´£¿ËäÈ»AttributeReferenceÒ²ÊÇExpression£¬µ«ÊÇËüÊÇUnevaluable£¬ÎªÁË»ñÈ¡ÊôĞÔÔÚÊäÈëRowÖĞ¶ÔÓ¦µÄÖµ£¬
-ĞèÒª¶ÔAttributeReferenceÔÙ½øĞĞÒ»´ÎBindReferencesµÄ×ª»¯£¬Éú³ÉBoundReference£¬Õâ¸ö²Ù×÷±¾ÖÊ¾ÍÊÇ½«ExpressionºÍÒ»¸öÊäÈëScheme½øĞĞ¹ØÁª£¬SchemeÓÉÒ»×éAttributeReference£¬ËüÃÇÖ®¼äÊÇÓĞË³ĞòµÄ£¬
-Í¨¹ıExpressionÖĞAttributeReferenceÔÚSchema AttributeReference×éÖĞµÄIndex£¬²¢Éú³ÉBoundReference£¬ÔÚ¶ÔBoundReference½øĞĞevalÊ±ºò£¬¼´¿ÉÒÔÊ¹ÓÃ¸Ãindex»ñÈ¡ËüÔÚÏàÓ¦RowÖĞµÄÖµ¡£
+å¯¹äºä¸€ä¸ªä¸­é—´èŠ‚ç‚¹çš„Expressionï¼Œå¦‚æœå®ƒå¯¹ä¸€ä¸ªAttributeæœ‰å¼•ç”¨ï¼Œæ¯”å¦‚æ±‚ä¸€ä¸ªå­—æ®µå€¼çš„é•¿åº¦length(a)ï¼Œè¿™é‡Œaç»è¿‡äº†UnresolvedAttributeåˆ°AttributeReferenceçš„è½¬åŒ–ï¼Œä½†æ˜¯é’ˆå¯¹ä¸€ä¸ªè¾“å…¥çš„Rowï¼Œ
+è¿›è¡ŒlengthExpressionè®¡ç®—æ—¶ï¼Œè¿˜æ˜¯æ— æ³•ä»AttributeReferenceä¸­è¯»å–ç›¸åº”åœ¨Rowä¸­çš„å€¼ï¼Œä¸ºä»€ä¹ˆï¼Ÿè™½ç„¶AttributeReferenceä¹Ÿæ˜¯Expressionï¼Œä½†æ˜¯å®ƒæ˜¯Unevaluableï¼Œä¸ºäº†è·å–å±æ€§åœ¨è¾“å…¥Rowä¸­å¯¹åº”çš„å€¼ï¼Œ
+éœ€è¦å¯¹AttributeReferenceå†è¿›è¡Œä¸€æ¬¡BindReferencesçš„è½¬åŒ–ï¼Œç”ŸæˆBoundReferenceï¼Œè¿™ä¸ªæ“ä½œæœ¬è´¨å°±æ˜¯å°†Expressionå’Œä¸€ä¸ªè¾“å…¥Schemeè¿›è¡Œå…³è”ï¼ŒSchemeç”±ä¸€ç»„AttributeReferenceï¼Œå®ƒä»¬ä¹‹é—´æ˜¯æœ‰é¡ºåºçš„ï¼Œ
+é€šè¿‡Expressionä¸­AttributeReferenceåœ¨Schema AttributeReferenceç»„ä¸­çš„Indexï¼Œå¹¶ç”ŸæˆBoundReferenceï¼Œåœ¨å¯¹BoundReferenceè¿›è¡Œevalæ—¶å€™ï¼Œå³å¯ä»¥ä½¿ç”¨è¯¥indexè·å–å®ƒåœ¨ç›¸åº”Rowä¸­çš„å€¼ã€‚
 
 ##QueryPlan
 
-ÈçÉÏËùÑÔ£¬ÔÚSQLÓï¾äÖĞ£¬³ıÁËSELECT FROMµÈ¹Ø¼ü×ÖÒÔÍâ£¬ÆäËû´ó²¿·ÖÔªËØ¶¼¿ÉÒÔÀí½âÎªExpression£¬ÄÇÃ´ÓÃÊ²Ã´À´±íÊ¾Ê£ÏÂµÄSELECT FROMÕâĞ©¹Ø¼ü×ÖÄØ£¿±Ï¾¹ExpressionÖ»ÊÇÒ»Ğ©Eval¹¦ÄÜº¯Êı»òÕß´úÂëÆ¬¶Î£¬ĞèÒªÒ»¸ö¶«Î÷À´´®ÁªÕâĞ©Æ¬¶Î£¬Õâ¸ö¶«Î÷¾ÍÊÇPlan£¬¾ßÌåÀ´ËµÊÇQueryPlan¡£
+å¦‚ä¸Šæ‰€è¨€ï¼Œåœ¨SQLè¯­å¥ä¸­ï¼Œé™¤äº†SELECT FROMç­‰å…³é”®å­—ä»¥å¤–ï¼Œå…¶ä»–å¤§éƒ¨åˆ†å…ƒç´ éƒ½å¯ä»¥ç†è§£ä¸ºExpressionï¼Œé‚£ä¹ˆç”¨ä»€ä¹ˆæ¥è¡¨ç¤ºå‰©ä¸‹çš„SELECT FROMè¿™äº›å…³é”®å­—å‘¢ï¼Ÿæ¯•ç«ŸExpressionåªæ˜¯ä¸€äº›EvalåŠŸèƒ½å‡½æ•°æˆ–è€…ä»£ç ç‰‡æ®µï¼Œéœ€è¦ä¸€ä¸ªä¸œè¥¿æ¥ä¸²è”è¿™äº›ç‰‡æ®µï¼Œè¿™ä¸ªä¸œè¥¿å°±æ˜¯Planï¼Œå…·ä½“æ¥è¯´æ˜¯QueryPlanã€‚
 
-QueryPlan¾ÍÊÇ½«¸÷¸öExpression×éÖ¯ÆğÀ´£¬×ÓÀàÓĞLogicalPlanºÍPhysicalPlan£¨Ô´ÂëÖĞÃ»ÓĞ¸ÃÀà»ò½Ó¿Ú£¬ÔÚplan.physicalÏÂÓĞ¾ßÌåĞÎÊ½£©¡£Plan±íÏÖĞÎÊ½Ò²ÊÇTree£¬½ÚµãÖ®¼äµÄ¹ØÏµ¿ÉÒÔÀí½âÎªÒ»ÖÖ²Ù×÷´ÎĞò£¬±ÈÈçPlanÒ¶×Ó½Úµã±íÊ¾´Ó´ÅÅÌ¶ÁÈ¡DBÎÄ¼ş£¬¶øRoot½Úµã±íÊ¾×îÖÕÊı¾İµÄÊä³ö£»ÏÂÃæÊÇPlan×î³£¼ûµÄÊµÀı½ØÍ¼¡£
+QueryPlanå°±æ˜¯å°†å„ä¸ªExpressionç»„ç»‡èµ·æ¥ï¼Œå­ç±»æœ‰LogicalPlanå’ŒPhysicalPlanï¼ˆæºç ä¸­æ²¡æœ‰è¯¥ç±»æˆ–æ¥å£ï¼Œåœ¨plan.physicalä¸‹æœ‰å…·ä½“å½¢å¼ï¼‰ã€‚Planè¡¨ç°å½¢å¼ä¹Ÿæ˜¯Treeï¼ŒèŠ‚ç‚¹ä¹‹é—´çš„å…³ç³»å¯ä»¥ç†è§£ä¸ºä¸€ç§æ“ä½œæ¬¡åºï¼Œæ¯”å¦‚Planå¶å­èŠ‚ç‚¹è¡¨ç¤ºä»ç£ç›˜è¯»å–DBæ–‡ä»¶ï¼Œè€ŒRootèŠ‚ç‚¹è¡¨ç¤ºæœ€ç»ˆæ•°æ®çš„è¾“å‡ºï¼›ä¸‹é¢æ˜¯Planæœ€å¸¸è§çš„å®ä¾‹æˆªå›¾ã€‚
 
 ![QueryPlan][plan_img]
 
-ÓÃSQLÓï¾äÀ´±íÊ¾Õâ¸öPlan¼´Îª£º`SELECT project FROM table, table WHERE filter`¡£
+ç”¨SQLè¯­å¥æ¥è¡¨ç¤ºè¿™ä¸ªPlanå³ä¸ºï¼š`SELECT project FROM table, table WHERE filter`ã€‚
 
-Ö±¹ÛÀí½â£¬ExpressionÊÇ³ıÁËSELECT FROMÖ®Íâ¿ÉÒÔ¿´µ½µÄItem£¬Plan¾ÍÊÇ½«Expression°´ÕÕÒ»¶¨µÄÖ´ĞĞË³ĞòÖ´ĞĞ¡£
+ç›´è§‚ç†è§£ï¼ŒExpressionæ˜¯é™¤äº†SELECT FROMä¹‹å¤–å¯ä»¥çœ‹åˆ°çš„Itemï¼ŒPlanå°±æ˜¯å°†ExpressionæŒ‰ç…§ä¸€å®šçš„æ‰§è¡Œé¡ºåºæ‰§è¡Œã€‚
 
-Expression¹¦ÄÜÊÇ¶ÔÊäÈëRow½øĞĞ¼Ó¹¤£¬Êä³ö¿ÉÄÜÊÇAnyÊı¾İÀàĞÍ¡£¶øPlanÊä³öÀàĞÍÎªdef output: Seq[Attribute]±íÊ¾µÄÒ»×éAttribute£¬±ÈÈçÉÏÃæµÄProjectºÍTable¿Ï¶¨ÊÇÊä³öÒ»¸öÓÉSeq[Attribute]ÀàĞÍ±íÊ¾µÄRow£¬
-Filter¸Ğ¾õÊÇÊä³öTure/False£¬µ«ÊÇÕâÀïËµµÄPlan£¬¶ø²»ÊÇFilterÀàĞÍµÄExpreesion£¬FilterÀàĞÍµÄPlan»áÔÚÄÚ²¿¸ù¾İExpression¼ÆËã½á¹ûÀ´ÅĞ¶ÏÊÇ·ñ·µ»ØRow£¬µ«ÊÇRow·µ»ØµÄÀàĞÍ¿Ï¶¨Ò²ÊÇÓÉSeq[Attribute]±íÊ¾µÄ¡£
-ËùÒÔËµµ½µ×Filter»¹ÊÇ·µ»ØSeq[Attribute]¡£
+ExpressionåŠŸèƒ½æ˜¯å¯¹è¾“å…¥Rowè¿›è¡ŒåŠ å·¥ï¼Œè¾“å‡ºå¯èƒ½æ˜¯Anyæ•°æ®ç±»å‹ã€‚è€ŒPlanè¾“å‡ºç±»å‹ä¸ºdef output: Seq[Attribute]è¡¨ç¤ºçš„ä¸€ç»„Attributeï¼Œæ¯”å¦‚ä¸Šé¢çš„Projectå’ŒTableè‚¯å®šæ˜¯è¾“å‡ºä¸€ä¸ªç”±Seq[Attribute]ç±»å‹è¡¨ç¤ºçš„Rowï¼Œ
+Filteræ„Ÿè§‰æ˜¯è¾“å‡ºTure/Falseï¼Œä½†æ˜¯è¿™é‡Œè¯´çš„Planï¼Œè€Œä¸æ˜¯Filterç±»å‹çš„Expreesionï¼ŒFilterç±»å‹çš„Planä¼šåœ¨å†…éƒ¨æ ¹æ®Expressionè®¡ç®—ç»“æœæ¥åˆ¤æ–­æ˜¯å¦è¿”å›Rowï¼Œä½†æ˜¯Rowè¿”å›çš„ç±»å‹è‚¯å®šä¹Ÿæ˜¯ç”±Seq[Attribute]è¡¨ç¤ºçš„ã€‚
+æ‰€ä»¥è¯´åˆ°åº•Filterè¿˜æ˜¯è¿”å›Seq[Attribute]ã€‚
 
-Í¬ÑùLogicalPlan´Ó½á¹¹ÉÏ·ÖÒ²ÓĞµ¥½Úµã£¬Ò¶½Úµã£¬Ë«½Úµã¡£
+åŒæ ·LogicalPlanä»ç»“æ„ä¸Šåˆ†ä¹Ÿæœ‰å•èŠ‚ç‚¹ï¼Œå¶èŠ‚ç‚¹ï¼ŒåŒèŠ‚ç‚¹ã€‚
 
-CatalystÊÇ¶ÔASTÊ÷±éÀú¹ı³ÌÖĞ£¬Íê³ÉLogicalPlanºÍËùÓĞÒÀÀµµÄExpressionµÄ¹¹½¨£¬Ïà¹ØÂß¼­ÔÚorg.apache.spark.sql.catalyst.parser.AstBuilderÒÔ¼°Ïà¹Ø×ÓÀàÖĞ£¬
-Õû¸ö½âÎöµÄ¹ı³ÌÔÚParseDriverÖĞ£¬¸ÃÀàÖĞµÄ¹ı³Ì¸ü¼Óºê¹ÛÇåÎú¡£
+Catalystæ˜¯å¯¹ASTæ ‘éå†è¿‡ç¨‹ä¸­ï¼Œå®ŒæˆLogicalPlanå’Œæ‰€æœ‰ä¾èµ–çš„Expressionçš„æ„å»ºï¼Œç›¸å…³é€»è¾‘åœ¨org.apache.spark.sql.catalyst.parser.AstBuilderä»¥åŠç›¸å…³å­ç±»ä¸­ï¼Œ
+æ•´ä¸ªè§£æçš„è¿‡ç¨‹åœ¨ParseDriverä¸­ï¼Œè¯¥ç±»ä¸­çš„è¿‡ç¨‹æ›´åŠ å®è§‚æ¸…æ™°ã€‚
 
-LogicalPlanÒ²ÊÇTreeĞÎ½á¹¹£¬Æä½Úµã·ÖÎªÁ½ÖÖÀàĞÍ£ºOperatorºÍCommand¡£Command±íÊ¾ÎŞĞè²éÑ¯µÄÖ¸Áî£¬Á¢¼´Ö´ĞĞ£¬ÀıÈç£ºCommand¿ÉÒÔ±»ÓÃÀ´±íÊ¾DDL²Ù×÷¡£
-OperatorÍ¨³£»á×é³É¶à¼¶µÄPlan¡£OperatorµÄÀà¶¼ÔÚbasicLogicalOperatorsÏÂÃæ¡£ÕâÀïÖ»È¡ÔİÊ±¿´µÃ¶®µÄ¡£
+LogicalPlanä¹Ÿæ˜¯Treeå½¢ç»“æ„ï¼Œå…¶èŠ‚ç‚¹åˆ†ä¸ºä¸¤ç§ç±»å‹ï¼šOperatorå’ŒCommandã€‚Commandè¡¨ç¤ºæ— éœ€æŸ¥è¯¢çš„æŒ‡ä»¤ï¼Œç«‹å³æ‰§è¡Œï¼Œä¾‹å¦‚ï¼šCommandå¯ä»¥è¢«ç”¨æ¥è¡¨ç¤ºDDLæ“ä½œã€‚
+Operatoré€šå¸¸ä¼šç»„æˆå¤šçº§çš„Planã€‚Operatorçš„ç±»éƒ½åœ¨basicLogicalOperatorsä¸‹é¢ã€‚è¿™é‡Œåªå–æš‚æ—¶çœ‹å¾—æ‡‚çš„ã€‚
 
- Name      |   ¹¦ÄÜÃèÊö
+ Name      |   åŠŸèƒ½æè¿°
 -------- | --------
-|`Project`(projectList: Seq[NamedExpression], child: LogicalPlan)|SELECTÓï¾äÊä³ö²Ù×÷£¬ÆäÖĞprojectListÎªÊä³ö¶ÔÏó£¬Ã¿Ò»¸ö¶¼ÎªÒ»¸öExpression£¬ËüÃÇ¿ÉÄÜÊÇStar£¬»òÕßºÜ¸´ÔÓµÄExpression|
-|`Filter`(condition: Expression, child: LogicalPlan)|¸ù¾İconditionÀ´¶ÔChildÊäÈëµÄRows½øĞĞ¹ıÂË|
-|`Join`(left: LogicalPlan,right: LogicalPlan,joinType: JoinType,condition: Option[Expression])|leftºÍrightµÄÊä³ö½á¹û½øĞĞjoin²Ù×÷|
-|`Intersect`(left: LogicalPlan, right: LogicalPlan)|leftºÍrightÁ½¸öPlanÊä³öµÄrows½øĞĞÈ¡½»¼¯ÔËËã¡£|
-|`Except`(left: LogicalPlan, right: LogicalPlan)|ÔÚleft¼ÆËã½á¹ûÖĞÌŞ³ıµôrightÖĞµÄ¼ÆËã½á¹û|
-|`Union`(children: Seq[LogicalPlan])|½«Ò»×éChildsµÄ¼ÆËã½á¹û½øĞĞUnionÁªºÏ|
-|`Sort`(order: Seq[SortOrder],global: Boolean, child: LogicalPlan)|¶ÔchildµÄÊä³ö½øĞĞsortÅÅĞò|
-|`Repartition`(numPartitions: Int, shuffle: Boolean, child: LogicalPlan)|¶ÔchildÊä³öµÄÊı¾İ½øĞĞÖØĞÂ·ÖÇø²Ù×÷|
-|`InsertIntoTable`(table: LogicalPlan,child: LogicalPlan,...)|½«childÊä³öµÄrowsÊä³öµ½tableÖĞ|
-|`Distinct`(child: LogicalPlan)|¶ÔchildÊä³öµÄrowsÈ¡ÖØ²Ù×÷|
-|`GlobalLimit`(limitExpr: Expression, child: LogicalPlan)|¶ÔChildÊä³öµÄÊı¾İ½øĞĞLimitÏŞÖÆ|
-|`Sample`(child: LogicalPlan,....)|¸ù¾İÒ»Ğ©²ÎÊı£¬´ÓchildÊä³öµÄRows½øĞĞÒ»¶¨±ÈÀıµÄÈ¡Ñù|
-|`Aggregate`(groupingExpressions: Seq[Expression],aggregateExpressions: Seq[NamedExpression],child: LogicalPlan)|¶ÔchildÊä³örow½øĞĞaggregate²Ù×÷£¬±ÈÈçgroupbyÖ®ÀàµÄ²Ù×÷|
-|`Generate`(generator: Generator,join: Boolean,outer: Boolean,ualifier: Option[String],generatorOutput: Seq[Attribute],child: LogicalPlan)|¿ÉÒÔÓÃÓÚµİ¹éµÈ²Ù×÷£¬ÊäÈëĞĞÒÔÁ÷µÄĞÎÊ½ÊäÈë£¬²¢ÒÔÁ÷µÄĞÎÊ½Êä³ö¡£ÀàËÆÓÚ`flatMap`£¬µ«ÔÊĞí½«ÊäÈëÓëÊä³öÁ¬½ÓÔÚÒ»Æğ|
-|`Range`(start: Long,end: Long,step: Long,numSlices: Option[Int],output: Seq[Attribute])|¶ÔÊä³öÊı¾İµÄ·¶Î§½øĞĞÔ¼Êø|
-|`GroupingSets`(bitmasks: Seq[Int],groupByExprs: Seq[Expression],child: LogicalPlan,aggregations: Seq[NamedExpression])|Ïàµ±ÓÚ°Ñ¶à¸öGroup By²Ù×÷ºÏ²¢ÆğÀ´|
+|`Project`(projectList: Seq[NamedExpression], child: LogicalPlan)|SELECTè¯­å¥è¾“å‡ºæ“ä½œï¼Œå…¶ä¸­projectListä¸ºè¾“å‡ºå¯¹è±¡ï¼Œæ¯ä¸€ä¸ªéƒ½ä¸ºä¸€ä¸ªExpressionï¼Œå®ƒä»¬å¯èƒ½æ˜¯Starï¼Œæˆ–è€…å¾ˆå¤æ‚çš„Expression|
+|`Filter`(condition: Expression, child: LogicalPlan)|æ ¹æ®conditionæ¥å¯¹Childè¾“å…¥çš„Rowsè¿›è¡Œè¿‡æ»¤|
+|`Join`(left: LogicalPlan,right: LogicalPlan,joinType: JoinType,condition: Option[Expression])|leftå’Œrightçš„è¾“å‡ºç»“æœè¿›è¡Œjoinæ“ä½œ|
+|`Intersect`(left: LogicalPlan, right: LogicalPlan)|leftå’Œrightä¸¤ä¸ªPlanè¾“å‡ºçš„rowsè¿›è¡Œå–äº¤é›†è¿ç®—ã€‚|
+|`Except`(left: LogicalPlan, right: LogicalPlan)|åœ¨leftè®¡ç®—ç»“æœä¸­å‰”é™¤æ‰rightä¸­çš„è®¡ç®—ç»“æœ|
+|`Union`(children: Seq[LogicalPlan])|å°†ä¸€ç»„Childsçš„è®¡ç®—ç»“æœè¿›è¡ŒUnionè”åˆ|
+|`Sort`(order: Seq[SortOrder],global: Boolean, child: LogicalPlan)|å¯¹childçš„è¾“å‡ºè¿›è¡Œsortæ’åº|
+|`Repartition`(numPartitions: Int, shuffle: Boolean, child: LogicalPlan)|å¯¹childè¾“å‡ºçš„æ•°æ®è¿›è¡Œé‡æ–°åˆ†åŒºæ“ä½œ|
+|`InsertIntoTable`(table: LogicalPlan,child: LogicalPlan,...)|å°†childè¾“å‡ºçš„rowsè¾“å‡ºåˆ°tableä¸­|
+|`Distinct`(child: LogicalPlan)|å¯¹childè¾“å‡ºçš„rowså–é‡æ“ä½œ|
+|`GlobalLimit`(limitExpr: Expression, child: LogicalPlan)|å¯¹Childè¾“å‡ºçš„æ•°æ®è¿›è¡ŒLimité™åˆ¶|
+|`Sample`(child: LogicalPlan,....)|æ ¹æ®ä¸€äº›å‚æ•°ï¼Œä»childè¾“å‡ºçš„Rowsè¿›è¡Œä¸€å®šæ¯”ä¾‹çš„å–æ ·|
+|`Aggregate`(groupingExpressions: Seq[Expression],aggregateExpressions: Seq[NamedExpression],child: LogicalPlan)|å¯¹childè¾“å‡ºrowè¿›è¡Œaggregateæ“ä½œï¼Œæ¯”å¦‚groupbyä¹‹ç±»çš„æ“ä½œ|
+|`Generate`(generator: Generator,join: Boolean,outer: Boolean,ualifier: Option[String],generatorOutput: Seq[Attribute],child: LogicalPlan)|å¯ä»¥ç”¨äºé€’å½’ç­‰æ“ä½œï¼Œè¾“å…¥è¡Œä»¥æµçš„å½¢å¼è¾“å…¥ï¼Œå¹¶ä»¥æµçš„å½¢å¼è¾“å‡ºã€‚ç±»ä¼¼äº`flatMap`ï¼Œä½†å…è®¸å°†è¾“å…¥ä¸è¾“å‡ºè¿æ¥åœ¨ä¸€èµ·|
+|`Range`(start: Long,end: Long,step: Long,numSlices: Option[Int],output: Seq[Attribute])|å¯¹è¾“å‡ºæ•°æ®çš„èŒƒå›´è¿›è¡Œçº¦æŸ|
+|`GroupingSets`(bitmasks: Seq[Int],groupByExprs: Seq[Expression],child: LogicalPlan,aggregations: Seq[NamedExpression])|ç›¸å½“äºæŠŠå¤šä¸ªGroup Byæ“ä½œåˆå¹¶èµ·æ¥|
 
-ÏÂÃæ½éÉÜCommandÀà£¬ÕâĞ©Àà¶¼¼Ì³Ğ×ÔCommand£¬¶øÇÒÊıÁ¿±ÈOperator¶à¡£
+ä¸‹é¢ä»‹ç»Commandç±»ï¼Œè¿™äº›ç±»éƒ½ç»§æ‰¿è‡ªCommandï¼Œè€Œä¸”æ•°é‡æ¯”Operatorå¤šã€‚
 
-| Name      |   ¹¦ÄÜÃèÊö |
+| Name      |   åŠŸèƒ½æè¿° |
 | :-------- | --------|
-|`DataBase`²Ù×÷Àà|Ö§³ÖShowDatabaseÒÔ¼°UseDatabaseÒÔ¼°CreateµÈ²Ù×÷|
-|`Table`²Ù×÷Àà|¶à´ï13ÖÖ£¬±ÈÈçCreate£¬Show£¬AlterµÈ|
-|`View`²Ù×÷Àà|CreateViewCommandÖ§³ÖViewµÄ´´½¨|
-|`Partition`²Ù×÷Àà|Ö§³ÖPartitionĞÂÔöÉ¾³ıµÈ²Ù×÷|
-|`Resources`²Ù×÷Àà|±ÈÈçAddJar£¬AddFileÖ®ÀàµÄ×ÊÔ´²Ù×÷|
-|`Functions`²Ù×÷Àà|Ö§³ÖĞÂÔöº¯Êı£¬É¾³ıº¯ÊıµÈ²Ù×÷|
-|`Cache`²Ù×÷Àà|Ö§³Ö¶ÔTable½øĞĞcacheºÍuncache²Ù×÷|
-|`Set`²Ù×÷|Í¨¹ıSetCommandÖ´ĞĞ¶Ô²ÎÊı£¨ÈÎÎñÊıºÍShuffleµÄPartitionÊı£©½øĞĞÁÙÊ±ĞŞ¸Ä|
+|`DataBase`æ“ä½œç±»|æ”¯æŒShowDatabaseä»¥åŠUseDatabaseä»¥åŠCreateç­‰æ“ä½œ|
+|`Table`æ“ä½œç±»|å¤šè¾¾13ç§ï¼Œæ¯”å¦‚Createï¼ŒShowï¼ŒAlterç­‰|
+|`View`æ“ä½œç±»|CreateViewCommandæ”¯æŒViewçš„åˆ›å»º|
+|`Partition`æ“ä½œç±»|æ”¯æŒPartitionæ–°å¢åˆ é™¤ç­‰æ“ä½œ|
+|`Resources`æ“ä½œç±»|æ¯”å¦‚AddJarï¼ŒAddFileä¹‹ç±»çš„èµ„æºæ“ä½œ|
+|`Functions`æ“ä½œç±»|æ”¯æŒæ–°å¢å‡½æ•°ï¼Œåˆ é™¤å‡½æ•°ç­‰æ“ä½œ|
+|`Cache`æ“ä½œç±»|æ”¯æŒå¯¹Tableè¿›è¡Œcacheå’Œuncacheæ“ä½œ|
+|`Set`æ“ä½œ|é€šè¿‡SetCommandæ‰§è¡Œå¯¹å‚æ•°ï¼ˆä»»åŠ¡æ•°å’ŒShuffleçš„Partitionæ•°ï¼‰è¿›è¡Œä¸´æ—¶ä¿®æ”¹|
 
-LogicalPlanĞèÒª±»×ª»»Îª×îÖÕµÄPhysicalPlan²ÅÄÜÕæÕı¾ßÓĞ¿ÉÖ´ĞĞµÄÄÜÁ¦£¬¶øÕâĞ©CommandÀàĞÍµÄPlan¶¼ÊÇÒÔ`def run(sparkSession: SparkSession): Seq[Row]`º¯Êı±©Â¶¸øSpark SQL£¬
-±ÈÈçÍ¨¹ıµ÷ÓÃTableµÄrunº¯ÊıÍê³ÉTableµÄ´´½¨µÈ²Ù×÷¡£
+LogicalPlanéœ€è¦è¢«è½¬æ¢ä¸ºæœ€ç»ˆçš„PhysicalPlanæ‰èƒ½çœŸæ­£å…·æœ‰å¯æ‰§è¡Œçš„èƒ½åŠ›ï¼Œè€Œè¿™äº›Commandç±»å‹çš„Planéƒ½æ˜¯ä»¥`def run(sparkSession: SparkSession): Seq[Row]`å‡½æ•°æš´éœ²ç»™Spark SQLï¼Œ
+æ¯”å¦‚é€šè¿‡è°ƒç”¨Tableçš„runå‡½æ•°å®ŒæˆTableçš„åˆ›å»ºç­‰æ“ä½œã€‚
 
-##TreeµÄ²Ù×÷
+##Treeçš„æ“ä½œ
 
-TreeNode½Úµã±¾ÉíÀàĞÍÎªProduct£¨ÔÚScalaÖĞProductÊÇ×î»ù±¾Êı¾İÀàĞÍÖ®Ò»£¬Æä×ÓÀà°üº¬ËùÓĞTuple¡¢List¡¢OptionºÍcaseÀàµÈ£¬Èç¹ûÒ»¸öCase Class`¼Ì³ĞProduct£¬
-ÄÇÃ´±ã¿ÉÒÔÍ¨¹ı`productElement`º¯Êı»òÕß`productIterator`µü´úÆ÷¶Ô`Case Class`µÄ**²ÎÊıĞÅÏ¢**½øĞĞË÷ÒıºÍ±éÀú£©£¬²¢ÇÒËùÓĞExpressionºÍPlan¶¼ÊÇÊôÓÚ`Product`ÀàĞÍ£¬
-Òò´Ë¿ÉÒÔÍ¨¹ıTreeNodeÄÚ²¿¶¨ÒåµÄ`mapProductIterator`º¯Êı¶Ô½Úµã²ÎÊı½øĞĞ±éÀú¡£
+TreeNodeèŠ‚ç‚¹æœ¬èº«ç±»å‹ä¸ºProductï¼ˆåœ¨Scalaä¸­Productæ˜¯æœ€åŸºæœ¬æ•°æ®ç±»å‹ä¹‹ä¸€ï¼Œå…¶å­ç±»åŒ…å«æ‰€æœ‰Tupleã€Listã€Optionå’Œcaseç±»ç­‰ï¼Œå¦‚æœä¸€ä¸ªCase Class`ç»§æ‰¿Productï¼Œ
+é‚£ä¹ˆä¾¿å¯ä»¥é€šè¿‡`productElement`å‡½æ•°æˆ–è€…`productIterator`è¿­ä»£å™¨å¯¹`Case Class`çš„**å‚æ•°ä¿¡æ¯**è¿›è¡Œç´¢å¼•å’Œéå†ï¼‰ï¼Œå¹¶ä¸”æ‰€æœ‰Expressionå’ŒPlanéƒ½æ˜¯å±äº`Product`ç±»å‹ï¼Œ
+å› æ­¤å¯ä»¥é€šè¿‡TreeNodeå†…éƒ¨å®šä¹‰çš„`mapProductIterator`å‡½æ•°å¯¹èŠ‚ç‚¹å‚æ•°è¿›è¡Œéå†ã€‚
 
-¶ÔPlan»òExpression½øĞĞ±éÀúµÄÄ¿µÄ£ºÊ×ÏÈÊÇÎªÁËÊÕ¼¯Ò»Ğ©ĞÅÏ¢£¬±ÈÈçÕë¶ÔTree½øĞĞmap/foreach²Ù×÷£»Æä´ÎÊÇÎªÁË¶ÔTree½ÚµãÄÚ²¿µÄĞÅÏ¢½øĞĞĞŞ¸Ä£¬
-±ÈÈç¶ÔPlanTreeÖĞÃ¿¸öPlan½ÚµãÄÚ²¿ÒıÓÃµÄAttribute½øĞĞRevole²Ù×÷£»×îºó¾ÍÊÇÎª¶ÔTreeµÄÊı¾İ½á¹¹½øĞĞĞŞ¸Ä£¬±ÈÈçÉ¾³ıTreeµÄ×Ó½Úµã£¬ÒÔ¼°Óë×Ó½Úµã½øĞĞºÏ²¢£¬
-±ÈÈçCatasylt Optitimze¾ÍÓĞ´óÁ¿Tree½á¹¹µÄĞŞ¸Ä¡£
+å¯¹Planæˆ–Expressionè¿›è¡Œéå†çš„ç›®çš„ï¼šé¦–å…ˆæ˜¯ä¸ºäº†æ”¶é›†ä¸€äº›ä¿¡æ¯ï¼Œæ¯”å¦‚é’ˆå¯¹Treeè¿›è¡Œmap/foreachæ“ä½œï¼›å…¶æ¬¡æ˜¯ä¸ºäº†å¯¹TreeèŠ‚ç‚¹å†…éƒ¨çš„ä¿¡æ¯è¿›è¡Œä¿®æ”¹ï¼Œ
+æ¯”å¦‚å¯¹PlanTreeä¸­æ¯ä¸ªPlanèŠ‚ç‚¹å†…éƒ¨å¼•ç”¨çš„Attributeè¿›è¡ŒRevoleæ“ä½œï¼›æœ€åå°±æ˜¯ä¸ºå¯¹Treeçš„æ•°æ®ç»“æ„è¿›è¡Œä¿®æ”¹ï¼Œæ¯”å¦‚åˆ é™¤Treeçš„å­èŠ‚ç‚¹ï¼Œä»¥åŠä¸å­èŠ‚ç‚¹è¿›è¡Œåˆå¹¶ï¼Œ
+æ¯”å¦‚Catasylt Optitimzeå°±æœ‰å¤§é‡Treeç»“æ„çš„ä¿®æ”¹ã€‚
 
-¶ÔTree½øĞĞ×ª»»µÄ²Ù×÷ÓÃµ½µÄ`rule`¶¼ÊÇÓÃScalaµÄÆ«º¯ÊıÊµÏÖµÄ£¨[Æ«º¯ÊıÊ¹ÓÃ][4]£¬Æ«º¯ÊıÖ÷ÒªÓÃÓÚÆ¥Åä£©¡£
+å¯¹Treeè¿›è¡Œè½¬æ¢çš„æ“ä½œç”¨åˆ°çš„`rule`éƒ½æ˜¯ç”¨Scalaçš„åå‡½æ•°å®ç°çš„ï¼ˆ[åå‡½æ•°ä½¿ç”¨][4]ï¼Œåå‡½æ•°ä¸»è¦ç”¨äºåŒ¹é…ï¼‰ã€‚
 
-¶ÔExpressionºÍLogicalPlanµÄ**²Ù×÷**Í¨³£¶¼»á±»ÕûÀíµ½Í¬Ò»¸öObjectÖĞ£¬Õâ¸öObjectÖĞµÄaplly·½·¨µÄÊäÈëÊä³öÀàĞÍÏàÍ¬£¬ÇÒÆä¼Ì³Ğ×ÔRule[T]£¬T±êÃ÷´¦ÀíÀàĞÍ£¨ÀàËÆÓÚ¡¶¿ìÑ§Scala¡·ÖĞµÄ18.12³éÏóÀàĞÍÖĞµÄÉè¼Æ£©¡£
+å¯¹Expressionå’ŒLogicalPlançš„**æ“ä½œ**é€šå¸¸éƒ½ä¼šè¢«æ•´ç†åˆ°åŒä¸€ä¸ªObjectä¸­ï¼Œè¿™ä¸ªObjectä¸­çš„apllyæ–¹æ³•çš„è¾“å…¥è¾“å‡ºç±»å‹ç›¸åŒï¼Œä¸”å…¶ç»§æ‰¿è‡ªRule[T]ï¼ŒTæ ‡æ˜å¤„ç†ç±»å‹ï¼ˆç±»ä¼¼äºã€Šå¿«å­¦Scalaã€‹ä¸­çš„18.12æŠ½è±¡ç±»å‹ä¸­çš„è®¾è®¡ï¼‰ã€‚
 
 	abstract class Rule[TreeType <: TreeNode[_]] extends Logging {
 
@@ -215,23 +215,23 @@ TreeNode½Úµã±¾ÉíÀàĞÍÎªProduct£¨ÔÚScalaÖĞProductÊÇ×î»ù±¾Êı¾İÀàĞÍÖ®Ò»£¬Æä×ÓÀà°üº¬Ë
 	  def apply(plan: TreeType): TreeType
 	}
 	
-ÁíÍâ¿ÉÒÔ½«Ò»×é`Rule`×éºÏÎªÒ»¸ö`Batch(name: String,rules: Rule[TreeType]*)`²¢°ÑËü·â×°ÔÚ`RuleExecutor`ÖĞ£¬´Ó¶øÍ¨¹ı`RuleExecutor`½«¸Ã×é`Rule`µÄ¿ÉÖ´ĞĞ½Ó¿ÚÌá¹©¸øÍâ²¿Ê¹ÓÃ£¬
-±ÈÈçOptimize²ßÂÔ£¬¾ÍÊÇÒ»¶Ñ¶ÑµÄBatch×é³É¡£ÓÃBatchÖĞµÄÃ¿¸öRule£¨ÕâÀïÏëÏó³É¶ÔLogicalPlan½øĞĞÓÅ»¯£©À´Ö´ĞĞ`plan`£¬Ö±µ½ÔÚµ½×î´óÔÊĞíµü´ú´ÎÊıÇ°´ïµ½fix point¡£
+å¦å¤–å¯ä»¥å°†ä¸€ç»„`Rule`ç»„åˆä¸ºä¸€ä¸ª`Batch(name: String,rules: Rule[TreeType]*)`å¹¶æŠŠå®ƒå°è£…åœ¨`RuleExecutor`ä¸­ï¼Œä»è€Œé€šè¿‡`RuleExecutor`å°†è¯¥ç»„`Rule`çš„å¯æ‰§è¡Œæ¥å£æä¾›ç»™å¤–éƒ¨ä½¿ç”¨ï¼Œ
+æ¯”å¦‚Optimizeç­–ç•¥ï¼Œå°±æ˜¯ä¸€å †å †çš„Batchç»„æˆã€‚ç”¨Batchä¸­çš„æ¯ä¸ªRuleï¼ˆè¿™é‡Œæƒ³è±¡æˆå¯¹LogicalPlanè¿›è¡Œä¼˜åŒ–ï¼‰æ¥æ‰§è¡Œ`plan`ï¼Œç›´åˆ°åœ¨åˆ°æœ€å¤§å…è®¸è¿­ä»£æ¬¡æ•°å‰è¾¾åˆ°fix pointã€‚
 
-µ«ÊÇÓÅ»¯ºÜ¿ÉÄÜ»áÏûºÄºÜ³¤Ê±¼ä£¬ËùÒÔÃ¿¸öBatch¶¼ÓĞStrategy£¬ÆäÓĞÁ½¸ö×ÓÀàOnceºÍFixedPoint£¬Ç°Õß±íÃ÷¸ÃBatchÖ»ÔÊĞíÖ´ĞĞÒ»´Î£¬ºóÕß»áÉè¶¨¶Ô´óµü´ú´ÎÊı¡£
+ä½†æ˜¯ä¼˜åŒ–å¾ˆå¯èƒ½ä¼šæ¶ˆè€—å¾ˆé•¿æ—¶é—´ï¼Œæ‰€ä»¥æ¯ä¸ªBatchéƒ½æœ‰Strategyï¼Œå…¶æœ‰ä¸¤ä¸ªå­ç±»Onceå’ŒFixedPointï¼Œå‰è€…è¡¨æ˜è¯¥Batchåªå…è®¸æ‰§è¡Œä¸€æ¬¡ï¼Œåè€…ä¼šè®¾å®šå¯¹å¤§è¿­ä»£æ¬¡æ•°ã€‚
 
-Spark SQL¶ÔPlan Tree»òÕßÄÚ²¿Expression TreeµÄ±éÀú·ÖÎª¼¸¸ö½×¶Î£º
+Spark SQLå¯¹Plan Treeæˆ–è€…å†…éƒ¨Expression Treeçš„éå†åˆ†ä¸ºå‡ ä¸ªé˜¶æ®µï¼š
 
-1. ¶ÔAST½øĞĞParse²Ù×÷£¬Éú³ÉUnresolve Plan£»
-2. ¶ÔUnresolve Plan½øĞĞAnalysis(°üÀ¨Resolve)²Ù×÷£¬Éú³ÉLogical Plan£»
-3. ¶ÔLogical Plan½øĞĞOptimize²Ù×÷£¬Éú³ÉOptimized Logical Plan£»
-4. ÒÔ¼°×îºó½øĞĞPlanning²Ù×÷£¬Éú³ÉPhysical Plan¡£
+1. å¯¹ASTè¿›è¡ŒParseæ“ä½œï¼Œç”ŸæˆUnresolve Planï¼›
+2. å¯¹Unresolve Planè¿›è¡ŒAnalysis(åŒ…æ‹¬Resolve)æ“ä½œï¼Œç”ŸæˆLogical Planï¼›
+3. å¯¹Logical Planè¿›è¡ŒOptimizeæ“ä½œï¼Œç”ŸæˆOptimized Logical Planï¼›
+4. ä»¥åŠæœ€åè¿›è¡ŒPlanningæ“ä½œï¼Œç”ŸæˆPhysical Planã€‚
 
-> ÕâÀïÃæµÄÃ¿Ò»½×¶Î¶¼¿ÉÒÔ¼òÊöÎªÓ¦ÓÃÒ»×éBatchRuleÀ´¶Ôplan½øĞĞ¼Ó¹¤
+> è¿™é‡Œé¢çš„æ¯ä¸€é˜¶æ®µéƒ½å¯ä»¥ç®€è¿°ä¸ºåº”ç”¨ä¸€ç»„BatchRuleæ¥å¯¹planè¿›è¡ŒåŠ å·¥ã€‚
 
 [1]:https://github.com/ColZer/DigAndBuried/blob/master/spark/spark-catalyst.md
 [2]:http://stackoverflow.com/questions/12218641/scala-what-is-a-typetag-and-how-do-i-use-it
 [3]:http://docs.scala-lang.org/overviews/reflection/overview.html
 [4]:http://blog.csdn.net/u010376788/article/details/47206571
-[calalyst_flow]:../pic/Catalyst-Optimizer-diagram.png
-[plan_img]:../pic/plan.png
+[calalyst_flow]:../../pic/Catalyst-Optimizer-diagram.png
+[plan_img]:../../pic/plan.png
