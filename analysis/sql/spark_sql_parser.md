@@ -1,10 +1,10 @@
-#Spark Catalyst ·ÖÎö½×¶Î
+#Spark Catalyst åˆ†æé˜¶æ®µ
 
-±¾ÎÄ´ÓÊ¹ÓÃÕßµÄÊÓ½Ç£¬Ò»²½²½ÉîÈëSQLµÄ·ÖÎö£¬Õâ²¿·Ö´ÓSQLÓï¾ä¿ªÊ¼£¬ÒÔLogicalPlanÎªÊä³ö¡£
+æœ¬æ–‡ä»ä½¿ç”¨è€…çš„è§†è§’ï¼Œä¸€æ­¥æ­¥æ·±å…¥SQLçš„åˆ†æï¼Œè¿™éƒ¨åˆ†ä»SQLè¯­å¥å¼€å§‹ï¼Œä»¥LogicalPlanä¸ºè¾“å‡ºã€‚
 
 ![catalyst-analysis][analysis]
 
-ÎÒÃÇÒÔ¹Ù·½µÄÒ»¶Î´úÂë×÷Îª½²½âµÄÁ÷³Ì¡£
+æˆ‘ä»¬ä»¥å®˜æ–¹çš„ä¸€æ®µä»£ç ä½œä¸ºè®²è§£çš„æµç¨‹ã€‚
 
 	import org.apache.spark.sql.SparkSession
 
@@ -27,11 +27,11 @@
 	peopleDF.createOrReplaceTempView("people")
 	val teenagersDF = spark.sql("SELECT name, age FROM people WHERE age BETWEEN 13 AND 19")
 	
-##½âÎöÃ¿Ìõ¼ÇÂ¼µÄÀàĞÍ
+##è§£ææ¯æ¡è®°å½•çš„ç±»å‹
 
-SparkSessionÊÇDataSetºÍDataFrame±à³ÌµÄÈë¿Ú£¬Builder¿ÉÒÔÓÃÓÚÔÚREPL»ònotebooksÖĞÅäÖÃ»·¾³¡£µÚÒ»¾äµÄÖØµãÊÇ»ñÈ¡µ½µ±Ç°»·¾³µÄSparkSession¡£
-µÚ¶ş²½¾ÍÊÇÒıÈëSpark SQLÖĞµÄÒşÊ½×ª»»ºÍÒşÊ½Öµ£¨RDD.toDFºÍtoDSµÈ²Ù×÷¶¼ÊÇÍ¨¹ıÒşÊ½×ª»»ÊµÏÖµÄ£©¡£ÕâÀïËäÈ»ÊÇDataFrame£¬µ«ÊÇÖ®Ç°Ëµ¹ıÔÚ2.0.0
-ÖĞDataFrame¾ÍÊÇDataSet[Row]£¬ËùÒÔ²»Ó°ÏìÎÒÃÇ·ÖÎöDataSet¡£`toDF`ºÍ`toDS`¶¼ÊÇÊ¹ÓÃÈçÏÂÒşÊ½×ª»»¡£
+SparkSessionæ˜¯DataSetå’ŒDataFrameç¼–ç¨‹çš„å…¥å£ï¼ŒBuilderå¯ä»¥ç”¨äºåœ¨REPLæˆ–notebooksä¸­é…ç½®ç¯å¢ƒã€‚ç¬¬ä¸€å¥çš„é‡ç‚¹æ˜¯è·å–åˆ°å½“å‰ç¯å¢ƒçš„SparkSessionã€‚
+ç¬¬äºŒæ­¥å°±æ˜¯å¼•å…¥Spark SQLä¸­çš„éšå¼è½¬æ¢å’Œéšå¼å€¼ï¼ˆRDD.toDFå’ŒtoDSç­‰æ“ä½œéƒ½æ˜¯é€šè¿‡éšå¼è½¬æ¢å®ç°çš„ï¼‰ã€‚è¿™é‡Œè™½ç„¶æ˜¯DataFrameï¼Œä½†æ˜¯ä¹‹å‰è¯´è¿‡åœ¨2.0.0
+ä¸­DataFrameå°±æ˜¯DataSet[Row]ï¼Œæ‰€ä»¥ä¸å½±å“æˆ‘ä»¬åˆ†æDataSetã€‚`toDF`å’Œ`toDS`éƒ½æ˜¯ä½¿ç”¨å¦‚ä¸‹éšå¼è½¬æ¢ã€‚
 
 	implicit def rddToDatasetHolder[T : Encoder](rdd: RDD[T]): DatasetHolder[T] = {
 		DatasetHolder(_sqlContext.createDataset(rdd))
@@ -42,42 +42,42 @@ SparkSessionÊÇDataSetºÍDataFrame±à³ÌµÄÈë¿Ú£¬Builder¿ÉÒÔÓÃÓÚÔÚREPL»ònotebooksÖĞÅä
 	  def toDF(colNames: String*): DataFrame = ds.toDF(colNames : _*)
 	}
 	
-¿ÉÒÔ·¢ÏÖÊÇRDDµ½DataSetµÄ×ª»»µ÷ÓÃµÄÊÇSQLContextµÄ`createDataset`·½·¨¡£µ«Ô¤ÏÈ±Ø¶¨Ã»ÓĞEncoder[Person]µÄÒşÊ½Öµ£¬ÒşÊ½×ª»»ÊÇÍ¨¹ı
+å¯ä»¥å‘ç°æ˜¯RDDåˆ°DataSetçš„è½¬æ¢è°ƒç”¨çš„æ˜¯SQLContextçš„`createDataset`æ–¹æ³•ã€‚ä½†é¢„å…ˆå¿…å®šæ²¡æœ‰Encoder[Person]çš„éšå¼å€¼ï¼Œéšå¼è½¬æ¢æ˜¯é€šè¿‡
 
 	implicit def newProductEncoder[T <: Product : TypeTag]: Encoder[T] = Encoders.product[T]
 	
-ÒòÎªPersonÊÇcase class£¬ËùÒÔÊÇProductÀàĞÍ¡£½øÈëEncoderµÄ`product`£¬È»ºó½øÈëExpressionEncoderµÄ`apply`·½·¨¡£ÕâÀï¾ÍÓÃµ½ÁË[Spark SQL »ù´¡ÖªÊ¶][1]ÖĞµÄÌáµ½µÄ·´Éä»úÖÆ¡£
+å› ä¸ºPersonæ˜¯case classï¼Œæ‰€ä»¥æ˜¯Productç±»å‹ã€‚è¿›å…¥Encoderçš„`product`ï¼Œç„¶åè¿›å…¥ExpressionEncoderçš„`apply`æ–¹æ³•ã€‚è¿™é‡Œå°±ç”¨åˆ°äº†[Spark SQL åŸºç¡€çŸ¥è¯†][1]ä¸­çš„æåˆ°çš„åå°„æœºåˆ¶ã€‚
 
-def apply[T : TypeTag](): ExpressionEncoder[T] = {
-    val mirror = typeTag[T].mirror
-    val tpe = typeTag[T].tpe
-    val cls = mirror.runtimeClass(tpe)
-    val flat = !ScalaReflection.definedByConstructorParams(tpe)
+	def apply[T : TypeTag](): ExpressionEncoder[T] = {
+	    val mirror = typeTag[T].mirror
+	    val tpe = typeTag[T].tpe
+	    val cls = mirror.runtimeClass(tpe)
+	    val flat = !ScalaReflection.definedByConstructorParams(tpe)
+	
+	    val inputObject = BoundReference(0, ScalaReflection.dataTypeFor[T], nullable = true)
+	    val nullSafeInput = if (flat) {
+	      inputObject
+	    } else {
+	      AssertNotNull(inputObject, Seq("top level non-flat input object"))
+	    }
+	    val serializer = ScalaReflection.serializerFor[T](nullSafeInput)
+	    val deserializer = ScalaReflection.deserializerFor[T]
+	
+	    val schema = ScalaReflection.schemaFor[T] match {
+	      case ScalaReflection.Schema(s: StructType, _) => s
+	      case ScalaReflection.Schema(dt, nullable) => new StructType().add("value", dt, nullable)
+	    }
+	
+	    new ExpressionEncoder[T](
+	      schema,
+	      flat,
+	      serializer.flatten,
+	      deserializer,
+	      ClassTag[T](cls))
+	}
 
-    val inputObject = BoundReference(0, ScalaReflection.dataTypeFor[T], nullable = true)
-    val nullSafeInput = if (flat) {
-      inputObject
-    } else {
-      AssertNotNull(inputObject, Seq("top level non-flat input object"))
-    }
-    val serializer = ScalaReflection.serializerFor[T](nullSafeInput)
-    val deserializer = ScalaReflection.deserializerFor[T]
-
-    val schema = ScalaReflection.schemaFor[T] match {
-      case ScalaReflection.Schema(s: StructType, _) => s
-      case ScalaReflection.Schema(dt, nullable) => new StructType().add("value", dt, nullable)
-    }
-
-    new ExpressionEncoder[T](
-      schema,
-      flat,
-      serializer.flatten,
-      deserializer,
-      ClassTag[T](cls))
-}
-
-`flat`ÓÃÓÚÅĞ¶ÏÕâ¸öÀàÊÇ²»ÊÇÍêÈ«ÓÉ³ÉÔ±±äÁ¿¹¹Ôì£¬Èç¹ûÊÇ¾Í½«¸÷¸ö³ÉÔ±±äÁ¿½âÎöÎªÊôĞÔ£¬·´Ö®¾ÍÅ×Òì³£¡£½øÈë`ScalaReflection.serializerFor`£¬
-¿´½âÎö¹ı³Ì¡£Õë¶Ôcase class£¬ÎÒÃÇ¿´`serializerFor`£¨private£©µÄÏàÓ¦Çé¿ö¡£
+`flat`ç”¨äºåˆ¤æ–­è¿™ä¸ªç±»æ˜¯ä¸æ˜¯å®Œå…¨ç”±æˆå‘˜å˜é‡æ„é€ ï¼Œå¦‚æœæ˜¯å°±å°†å„ä¸ªæˆå‘˜å˜é‡è§£æä¸ºå±æ€§ï¼Œåä¹‹å°±æŠ›å¼‚å¸¸ã€‚è¿›å…¥`ScalaReflection.serializerFor`ï¼Œ
+çœ‹è§£æè¿‡ç¨‹ã€‚é’ˆå¯¹case classï¼Œæˆ‘ä»¬çœ‹`serializerFor`ï¼ˆprivateï¼‰çš„ç›¸åº”æƒ…å†µã€‚
 
 	private def serializerFor(
 		  inputObject: Expression,
@@ -105,52 +105,52 @@ def apply[T : TypeTag](): ExpressionEncoder[T] = {
 			}
 	}
 
-Í¨¹ı·´Éä»úÖÆ£¬´ÓÀàĞÍÖĞ½âÎö³ö¸÷¸ö²ÎÊıµÄÃû×ÖºÍ¶ÔÓ¦µÄÀàĞÍ£¬²¢ÇÒÅĞ¶Ï²ÎÊıÃûÊÇ·ñºÏ·¨¡£`Invoke`·½·¨£¬´«Èë±»×ª»¯ÎªExpressionµÄÀà¡¢º¯ÊıÃûºÍ¶ÔÓ¦·µ»ØÀàĞÍ¡£´Ó¶øÓĞĞ§µÄµ÷ÓÃ¶ÔÓ¦º¯Êı£¬
-ÓÉÓÚScalaÖĞµÄ³ÉÔ±±äÁ¿ÃûÒ²¿ÉÒÔ×÷Îªº¯ÊıÃû´«Èë£¬ËùÒÔÕâÀïÏàµ±ÓÚ»ñÈ¡³ÉÔ±±äÁ¿¡£ÕâÆäÊµÊÇÒ»¸ö°ó¶¨µÄ¹ı³Ì£¬¼´Ö±½Ó´ÓÔ­ÓĞÀàÖĞ¶ÁÈ¡Êı¾İ£¬×¢ÒâÕâÀï²¢Ã»ÓĞ°ÑÕâ¸öÀàĞÍ£¨Person£©×ª»¯ÎªÆäËû±äÁ¿£¬
-¶øÖ»ÊÇ½«ÊôĞÔÃûºÍPersonµÄ¾ßÌå³ÉÔ±±äÁ¿µ÷ÓÃº¯Êı½øĞĞÁË°ó¶¨£¬ËùÒÔ¶ÁÈ¡Êı¾İÒÀÈ»ÊÇ´ÓPersonÖĞ¶ÁÈ¡¡£»¹¿ÉÒÔ·¢ÏÖÕâÊÇ¸öµİ¹éµÄ¹ı³Ì£¬ÒòÎª¿ÉÄÜ³ÉÔ±±äÁ¿ÀàĞÍÒÀÈ»²»ÊÇInt£¬StringµÈ»ù±¾ÀàĞÍ£¬ÄÇ¾ÍÒª¼ÌĞø½âÎö¡£
-`expressions.Literal(fieldName) :: serializerFor(fieldValue, fieldType, newPath) :: Nil`¡£µ±Ä³Ğ©º¯ÊıµÄ·µ»ØÖµÒòÎª²Á³ı±ä³ÉObjectÀàĞÍÖ®ºó£¬ĞèÒªÉú³É´úÂë°Ñ½á¹ûÇ¿ÖÆ×ª»»ÎªÔËĞĞÀàĞÍ£¬Õâ²¿·Ö´úÂëÔÚ
-InvokeµÄ`doGenCode`·½·¨ÖĞ¡£
+é€šè¿‡åå°„æœºåˆ¶ï¼Œä»ç±»å‹ä¸­è§£æå‡ºå„ä¸ªå‚æ•°çš„åå­—å’Œå¯¹åº”çš„ç±»å‹ï¼Œå¹¶ä¸”åˆ¤æ–­å‚æ•°åæ˜¯å¦åˆæ³•ã€‚`Invoke`æ–¹æ³•ï¼Œä¼ å…¥è¢«è½¬åŒ–ä¸ºExpressionçš„ç±»ã€å‡½æ•°åå’Œå¯¹åº”è¿”å›ç±»å‹ï¼Œä»è€Œæœ‰æ•ˆçš„è°ƒç”¨å¯¹åº”å‡½æ•°ã€‚
+ç”±äºScalaä¸­çš„æˆå‘˜å˜é‡åä¹Ÿå¯ä»¥ä½œä¸ºå‡½æ•°åä¼ å…¥ï¼Œæ‰€ä»¥è¿™é‡Œç›¸å½“äºè·å–æˆå‘˜å˜é‡ã€‚è¿™å…¶å®æ˜¯ä¸€ä¸ªç»‘å®šçš„è¿‡ç¨‹ï¼Œå³ç›´æ¥ä»åŸæœ‰ç±»ä¸­è¯»å–æ•°æ®ï¼Œæ³¨æ„è¿™é‡Œå¹¶æ²¡æœ‰æŠŠè¿™ä¸ªç±»å‹ï¼ˆPersonï¼‰è½¬åŒ–ä¸ºå…¶ä»–å˜é‡ï¼Œ
+è€Œåªæ˜¯å°†å±æ€§åå’ŒPersonçš„å…·ä½“æˆå‘˜å˜é‡è°ƒç”¨å‡½æ•°è¿›è¡Œäº†ç»‘å®šï¼Œæ‰€ä»¥è¯»å–æ•°æ®ä¾ç„¶æ˜¯ä»Personä¸­è¯»å–ã€‚è¿˜å¯ä»¥å‘ç°è¿™æ˜¯ä¸ªé€’å½’çš„è¿‡ç¨‹ï¼Œå› ä¸ºå¯èƒ½æˆå‘˜å˜é‡ç±»å‹ä¾ç„¶ä¸æ˜¯Intï¼ŒStringç­‰åŸºæœ¬ç±»å‹ï¼Œé‚£å°±è¦ç»§ç»­è§£æã€‚
+`expressions.Literal(fieldName) :: serializerFor(fieldValue, fieldType, newPath) :: Nil`ã€‚å½“æŸäº›å‡½æ•°çš„è¿”å›å€¼å› ä¸ºæ“¦é™¤å˜æˆObjectç±»å‹ä¹‹åï¼Œéœ€è¦ç”Ÿæˆä»£ç æŠŠç»“æœå¼ºåˆ¶è½¬æ¢ä¸ºè¿è¡Œç±»å‹ï¼Œè¿™éƒ¨åˆ†ä»£ç åœ¨
+Invokeçš„`doGenCode`æ–¹æ³•ä¸­ã€‚
 
-ËùÒÔ½âÎöÍêÖ®ºó£¬`serializer`¾ÍÊÇ½«ÀàÖĞ¸÷³ÉÔ±±äÁ¿ÃûÓ³Éäµ½ÁË×Ô¶¨ÒåÀàĞÍµÄ³ÉÔ±±äÁ¿»ñÈ¡º¯ÊıÖĞ£¬¿ÉÒÔÍ¨¹ı`serializer`¿ÉÒÔ½«×Ô¶¨ÒåÀàĞÍÖĞµÄÊı¾İÌáÈ¡³öÀ´½øĞĞ²Ù×÷¡£
-·´Ö®¿ÉÒÔ²ÂÏëµ½`deserializer`¾ÍÊÇ½«³ÉÔ±±äÁ¿µÄ¸³Öµº¯ÊıÓ³Éäµ½¸÷³ÉÔ±±äÁ¿Ãû£¬´Ó¶ø¿ÉÒÔ½«´¦ÀíÍêµÄÊı¾İÍêÕûĞ´Èëµ½×Ô¶¨ÒåÀàĞÍÖĞ¡£µ±È»Õâ¶şÕßÍ¬Ñù¾ß±¸ĞòÁĞ»¯ºÍ·´ĞòÁĞ»¯µÄ¹¦ÄÜ¡£
+æ‰€ä»¥è§£æå®Œä¹‹åï¼Œ`serializer`å°±æ˜¯å°†ç±»ä¸­å„æˆå‘˜å˜é‡åæ˜ å°„åˆ°äº†è‡ªå®šä¹‰ç±»å‹çš„æˆå‘˜å˜é‡è·å–å‡½æ•°ä¸­ï¼Œå¯ä»¥é€šè¿‡`serializer`å¯ä»¥å°†è‡ªå®šä¹‰ç±»å‹ä¸­çš„æ•°æ®æå–å‡ºæ¥è¿›è¡Œæ“ä½œã€‚
+åä¹‹å¯ä»¥çŒœæƒ³åˆ°`deserializer`å°±æ˜¯å°†æˆå‘˜å˜é‡çš„èµ‹å€¼å‡½æ•°æ˜ å°„åˆ°å„æˆå‘˜å˜é‡åï¼Œä»è€Œå¯ä»¥å°†å¤„ç†å®Œçš„æ•°æ®å®Œæ•´å†™å…¥åˆ°è‡ªå®šä¹‰ç±»å‹ä¸­ã€‚å½“ç„¶è¿™äºŒè€…åŒæ ·å…·å¤‡åºåˆ—åŒ–å’Œååºåˆ—åŒ–çš„åŠŸèƒ½ã€‚
 
-> ÏëÏëJava¾Í²»ÄÜ´¦ÀíÕâÑùµÄÎÊÌâ£¬ÖØµãÔÚÓÚScalaÖ§³ÖÀàĞÍ²Á³ıÖ®ºó»¹Ô­£¨TypeTagµÄ¹¦ÀÍ£©£¬¶øÇÒÀàËÆÓÚBash½Å±¾µÄĞ´·¨£¬Ê¹µÃ´úÂëÉú³ÉÏàµ±·½±ã¡£²»¹ıÕæµÄºÜÅå·şSpark¹¤³ÌÊ¦Ïëµ½ÀûÓÃ·´Éä£¬ÒÔ¼°ÓÃExpression°ó¶¨
-Schema£¬´Ó¶ø´ïµ½Ö§³ÖÈÎÒâÀàĞÍµÄÄ¿µÄ¡£Õâ²¿·Ö´úÂëºÜ¶à£¬µ«×ÜÌåË¼Â·ÕâÀïÒÑ¾­½éÉÜÇå³ş¡£ÔÙ¶àËµÒ»¾ä£¬ScalaÏÖÔÚÒ»¸öÀàÖĞ×î¶àÔÊĞíÓĞ22¸öfield£¬¶àÁËµÄ»°¾ÍµÃ¼Ì³ĞProductÁË¡£
+> æƒ³æƒ³Javaå°±ä¸èƒ½å¤„ç†è¿™æ ·çš„é—®é¢˜ï¼Œé‡ç‚¹åœ¨äºScalaæ”¯æŒç±»å‹æ“¦é™¤ä¹‹åè¿˜åŸï¼ˆTypeTagçš„åŠŸåŠ³ï¼‰ï¼Œè€Œä¸”ç±»ä¼¼äºBashè„šæœ¬çš„å†™æ³•ï¼Œä½¿å¾—ä»£ç ç”Ÿæˆç›¸å½“æ–¹ä¾¿ã€‚ä¸è¿‡çœŸçš„å¾ˆä½©æœSparkå·¥ç¨‹å¸ˆæƒ³åˆ°åˆ©ç”¨åå°„ï¼Œä»¥åŠç”¨Expressionç»‘å®š
+Schemaï¼Œä»è€Œè¾¾åˆ°æ”¯æŒä»»æ„ç±»å‹çš„ç›®çš„ã€‚è¿™éƒ¨åˆ†ä»£ç å¾ˆå¤šï¼Œä½†æ€»ä½“æ€è·¯è¿™é‡Œå·²ç»ä»‹ç»æ¸…æ¥šã€‚å†å¤šè¯´ä¸€å¥ï¼Œç°åœ¨ç‰ˆæœ¬çš„Scalaæ”¯æŒä¸€ä¸ªç±»ä¸­æœ€å¤šå…è®¸æœ‰22ä¸ªfieldï¼Œå¤šäº†çš„è¯å°±å¾—ç»§æ‰¿Productäº†ã€‚
 
-Ö®ºó¾ÍÊÇÀûÓÃ·´ÉäÉú³ÉSchema£¬Í¬ÑùÒ²ÊÇµİ¹é¹ı³Ì£¬Óë`serializer`ºÍ`deserializer`µÄÇø±ğÔÚÓÚÆä²»ÓÃ°ó¶¨¶ÁÈ¡»ò¸´ÖÆº¯Êı£¬½ö½öÊÇ³ÉÔ±±äÁ¿ÃûºÍÀàĞÍÃûµÄ¶ÔÓ¦¹ØÏµ¡£
+ä¹‹åå°±æ˜¯åˆ©ç”¨åå°„ç”ŸæˆSchemaï¼ŒåŒæ ·ä¹Ÿæ˜¯é€’å½’è¿‡ç¨‹ï¼Œä¸`serializer`å’Œ`deserializer`çš„åŒºåˆ«åœ¨äºå…¶ä¸ç”¨ç»‘å®šè¯»å–æˆ–å¤åˆ¶å‡½æ•°ï¼Œä»…ä»…æ˜¯æˆå‘˜å˜é‡åå’Œç±»å‹åçš„å¯¹åº”å…³ç³»ã€‚
 
-×îºó¾ÍÊÇÀûÓÃÉÏÃæÉú³ÉµÄ¶ÔÏó¹¹ÔìExpressionEncoder£¬Ã¿¸öDataSet[T]ÖĞ¼ÇÂ¼µÄÀàĞÍT¶¼»áÓĞÒ»¸öExpressionEncoder¡£
+æœ€åå°±æ˜¯åˆ©ç”¨ä¸Šé¢ç”Ÿæˆçš„å¯¹è±¡æ„é€ ExpressionEncoderï¼Œæ¯ä¸ªDataSet[T]ä¸­è®°å½•çš„ç±»å‹Téƒ½ä¼šæœ‰ä¸€ä¸ªExpressionEncoderã€‚
 
-##Éú³ÉDataSet
+##ç”ŸæˆDataSet
 
-EncoderÉú³ÉÖ®ºó£¬¹Ø×¢DataSetµÄÉú³É¡£
+Encoderç”Ÿæˆä¹‹åï¼Œå…³æ³¨DataSetçš„ç”Ÿæˆã€‚
 
 	def createDataset[T : Encoder](data: RDD[T]): Dataset[T] = {
 		Dataset[T](self, ExternalRDD(data, self))
 	}
 	
-Ö÷Òª¿´ExternalRDD£¬ÆäÊµÕâ¸öÀàµÄ×÷ÓÃ¾ÍÊÇ½«RDD×ª»»ÎªLogicalPlanµÄ½Úµã£¨ºÜÃ÷ÏÔÓ¦¸ÃÊÇÒ¶×Ó½Úµã£©£¬ÓÃÓÚÉ¨ÃèRDDÊı¾İ¡£ÔÚÉú³ÉExternalRDDÖ®Ç°ÏÈ¹Ø×¢Ò»ÏÂ`CatalystSerde.generateObjAttr`£¬
-¸Ã·½·¨Ö÷ÒªÊÇµ÷ÓÃAttributeReferenceµÄ`apply`·½·¨Éú³ÉÒ»¸ö¶ÔÊôĞÔµÄÒıÓÃ£¬Õâ¸öÀàĞÍµÄ×÷ÓÃÓĞ£º
+ä¸»è¦çœ‹ExternalRDDï¼Œå…¶å®è¿™ä¸ªç±»çš„ä½œç”¨å°±æ˜¯å°†RDDè½¬æ¢ä¸ºLogicalPlançš„èŠ‚ç‚¹ï¼ˆå¾ˆæ˜æ˜¾åº”è¯¥æ˜¯å¶å­èŠ‚ç‚¹ï¼‰ï¼Œç”¨äºæ‰«æRDDæ•°æ®ã€‚åœ¨ç”ŸæˆExternalRDDä¹‹å‰å…ˆå…³æ³¨ä¸€ä¸‹`CatalystSerde.generateObjAttr`ï¼Œ
+è¯¥æ–¹æ³•ä¸»è¦æ˜¯è°ƒç”¨AttributeReferenceçš„`apply`æ–¹æ³•ç”Ÿæˆä¸€ä¸ªå¯¹å±æ€§çš„å¼•ç”¨ï¼Œè¿™ä¸ªç±»å‹çš„ä½œç”¨æœ‰ï¼š
 
-1. ÅĞ¶ÏÁ½¸öÒıÓÃÊÇ·ñÖ¸ÏòÍ¬Ò»¸öÊôĞÔ£¬ÒòÎªÃ¿¸öÊôĞÔ¶¼Ö»ÓĞÒ»¸öID£»
-2. ÅĞ¶ÏÊôĞÔÊÇ·ñÏàÍ¬£»
-3. ¸ü»»ÊôĞÔÃû£»
-4. ¸ü»»ĞŞÊÎ·ûÃû£¬ÀıÈç£ºtableName.nameºÍsubQueryAlias.nameÖĞtableNameºÍsubQueryAlias¶¼ÊÇĞŞÊÎ·ûÃû¡£
+1. åˆ¤æ–­ä¸¤ä¸ªå¼•ç”¨æ˜¯å¦æŒ‡å‘åŒä¸€ä¸ªå±æ€§ï¼Œå› ä¸ºæ¯ä¸ªå±æ€§éƒ½åªæœ‰ä¸€ä¸ªIDï¼›
+2. åˆ¤æ–­å±æ€§æ˜¯å¦ç›¸åŒï¼›
+3. æ›´æ¢å±æ€§åï¼›
+4. æ›´æ¢ä¿®é¥°ç¬¦åï¼Œä¾‹å¦‚ï¼štableName.nameå’ŒsubQueryAlias.nameä¸­tableNameå’ŒsubQueryAliaséƒ½æ˜¯ä¿®é¥°ç¬¦åã€‚
 
-ExternalRDDµÄ×÷ÓÃ½ÏÎª¼òµ¥£º
+ExternalRDDçš„ä½œç”¨è¾ƒä¸ºç®€å•ï¼š
 
-1. Éú³É±¾¶ÔÏóµÄ¿½±´£¬µ«ÊÇÕâ¸ö¿½±´Ö»ÊÇĞÂÉú³É¶ÔÓ¦AttributeReferenceµÄ¿½±´£¬¶ÔÓ¦rdd²¢²»ÊÇ¿½±´¡£Ò²¾ÍÊÇ±íÃ÷ÕâÖ»ÊÇÓÃÓÚ¹¹½¨LogicalPlan£¬ÒòÎªPlanÖĞ¿ÉÄÜ»á¶à´Î
-ÓÃµ½Í¬Ò»AttributeµÄÒıÓÃ½øĞĞ²»Í¬²Ù×÷£¬ÉõÖÁ¸Ä±ä½á¹¹£¬µ«ÕâĞ©²Ù×÷×îÖÕ¶¼ÊÇ×÷ÓÃµ½Í¬Ò»¸öRDDµÄ£»
-2. ¼ìÑéÓëÁíÒ»¸öPlan¶ÔÓ¦µÄRDDÊÇ·ñÊÇÍ¬Ò»¸ö£¨ËÆºõ½öÓÃÓÚPhysical Plan½×¶Î£©£»
+1. ç”Ÿæˆæœ¬å¯¹è±¡çš„æ‹·è´ï¼Œä½†æ˜¯è¿™ä¸ªæ‹·è´åªæ˜¯æ–°ç”Ÿæˆå¯¹åº”AttributeReferenceçš„æ‹·è´ï¼Œå¯¹åº”rddå¹¶ä¸æ˜¯æ‹·è´ã€‚ä¹Ÿå°±æ˜¯è¡¨æ˜è¿™åªæ˜¯ç”¨äºæ„å»ºLogicalPlanï¼Œå› ä¸ºPlanä¸­å¯èƒ½ä¼šå¤šæ¬¡
+ç”¨åˆ°åŒä¸€Attributeçš„å¼•ç”¨è¿›è¡Œä¸åŒæ“ä½œï¼Œç”šè‡³æ”¹å˜ç»“æ„ï¼Œä½†è¿™äº›æ“ä½œæœ€ç»ˆéƒ½æ˜¯ä½œç”¨åˆ°åŒä¸€ä¸ªRDDçš„ï¼›
+2. æ£€éªŒä¸å¦ä¸€ä¸ªPlanå¯¹åº”çš„RDDæ˜¯å¦æ˜¯åŒä¸€ä¸ªï¼ˆä¼¼ä¹ä»…ç”¨äºPhysical Plané˜¶æ®µï¼‰ï¼›
 
-ExternalRDD±¾ÉíÊÇÒ»¸öLogicalPlan½ÚµãµÄ×ÓÀà£¬²¢ÇÒÊÇÒ¶×Ó½Úµã£¬ÕâºÜÈİÒ×½âÊÍÍ¨£¬ÒòÎªÕâÊÇÃ»ÓĞÈÎºÎ²éÑ¯Âß¼­£¬ËùÒÔËüÓ¦¸Ã±»µ±×öÒ¶×Ó½ÚµãÀ´ÊäÈëÊı¾İ£¬ÒÔ¹©ÖĞ¼ä½Úµã½øĞĞ´¦Àí¡£
+ExternalRDDæœ¬èº«æ˜¯ä¸€ä¸ªLogicalPlanèŠ‚ç‚¹çš„å­ç±»ï¼Œå¹¶ä¸”æ˜¯å¶å­èŠ‚ç‚¹ï¼Œè¿™å¾ˆå®¹æ˜“è§£é‡Šé€šï¼Œå› ä¸ºè¿™æ˜¯æ²¡æœ‰ä»»ä½•æŸ¥è¯¢é€»è¾‘ï¼Œæ‰€ä»¥å®ƒåº”è¯¥è¢«å½“åšå¶å­èŠ‚ç‚¹æ¥è¾“å…¥æ•°æ®ï¼Œä»¥ä¾›ä¸­é—´èŠ‚ç‚¹è¿›è¡Œå¤„ç†ã€‚
 
-µ½´Ë£¬DataSetÉú³ÉÍê±Ï¡£µ«ÊÇÊµ¼ÊÉÏËùÓĞÕæÕıµÄ²Ù×÷¶¼ÊÇLazyµÄ£¬Ö»ÓĞÔÚ´¥·¢µÄÊ±ºò£¬²Å»áÖ´ĞĞQueryPlan¡£Ò²¾ÍÊÇËµÕâÀïµÄ`toDF`ºÍ`toDS`²Ù×÷¶¼Ö»ÊÇ×ª»»²Ù×÷¡£
-`createTempView`²Ù×÷ÊÇCommand²Ù×÷£¬ËùÒÔ¿ÉÒÔÁ¢¼´Ö´ĞĞ£¬¾ÍÊÇ¸øÕâ¸öDataSetÆğ±ğÃû£¨ÊÓÍ¼Ãû£¬ÆäÉúÃüÖÜÆÚÓÉSparkSession¾ö¶¨£©£¬µ±È»¸Ã²Ù×÷»áÑéÖ¤Õâ¸öÃû×ÖÈ«¾ÖÎ¨Ò»¡£
+åˆ°æ­¤ï¼ŒDataSetç”Ÿæˆå®Œæ¯•ã€‚ä½†æ˜¯å®é™…ä¸Šæ‰€æœ‰çœŸæ­£çš„æ“ä½œéƒ½æ˜¯Lazyçš„ï¼Œåªæœ‰åœ¨è§¦å‘çš„æ—¶å€™ï¼Œæ‰ä¼šæ‰§è¡ŒQueryPlanã€‚ä¹Ÿå°±æ˜¯è¯´è¿™é‡Œçš„`toDF`å’Œ`toDS`æ“ä½œéƒ½åªæ˜¯è½¬æ¢æ“ä½œã€‚
+`createTempView`æ“ä½œæ˜¯Commandæ“ä½œï¼Œæ‰€ä»¥å¯ä»¥ç«‹å³æ‰§è¡Œï¼Œå°±æ˜¯ç»™è¿™ä¸ªDataSetèµ·åˆ«åï¼ˆè§†å›¾åï¼Œå…¶ç”Ÿå‘½å‘¨æœŸç”±SparkSessionå†³å®šï¼‰ï¼Œå½“ç„¶è¯¥æ“ä½œä¼šéªŒè¯è¿™ä¸ªåå­—å…¨å±€å”¯ä¸€ã€‚
 
-##QueryÓï¾ä½âÎö
+##Queryè¯­å¥è§£æ
 
-`spark.sql(...)`·½·¨Ê×ÏÈÊÇµ÷ÓÃ`SparkSqlParser.parsePlan`À´½âÎöÕâÌõ²éÑ¯Óï¾ä¡£Êµ¼Êµ÷ÓÃµÄÊÇ`AbstractSqlParser.parse`¡£
+`spark.sql(...)`æ–¹æ³•é¦–å…ˆæ˜¯è°ƒç”¨`SparkSqlParser.parsePlan`æ¥è§£æè¿™æ¡æŸ¥è¯¢è¯­å¥ã€‚å®é™…è°ƒç”¨çš„æ˜¯`AbstractSqlParser.parse`ã€‚
 
 	protected def parse[T](command: String)(toResult: SqlBaseParser => T): T = {
 		val lexer = new SqlBaseLexer(new ANTLRNoCaseStringStream(command))
@@ -181,11 +181,11 @@ ExternalRDD±¾ÉíÊÇÒ»¸öLogicalPlan½ÚµãµÄ×ÓÀà£¬²¢ÇÒÊÇÒ¶×Ó½Úµã£¬ÕâºÜÈİÒ×½âÊÍÍ¨£¬ÒòÎª
 		}
 	}
 
-ÆäÊµÕâ²¿·ÖµÄ´úÂëÈç¹ûÁË½âAntlr 4 µÄ½âÎö¹ı³ÌµÄ»°»áºÜÈİÒ×¶®£¬¿ÉÒÔ²Î¿¼[Antlr v4ÈëÃÅ½Ì³ÌºÍÊµÀı][2]£¬Èç¹ûÏëÉîÈëÁË½â²Î¿¼[ANTLR 4È«Îª²Î¿¼¶ÁÊé±Ê¼Ç][3]¡£
-AntlrÊ×ÏÈ¶Ô×Ö·û´®½øĞĞ´Ê·¨½âÎö£¬¼´`lexer`£¬ÕâÀïÓÃSpark±¾ÉíµÄ`ParseErrorListener`Ìæ»»ÁËÔ­ÓĞµÄ´Ê·¨´íÎó¼àÌıÆ÷£¬ÆäÊµ×÷ÓÃ¾ÍÊÇ½«¹ıÈ¥µÄ´íÎóÀàĞÍ×ª»¯ÎªÒì³£ĞÅÏ¢¡£
-ÀûÓÃ`lexer`Éú³ÉtokenÁ÷£¨·ûºÅÁ÷£©¡£È»ºóÀûÓÃtokenÁ÷½øĞĞ`parse`¹ı³Ì£¬Éú³ÉÓï·¨Ê÷¡£`parse`¹ı³ÌÖĞ¼ÓÈëSpark×Ô¼ºµÄ½âÎöÆ÷`PostProcessor`Õë¶ÔÌØÊâÇé¿ö×ö´¦Àí£¬ÀıÈç£º
-½«±êÊ¶·û£¨±íÃû»òÊôĞÔÃû£©ÖĞµÄÁ½¸ö¡°`¡±»»×öµ¥¸ö£¨ÒòÎª²»Í¬Êı¾İ¿â²Ù×÷ÈËÔ±µÄÏ°¹ß²»Í¬£©£¬ÒÔ¼°½«ËùÓĞ·Ç±£Áô×Ö£¨select£¬whereµÈ£©µÄtokenÈ«²¿µ±×ö±êÊ¶·û¡£
-Ö®ºóÉèÖÃÓï·¨Ê÷Éú³É²ßÂÔ£¨SLL»òLL£¬Ç°Õß¿ìµ«ÄÜÁ¦½ÏÈõ£¬Ã»¾ßÌåÁË½â£©¡£ÖØµã½øÈë`toResult`·½·¨£¬·ÖÎöÆä½âÎö¹ı³Ì¡£
+å…¶å®è¿™éƒ¨åˆ†çš„ä»£ç å¦‚æœäº†è§£Antlr 4 çš„è§£æè¿‡ç¨‹çš„è¯ä¼šå¾ˆå®¹æ˜“æ‡‚ï¼Œå¯ä»¥å‚è€ƒ[Antlr v4å…¥é—¨æ•™ç¨‹å’Œå®ä¾‹][2]ï¼Œå¦‚æœæƒ³æ·±å…¥äº†è§£å‚è€ƒ[ANTLR 4æƒå¨å‚è€ƒè¯»ä¹¦ç¬”è®°][3]ã€‚
+Antlré¦–å…ˆå¯¹å­—ç¬¦ä¸²è¿›è¡Œè¯æ³•è§£æï¼Œå³`lexer`ï¼Œè¿™é‡Œç”¨Sparkæœ¬èº«çš„`ParseErrorListener`æ›¿æ¢äº†åŸæœ‰çš„è¯æ³•é”™è¯¯ç›‘å¬å™¨ï¼Œå…¶å®ä½œç”¨å°±æ˜¯å°†è¿‡å»çš„é”™è¯¯ç±»å‹è½¬åŒ–ä¸ºå¼‚å¸¸ä¿¡æ¯ã€‚
+åˆ©ç”¨`lexer`ç”Ÿæˆtokenæµï¼ˆç¬¦å·æµï¼‰ã€‚ç„¶ååˆ©ç”¨tokenæµè¿›è¡Œ`parse`è¿‡ç¨‹ï¼Œç”Ÿæˆè¯­æ³•æ ‘ã€‚`parse`è¿‡ç¨‹ä¸­åŠ å…¥Sparkè‡ªå·±çš„è§£æå™¨`PostProcessor`é’ˆå¯¹ç‰¹æ®Šæƒ…å†µåšå¤„ç†ï¼Œä¾‹å¦‚ï¼š
+å°†æ ‡è¯†ç¬¦ï¼ˆè¡¨åæˆ–å±æ€§åï¼‰ä¸­çš„ä¸¤ä¸ªâ€œ`â€æ¢åšå•ä¸ªï¼ˆå› ä¸ºä¸åŒæ•°æ®åº“æ“ä½œäººå‘˜çš„ä¹ æƒ¯ä¸åŒï¼‰ï¼Œä»¥åŠå°†æ‰€æœ‰éä¿ç•™å­—ï¼ˆselectï¼Œwhereç­‰ï¼‰çš„tokenå…¨éƒ¨å½“åšæ ‡è¯†ç¬¦ã€‚
+ä¹‹åè®¾ç½®è¯­æ³•æ ‘ç”Ÿæˆç­–ç•¥ï¼ˆSLLæˆ–LLï¼Œå‰è€…å¿«ä½†èƒ½åŠ›è¾ƒå¼±ï¼Œæ²¡å…·ä½“äº†è§£ï¼‰ã€‚é‡ç‚¹è¿›å…¥`toResult`æ–¹æ³•ï¼Œåˆ†æå…¶è§£æè¿‡ç¨‹ã€‚
 
 	//AbstractSqlParser
 	override def parsePlan(sqlText: String): LogicalPlan = parse(sqlText) { parser =>
@@ -197,15 +197,15 @@ AntlrÊ×ÏÈ¶Ô×Ö·û´®½øĞĞ´Ê·¨½âÎö£¬¼´`lexer`£¬ÕâÀïÓÃSpark±¾ÉíµÄ`ParseErrorListener`Ì
 		}
 	}
 
-ºÜÃ÷ÏÔ¸Ã¹ı³Ì¾Í»áÉú³ÉLogicalPlan¡£`parser.singleStatement()`Éú³É¶ÔÓ¦Óï·¨Ê÷£¬`singleStatement`¹æÔòÎÄ¼şÖĞ×î¶¥²ãµÄ½á¹¹Ãû£¨×Ô¶¨Òå£©¡£
-½øÈë`ASTBuilder.visitSingleStatement`¡£
+å¾ˆæ˜æ˜¾è¯¥è¿‡ç¨‹å°±ä¼šç”ŸæˆLogicalPlanã€‚`parser.singleStatement()`ç”Ÿæˆå¯¹åº”è¯­æ³•æ ‘ï¼Œ`singleStatement`è§„åˆ™æ–‡ä»¶ä¸­æœ€é¡¶å±‚çš„ç»“æ„åï¼ˆè‡ªå®šä¹‰ï¼‰ã€‚
+è¿›å…¥`ASTBuilder.visitSingleStatement`ã€‚
 
 	override def visitSingleStatement(ctx: SingleStatementContext): LogicalPlan = withOrigin(ctx) {
 		visit(ctx.statement).asInstanceOf[LogicalPlan]
 	}
 
-visitÊÇ¸¸º¯ÊıÔÚÔËĞĞÊ±Éú³ÉµÄ£¬ËùÒÔ´úÂëÖĞÃ»ÓĞÏÔÊ¾ÆäÎ»ÖÃ¡£½«singleStatementÖĞµÄstatementÌáÈ¡³öÀ´£¬È»ºó°´ÕÕ²ã´ÎÒ»²ãÒ»²ã½âÎö¡£
-Àı×Ó`SELECT name, age FROM people WHERE age BETWEEN 13 AND 19`ÖĞµÄ±äÁ¿Ê×ÏÈÊÇ²éÑ¯Óï¾ä¡£
+visitæ˜¯çˆ¶å‡½æ•°åœ¨è¿è¡Œæ—¶ç”Ÿæˆçš„ï¼Œæ‰€ä»¥ä»£ç ä¸­æ²¡æœ‰æ˜¾ç¤ºå…¶ä½ç½®ã€‚å°†singleStatementä¸­çš„statementæå–å‡ºæ¥ï¼Œç„¶åæŒ‰ç…§å±‚æ¬¡ä¸€å±‚ä¸€å±‚è§£æã€‚
+ä¾‹å­`SELECT name, age FROM people WHERE age BETWEEN 13 AND 19`ä¸­çš„å˜é‡é¦–å…ˆæ˜¯æŸ¥è¯¢è¯­å¥ã€‚
 
 	//AstBuilder
 	override def visitQuerySpecification(
@@ -220,7 +220,7 @@ visitÊÇ¸¸º¯ÊıÔÚÔËĞĞÊ±Éú³ÉµÄ£¬ËùÒÔ´úÂëÖĞÃ»ÓĞÏÔÊ¾ÆäÎ»ÖÃ¡£½«singleStatementÖĞµÄstat
 		ctx.lateralView.asScala.foldLeft(from)(withGenerate)
 	}
 
-µÚÒ»¾ä»ñÈ¡µ½fromÖ®ºóÓï·¨¿é£¨ÀıÈç±íÃû£¬ViewÃû»òÕß×Ó²éÑ¯£©µÄLogicalPlan½Úµã£¬Èç¹ûÓĞ¶à¸ö¶ÔÏó£¬»áµ÷ÓÃJoin·½·¨£¬×¢ÒâÕâ²½²¢Ã»ÓĞ½øĞĞJoin¼ÆËã£¬½ö½öÊÇÈ·¶¨ÁËÆäÔËËãÂß¼­¡£È»ºó½»¸ø`withQuerySpecification`´¦Àí¡£Õâ¸öº¯ÊıÂß¼­±È½Ï¶à£¬ÕâÀïÖ»ÌôÀı×ÓÖĞ¶ÔÓ¦µÄ³É·Ö·ÖÎö¡£
+ç¬¬ä¸€å¥è·å–åˆ°fromä¹‹åè¯­æ³•å—ï¼ˆä¾‹å¦‚è¡¨åï¼ŒViewåæˆ–è€…å­æŸ¥è¯¢ï¼‰çš„LogicalPlanèŠ‚ç‚¹ï¼Œå¦‚æœæœ‰å¤šä¸ªå¯¹è±¡ï¼Œä¼šè°ƒç”¨Joinæ–¹æ³•ï¼Œæ³¨æ„è¿™æ­¥å¹¶æ²¡æœ‰è¿›è¡ŒJoinè®¡ç®—ï¼Œä»…ä»…æ˜¯ç¡®å®šäº†å…¶è¿ç®—é€»è¾‘ã€‚ç„¶åäº¤ç»™`withQuerySpecification`å¤„ç†ã€‚è¿™ä¸ªå‡½æ•°é€»è¾‘æ¯”è¾ƒå¤šï¼Œè¿™é‡ŒåªæŒ‘ä¾‹å­ä¸­å¯¹åº”çš„æˆåˆ†åˆ†æã€‚
 
 	//AstBuilder
 	private def withQuerySpecification(
@@ -261,19 +261,19 @@ visitÊÇ¸¸º¯ÊıÔÚÔËĞĞÊ±Éú³ÉµÄ£¬ËùÒÔ´úÂëÖĞÃ»ÓĞÏÔÊ¾ÆäÎ»ÖÃ¡£½«singleStatementÖĞµÄstat
 		}
 	}
 
-ºóÃæµÄ½âÎö»ùÓÚÇ°ÃæµÄ½Úµã£¬ÀıÈçÊ×ÏÈ¾ÍÊÇ½âÎöViewÁ¿£¬È»ºó¾ÍÊÇ¹ıÂËÓï¾ä£¬Ö®ºóÊÇÊôĞÔÃû£¨»òÕßAggregate²Ù×÷£©£¬½Ó×ÅÊÇÍ¶Ó°£¬Ö®ºó»¹ÓĞhaving¡¢distinctµÈ²Ù×÷¡£
-¿ÉÒÔ·¢ÏÖÕâ¸öÂß¼­ÊÇºÜºÏÀíµÄ£¬ÒòÎªViewÁ¿£¨ÔÚ²»´ú±í×Ó²éÑ¯µÄÇé¿öÏÂ£¬ÊÇ×î³õµÄÊäÈë£©ÊÇÊı¾İÊäÈë£¬Ö®ºó¾­¹ı¹ıÂËÈ·¶¨³ö´¦ÀíµÄÊôĞÔ£¬È»ºó»ñÈ¡µ½Õë¶Ô¸ÃÊôĞÔµÄAggregate²Ù×÷£¨»ò¾ÍÊÇ±¾Éí£©£¬
-È»ºó¾ÍÊÇÍ¶Ó°Êä³ö¡£
+åé¢çš„è§£æåŸºäºå‰é¢çš„èŠ‚ç‚¹ï¼Œä¾‹å¦‚é¦–å…ˆå°±æ˜¯è§£æViewé‡ï¼Œç„¶åå°±æ˜¯è¿‡æ»¤è¯­å¥ï¼Œä¹‹åæ˜¯å±æ€§åï¼ˆæˆ–è€…Aggregateæ“ä½œï¼‰ï¼Œæ¥ç€æ˜¯æŠ•å½±ï¼Œä¹‹åè¿˜æœ‰havingã€distinctç­‰æ“ä½œã€‚
+å¯ä»¥å‘ç°è¿™ä¸ªé€»è¾‘æ˜¯å¾ˆåˆç†çš„ï¼Œå› ä¸ºViewé‡ï¼ˆåœ¨ä¸ä»£è¡¨å­æŸ¥è¯¢çš„æƒ…å†µä¸‹ï¼Œæ˜¯æœ€åˆçš„è¾“å…¥ï¼‰æ˜¯æ•°æ®è¾“å…¥ï¼Œä¹‹åç»è¿‡è¿‡æ»¤ç¡®å®šå‡ºå¤„ç†çš„å±æ€§ï¼Œç„¶åè·å–åˆ°é’ˆå¯¹è¯¥å±æ€§çš„Aggregateæ“ä½œï¼ˆæˆ–å°±æ˜¯æœ¬èº«ï¼‰ï¼Œ
+ç„¶åå°±æ˜¯æŠ•å½±è¾“å‡ºã€‚
 
-ÔÚ[Spark SQL »ù´¡ÖªÊ¶][1]ÖĞÌ¸µ½GenerateÊÇ½«Ò»×éÊı¾İµÄ·ÖÎö½á¹ûÓëµ±Ç°µÄ·ÖÎöÆ´½ÓÔÚÒ»Æğ¡£µ«ÊÇÕâÀï×Ó²éÑ¯»¹Ã»ÓĞResolve£¬¸ÃGeneratorÊÇUnresolvedµÄ£¬ÔİÊ±½öÓÃÓÚÆ´½Ó¡£ÕâÀï»á·¢ÏÖÔÚ·ÖÎöFROM¿éµÄÊ±ºòÒ²»áÓÃÓëViewÃûÆ´½Ó£¬
-ÄÇÃ´ÕâÀïµÄ´¦ÀíºÍÄÇÀïÓĞÊ²Ã´²»Í¬ÄØ£¿¾Ù¸öÀı×Ó
+åœ¨[Spark SQL åŸºç¡€çŸ¥è¯†][1]ä¸­è°ˆåˆ°Generateæ˜¯å°†ä¸€ç»„æ•°æ®çš„åˆ†æç»“æœä¸å½“å‰çš„åˆ†ææ‹¼æ¥åœ¨ä¸€èµ·ã€‚ä½†æ˜¯è¿™é‡Œå­æŸ¥è¯¢è¿˜æ²¡æœ‰Resolveï¼Œè¯¥Generatoræ˜¯Unresolvedçš„ï¼Œæš‚æ—¶ä»…ç”¨äºæ‹¼æ¥ã€‚è¿™é‡Œä¼šå‘ç°åœ¨åˆ†æFROMå—çš„æ—¶å€™ä¹Ÿä¼šç”¨ä¸Viewåæ‹¼æ¥ï¼Œ
+é‚£ä¹ˆè¿™é‡Œçš„å¤„ç†å’Œé‚£é‡Œæœ‰ä»€ä¹ˆä¸åŒå‘¢ï¼Ÿä¸¾ä¸ªä¾‹å­
 
-	...£¨SELECT * FROM (table1,table2,lateralView1)£© lateralView2 ...
+	...ï¼ˆSELECT * FROM (table1,table2,lateralView1)ï¼‰ lateralView2 ...
 
-`visitFromClause`½öÓÃÓÚtable1ºÍ2µÄJoin½á¹ûÓëlateralView1½øĞĞÆ´½Ó£¬ºóÕßÓÃÓÚÍâ²ãÆ´½Ó£¬Ò²¾ÍÊÇ½«×Ó²éÑ¯µÄÊä³öÓë¸ÃlateralView2½øĞĞÆ´½Ó¡£
+`visitFromClause`ä»…ç”¨äºtable1å’Œ2çš„Joinç»“æœä¸lateralView1è¿›è¡Œæ‹¼æ¥ï¼Œåè€…ç”¨äºå¤–å±‚æ‹¼æ¥ï¼Œä¹Ÿå°±æ˜¯å°†å­æŸ¥è¯¢çš„è¾“å‡ºä¸è¯¥lateralView2è¿›è¡Œæ‹¼æ¥ã€‚
 
-È»ºóµ÷ÓÃ`val withFilter = withLateralView.optionalMap(where)(filter)`£¬µ±´æÔÚwhere²ÎÊıµÄÊ±ºò£¬½«WHEREºó±ßµÄÌõ¼ş¿éÓ³Éäµ½ÃûÎª`withFilter`µÄLogicalPlan½ÚµãÖĞ£¬²¢ÇÒ½«`withLateralView`×÷Îª×Ó½ÚµãÎªFilterÌá¹©ÊäÈë¡£
-ÕâÀïµÄWhere¿éÖĞµÄbooleanExpressionÊÇPredicated£¨Î½´Ê£¬Ö§³ÖBETWEEN¡¢IN¡¢LIKE¡¢RLIKEºÍIS NULL¼°Æä·´Òå²Ù×÷£©£¬ËùÒÔ½øÈëwithPredicated¿ÉÒÔ¿´¾ßÌåµÄ½âÎö¹ı³Ì¡£
+ç„¶åè°ƒç”¨`val withFilter = withLateralView.optionalMap(where)(filter)`ï¼Œå½“å­˜åœ¨whereå‚æ•°çš„æ—¶å€™ï¼Œå°†WHEREåè¾¹çš„æ¡ä»¶å—æ˜ å°„åˆ°åä¸º`withFilter`çš„LogicalPlanèŠ‚ç‚¹ä¸­ï¼Œå¹¶ä¸”å°†`withLateralView`ä½œä¸ºå­èŠ‚ç‚¹ä¸ºFilteræä¾›è¾“å…¥ã€‚
+è¿™é‡Œçš„Whereå—ä¸­çš„booleanExpressionæ˜¯Predicatedï¼ˆè°“è¯ï¼Œæ”¯æŒBETWEENã€INã€LIKEã€RLIKEå’ŒIS NULLåŠå…¶åä¹‰æ“ä½œï¼‰ï¼Œæ‰€ä»¥è¿›å…¥withPredicatedå¯ä»¥çœ‹å…·ä½“çš„è§£æè¿‡ç¨‹ã€‚
 
 	ctx.kind.getType match {
 		  case SqlBaseParser.BETWEEN =>
@@ -284,15 +284,15 @@ visitÊÇ¸¸º¯ÊıÔÚÔËĞĞÊ±Éú³ÉµÄ£¬ËùÒÔ´úÂëÖĞÃ»ÓĞÏÔÊ¾ÆäÎ»ÖÃ¡£½«singleStatementÖĞµÄstat
 			  ...
 		}
 
-×îºóÎÒÃÇ·¢ÏÖBTWEEN²Ù×÷±»×ª»¯ÎªÀàËÆÓÚ`e >=ctx.lower && e <= ctx.upper`µÄ²Ù×÷¡£
+æœ€åæˆ‘ä»¬å‘ç°BTWEENæ“ä½œè¢«è½¬åŒ–ä¸ºç±»ä¼¼äº`e >=ctx.lower && e <= ctx.upper`çš„æ“ä½œã€‚
 
-Ö®ºóµÄÍ¶Ó°£¨Project£©²Ù×÷ÀàËÆ£¬¶¼¿ÉÒÔ×Ü½áÎª»ñÈ¡½ÚµãÖĞµÄExpressionÓÃÓÚÔËËã£¬È»ºóÁ¬½ÓLogicalPlan½Úµã¡£
+ä¹‹åçš„æŠ•å½±ï¼ˆProjectï¼‰æ“ä½œç±»ä¼¼ï¼Œéƒ½å¯ä»¥æ€»ç»“ä¸ºè·å–èŠ‚ç‚¹ä¸­çš„Expressionç”¨äºè¿ç®—ï¼Œç„¶åè¿æ¥LogicalPlanèŠ‚ç‚¹ã€‚
 
-> Expression°üº¬ÓÚLogicalPlan½ÚµãÖĞ£¬ÆäÏàµ±ÓÚ¸Ã½ÚµãµÄ¼ÆËãµ¥Ôª£¬¶øLogicalPlan½ÚµãÖ®¼äµÄÁªÏµ¿ÉÒÔ¿´×öÊÇÎª¼ÆËãµ¥ÔªÌá¹©ÊäÈëÊä³ö½Ó¿Ú¡£
+> ExpressionåŒ…å«äºLogicalPlanèŠ‚ç‚¹ä¸­ï¼Œå…¶ç›¸å½“äºè¯¥èŠ‚ç‚¹çš„è®¡ç®—å•å…ƒï¼Œè€ŒLogicalPlanèŠ‚ç‚¹ä¹‹é—´çš„è”ç³»å¯ä»¥çœ‹åšæ˜¯ä¸ºè®¡ç®—å•å…ƒæä¾›è¾“å…¥è¾“å‡ºæ¥å£ã€‚
 
 ![relation between expression and logicalPlan][expresion-logical]
 
-Éú³ÉLogicalPlanÖ®ºó£¬¾ÍĞèÒª´«¸ø`DataSet.ofRows`¡£
+ç”ŸæˆLogicalPlanä¹‹åï¼Œå°±éœ€è¦ä¼ ç»™`DataSet.ofRows`ã€‚
 
 	//DataSet object
 	def ofRows(sparkSession: SparkSession, logicalPlan: LogicalPlan): DataFrame = {
@@ -301,10 +301,10 @@ visitÊÇ¸¸º¯ÊıÔÚÔËĞĞÊ±Éú³ÉµÄ£¬ËùÒÔ´úÂëÖĞÃ»ÓĞÏÔÊ¾ÆäÎ»ÖÃ¡£½«singleStatementÖĞµÄstat
 		new Dataset[Row](sparkSession, qe, RowEncoder(qe.analyzed.schema))
 	}
 	
-Ê×ÏÈ¾ÍÊÇµ÷ÓÃ`executePlan`À´Ö´ĞĞlogicalPlan£¬Éú³ÉQueryExecution¶ÔÏó£¬µ«Êµ¼ÊÉÏQueryExecutionÀï±ßµÄ·ÖÎö²Ù×÷¶¼ÊÇLazyµÄ£¬ËùÒÔ¿ÉÒÔËµÕâÀï·µ»ØµÄ¾ÍÊÇ¸ö¡°×¼±¸¾ÍĞ÷µÄ»úÆ÷¡±£¬µÈ´ı´¥·¢¡£
-µÚ¶ş¾äÓÃÓÚ¼ì²éÊÇ·ñÓĞ²»Ö§³ÖµÄ²Ù×÷£¬ÀıÈç·ÖÎöµÄtable²»´æÔÚ£¨»òÃ»ÓĞ¼ÆËã³öÀ´£©£¬Attribute²»´æÔÚµÈ£¬ÒÔ±ãÌáÔçÖÕÖ¹´íÎó´úÂë¡£
+é¦–å…ˆå°±æ˜¯è°ƒç”¨`executePlan`æ¥æ‰§è¡ŒlogicalPlanï¼Œç”ŸæˆQueryExecutionå¯¹è±¡ï¼Œä½†å®é™…ä¸ŠQueryExecutioné‡Œè¾¹çš„åˆ†ææ“ä½œéƒ½æ˜¯Lazyçš„ï¼Œæ‰€ä»¥å¯ä»¥è¯´è¿™é‡Œè¿”å›çš„å°±æ˜¯ä¸ªâ€œå‡†å¤‡å°±ç»ªçš„æœºå™¨â€ï¼Œç­‰å¾…è§¦å‘ã€‚
+ç¬¬äºŒå¥ç”¨äºæ£€æŸ¥æ˜¯å¦æœ‰ä¸æ”¯æŒçš„æ“ä½œï¼Œä¾‹å¦‚åˆ†æçš„tableä¸å­˜åœ¨ï¼ˆæˆ–æ²¡æœ‰è®¡ç®—å‡ºæ¥ï¼‰ï¼ŒAttributeä¸å­˜åœ¨ç­‰ï¼Œä»¥ä¾¿ææ—©ç»ˆæ­¢é”™è¯¯ä»£ç ã€‚
 
-È»ºóµ÷ÓÃQueryExecutionµÄ·ÖÎö`analyzed`¿ªÊ¼Ö´ĞĞ¡£
+ç„¶åè°ƒç”¨QueryExecutionçš„åˆ†æ`analyzed`å¼€å§‹æ‰§è¡Œã€‚
 
 	//QueryExecution
 	lazy val analyzed: LogicalPlan = {
@@ -312,41 +312,41 @@ visitÊÇ¸¸º¯ÊıÔÚÔËĞĞÊ±Éú³ÉµÄ£¬ËùÒÔ´úÂëÖĞÃ»ÓĞÏÔÊ¾ÆäÎ»ÖÃ¡£½«singleStatementÖĞµÄstat
 		sparkSession.sessionState.analyzer.execute(logical)
 	}
 	
-`analyzer`±¾ÉíÒ²ÊÇLazyµÄ£¬ËùÒÔ»áµ÷ÓÃAnalyzerµÄ`execute`·½·¨½«UnresolvedµÄAttitudeºÍRelation£¬Í¨¹ıCataLog×ª»¯ÎªÕæÕı²Ù×÷ÓÃµÄÀàĞÍ¶ÔÏó¡£
+`analyzer`æœ¬èº«ä¹Ÿæ˜¯Lazyçš„ï¼Œæ‰€ä»¥ä¼šè°ƒç”¨Analyzerçš„`execute`æ–¹æ³•å°†Unresolvedçš„Attitudeå’ŒRelationï¼Œé€šè¿‡CataLogè½¬åŒ–ä¸ºçœŸæ­£æ“ä½œç”¨çš„ç±»å‹å¯¹è±¡ã€‚
 
 ##Analyzer
 
-Ê×ÏÈ¿´Ê²Ã´ÊÇCatalog¡£ËüÊÇÒ»¸öSessionCatalogÀà£¬ÓÃÓÚÎ¬»¤Spark SQLÖĞ±íºÍÊı¾İ¿âµÄ×´Ì¬£¬Ëü¿ÉÒÔºÍÍâ²¿ÏµÍ³£¨ÈçHive£©½øĞĞÁ¬½Ó£¬´Ó¶ø»ñÈ¡µ½HiveÖĞµÄÊı¾İ¿âĞÅÏ¢¡£
-Ö®Ç°Ìáµ½µÄÀûÓÃ`createTempView`Éú³É±íÃû£¬Õâ¸öº¯ÊıÖĞÍ¬Ê±½«±íÃû£¨ViewÃû£©ĞÅÏ¢×¢²áµ½ÁËCatalogÖĞ¡£
+é¦–å…ˆçœ‹ä»€ä¹ˆæ˜¯Catalogã€‚å®ƒæ˜¯ä¸€ä¸ªSessionCatalogç±»ï¼Œç”¨äºç»´æŠ¤Spark SQLä¸­è¡¨å’Œæ•°æ®åº“çš„çŠ¶æ€ï¼Œå®ƒå¯ä»¥å’Œå¤–éƒ¨ç³»ç»Ÿï¼ˆå¦‚Hiveï¼‰è¿›è¡Œè¿æ¥ï¼Œä»è€Œè·å–åˆ°Hiveä¸­çš„æ•°æ®åº“ä¿¡æ¯ã€‚
+ä¹‹å‰æåˆ°çš„åˆ©ç”¨`createTempView`ç”Ÿæˆè¡¨åï¼Œè¿™ä¸ªå‡½æ•°ä¸­åŒæ—¶å°†è¡¨åï¼ˆViewåï¼‰ä¿¡æ¯æ³¨å†Œåˆ°äº†Catalogä¸­ã€‚
 
-´´½¨Analyzer¶ÔÏóµÄÊ±ºò£¬¿ÉÒÔ¶Ô`extendedResolutionRules`½øĞĞÖØĞ´£¬¸Ã¹æÔòÊÇÓÃ»§¶îÍâÌí¼ÓµÄ¹æÔò£¬ÓÃÓÚ½âÎö¡£»¹ÓĞÒ»¸ö¿ÉÒÔÖØĞ´µÄfield£¬¾ÍÊÇ`extendedCheckRules`£¬
-ÆäÓÃÓÚÌí¼ÓÓÃÓÚ¼ì²âºÏ·¨ĞÔµÄ¹æÔò¡£
+åˆ›å»ºAnalyzerå¯¹è±¡çš„æ—¶å€™ï¼Œå¯ä»¥å¯¹`extendedResolutionRules`è¿›è¡Œé‡å†™ï¼Œè¯¥è§„åˆ™æ˜¯ç”¨æˆ·é¢å¤–æ·»åŠ çš„è§„åˆ™ï¼Œç”¨äºè§£æã€‚è¿˜æœ‰ä¸€ä¸ªå¯ä»¥é‡å†™çš„fieldï¼Œå°±æ˜¯`extendedCheckRules`ï¼Œ
+å…¶ç”¨äºæ·»åŠ ç”¨äºæ£€æµ‹åˆæ³•æ€§çš„è§„åˆ™ã€‚
 
-AnalyzerÖĞ°üº¬´óÁ¿µÄ¹æÔò£¬¹²·ÖÎª6Àà£¬×îÖØÒªµÄÁ½ÀàÊÇ£ºÌæ»»£¨Substitution£©ºÍ½âÎö£¨Resolution£©¡£¹æÔò±¾Éí¾ÍÊÇÒ»¸ö·½·¨¼¯£¨¹¤³§Àà£©£¬´Ó¶øÊµÏÖ¶ÔLogicalPlanµÄ×ª»»¡£
+Analyzerä¸­åŒ…å«å¤§é‡çš„è§„åˆ™ï¼Œå…±åˆ†ä¸º6ç±»ï¼Œæœ€é‡è¦çš„ä¸¤ç±»æ˜¯ï¼šæ›¿æ¢ï¼ˆSubstitutionï¼‰å’Œè§£æï¼ˆResolutionï¼‰ã€‚è§„åˆ™æœ¬èº«å°±æ˜¯ä¸€ä¸ªæ–¹æ³•é›†ï¼ˆå·¥å‚ç±»ï¼‰ï¼Œä»è€Œå®ç°å¯¹LogicalPlançš„è½¬æ¢ã€‚
 
 ###Substitution
 
-`CTESubstitution`¹æÔòÊÇ½«CTE¶¨Òå£¨¾ÍÊÇWITH¿é£©µÄ×Ó²éÑ¯Ìæ»»Îª¿É´¦ÀíLogicalPlan£¬ÓÉÓÚCTE¶¨Òå´òÂÒÁËÓï·¨Ê÷µÄ½á¹¹£¨´Ó×óµ½ÓÒ½âÎö¸ù±¾Ã»±¾·¨Ö±½Ó½«CTE¶¨ÒåµÄ×Ó¿é¼Óµ½Óï·¨Ê÷£©£¬ËùÒÔ´Ë´¦Òª½«CTE¶¨ÒåµÄ×Ó¿éÖØĞÂ°´ÕÕË÷Òı¼ÓÈëµ½Õû¸ö²éÑ¯µÄLogicalPlanÖĞ£¬²¢ÇÒ½«ËùÓĞWITH¿éÖĞÉú³ÉµÄrelation½âÎöÎªResolved×´Ì¬¡£
+`CTESubstitution`è§„åˆ™æ˜¯å°†CTEå®šä¹‰ï¼ˆå°±æ˜¯WITHå—ï¼‰çš„å­æŸ¥è¯¢æ›¿æ¢ä¸ºå¯å¤„ç†LogicalPlanï¼Œç”±äºCTEå®šä¹‰æ‰“ä¹±äº†è¯­æ³•æ ‘çš„ç»“æ„ï¼ˆä»å·¦åˆ°å³è§£ææ ¹æœ¬æ²¡æœ¬æ³•ç›´æ¥å°†CTEå®šä¹‰çš„å­å—åŠ åˆ°è¯­æ³•æ ‘ï¼‰ï¼Œæ‰€ä»¥æ­¤å¤„è¦å°†CTEå®šä¹‰çš„å­å—é‡æ–°æŒ‰ç…§ç´¢å¼•åŠ å…¥åˆ°æ•´ä¸ªæŸ¥è¯¢çš„LogicalPlanä¸­ï¼Œå¹¶ä¸”å°†æ‰€æœ‰WITHå—ä¸­ç”Ÿæˆçš„relationè§£æä¸ºResolvedçŠ¶æ€ã€‚
 
-> ÀıÈç£º`WITH q as(SELECT time_taken FROM idp WHERE time_taken=15) SELECT * FROM q; `
-> ÔÚÃ»ÓĞÔËĞĞ¸ÃÌõ¹æÔòµÄÊ±ºò»á´æÔÚÁ½¸öLogicalPlanÊ÷£¬·Ö±ğ¶ÔÓ¦WITH¿éºÍ`SELECT * FROM q`£¬È»ºó¸Ã¹æÔòµÄ×÷ÓÃ¾ÍÊÇÒÔqÎªÁ´½ÓÒÀ¾İ£¬½«ÕâÁ½¸öLogicalPlan½øĞĞºÏ²¢¡£ÄÇÃ´WITH¿éÖĞµÄ²éÑ¯¾ÍÓ¦¸Ã×÷Îªºó±ßFROM¿éÖĞµÄ×ÓÊ÷¡£
+> ä¾‹å¦‚ï¼š`WITH q as(SELECT time_taken FROM idp WHERE time_taken=15) SELECT * FROM q; `
+> åœ¨æ²¡æœ‰è¿è¡Œè¯¥æ¡è§„åˆ™çš„æ—¶å€™ä¼šå­˜åœ¨ä¸¤ä¸ªLogicalPlanæ ‘ï¼Œåˆ†åˆ«å¯¹åº”WITHå—å’Œ`SELECT * FROM q`ï¼Œç„¶åè¯¥è§„åˆ™çš„ä½œç”¨å°±æ˜¯ä»¥qä¸ºé“¾æ¥ä¾æ®ï¼Œå°†è¿™ä¸¤ä¸ªLogicalPlanè¿›è¡Œåˆå¹¶ã€‚é‚£ä¹ˆWITHå—ä¸­çš„æŸ¥è¯¢å°±åº”è¯¥ä½œä¸ºåè¾¹FROMå—ä¸­çš„å­æ ‘ã€‚
 
-`WindowsSubstitution`¹æÔò×öµÄ¹¤×÷ÀàËÆÓÚ`CTESubstitution`£¬Ö»ÊÇÓï·¨¶¨ÒåÓëCTE²»Í¬¡£
+`WindowsSubstitution`è§„åˆ™åšçš„å·¥ä½œç±»ä¼¼äº`CTESubstitution`ï¼Œåªæ˜¯è¯­æ³•å®šä¹‰ä¸CTEä¸åŒã€‚
 
-> Substitution×öµÄ¹¤×÷ÊÒ¶ÔLogicalPlanµÄ½á¹¹×ö¸Ä±ä£¬¶øResolutionµÄ¹¤×÷Ö»ÊÇ½«Ô­ÓĞµÄ½Úµã½âÎöÎªÊµÌå£¨ÒòÎªÓï·¨½âÎöºóµÄ±íÃû½ö½öÊÇÒ»¸öÃû×Ö£¬²¢Ã»ÓĞÕæÕıµØÓëDataSet½¨Á¢ÁªÏµ£©¡£
+> Substitutionåšçš„å·¥ä½œæ˜¯å¯¹LogicalPlançš„ç»“æ„åšæ”¹å˜ï¼Œè€ŒResolutionçš„å·¥ä½œåªæ˜¯å°†åŸæœ‰çš„èŠ‚ç‚¹è§£æä¸ºå®ä½“ï¼ˆå› ä¸ºè¯­æ³•è§£æåçš„è¡¨åä»…ä»…æ˜¯ä¸€ä¸ªåå­—ï¼Œå¹¶æ²¡æœ‰çœŸæ­£åœ°ä¸DataSetå»ºç«‹è”ç³»ï¼‰ã€‚
 
 ###Resolution
 
-ÕâĞ©¹æÔòÊÇÓĞĞòµÄ£¬´òÂÒÁË¾ÍºÜ¿ÉÄÜµ¼ÖÂ³ö´í»òÕß¶ÌÊ±¼äÄÚÔËĞĞ²»Íê¡£
+è¿™äº›è§„åˆ™æ˜¯æœ‰åºçš„ï¼Œæ‰“ä¹±äº†å°±å¾ˆå¯èƒ½å¯¼è‡´å‡ºé”™æˆ–è€…çŸ­æ—¶é—´å†…è¿è¡Œä¸å®Œã€‚
 
-1. Ê×ÏÈµÚÒ»Ìõ¹æÔòÊÇ`ResolveTableValuedFunctions`£¬¼´ÀàËÆÓÚ`range(start, end, step)`µÄÓï¾ä¡£Æä´¦ÀíÁ÷³Ì¾ÍÊÇÏÈÆ¥Åäº¯ÊıÃû£¨ÔİÊ±Ö»ÓĞrange£©£¬Æ¥Åäµ½Ö®ºó¾Í¿ÉÒÔÖªµÀ¸÷²ÎÊıµÄÀàĞÍ¡£
-È»ºó½«Ö®Ç°½âÎöµÄ¸÷²ÎÊı£¨»ò±í´ïÊ½²ÎÊı£©µÄÀàĞÍÇ¿ÖÆ×ª»»ÎªexpectedType¡£
+1. é¦–å…ˆç¬¬ä¸€æ¡è§„åˆ™æ˜¯`ResolveTableValuedFunctions`ï¼Œå³ç±»ä¼¼äº`range(start, end, step)`çš„è¯­å¥ã€‚å…¶å¤„ç†æµç¨‹å°±æ˜¯å…ˆåŒ¹é…å‡½æ•°åï¼ˆæš‚æ—¶åªæœ‰rangeï¼‰ï¼ŒåŒ¹é…åˆ°ä¹‹åå°±å¯ä»¥çŸ¥é“å„å‚æ•°çš„ç±»å‹ã€‚
+ç„¶åå°†ä¹‹å‰è§£æçš„å„å‚æ•°ï¼ˆæˆ–è¡¨è¾¾å¼å‚æ•°ï¼‰çš„ç±»å‹å¼ºåˆ¶è½¬æ¢ä¸ºexpectedTypeã€‚
 
-2. µÚ¶şÌõ¹æÔòÊÇ`ResolveRelations`£¬¹ËÃûË¼Òå£¬¾ÍÊÇ½«relationµÄ×´Ì¬½âÎöÎªresolved£¬½âÎöÎªresolevedµÄ¹ı³ÌÆäÊµ¾ÍÊÇ½«±íÃû±äÎª¾ßÌåµÄDataSetÊµÌå¡£
+2. ç¬¬äºŒæ¡è§„åˆ™æ˜¯`ResolveRelations`ï¼Œé¡¾åæ€ä¹‰ï¼Œå°±æ˜¯å°†relationçš„çŠ¶æ€è§£æä¸ºresolvedï¼Œè§£æä¸ºresolevedçš„è¿‡ç¨‹å…¶å®å°±æ˜¯å°†è¡¨åå˜ä¸ºå…·ä½“çš„DataSetå®ä½“ã€‚
 
-3. µÚÈıÌõ¹æÔòÊÇ`ResolveReferences`£¬Æä½«UnresolvedAttribute½âÎöÎªÁ¬Ïò×ÓÊ÷½á¹ûÖĞ¾ßÌåÊôĞÔµÄÒıÓÃ£¬¼´AttributeReference¡£µ«AttributeReference±¾Éí¼Ì³Ğ×ÔUnevaluable£¬ËùÒÔ²¢Î´ÇóÖµ¡£
-ÄÇÃ´ËüÊÇÔõÃ´½«ÊôĞÔÃûºÍ¾ßÌåÊôĞÔÁªÏµÆğÀ´µÄÄØ£¿ÒòÎª½âÎöÃ¿¸öDataSetµÄÊ±ºò»á×¢²áºÜ¶àÊôĞÔ£¬Õâ¸öÊôĞÔÊÇ°üº¬¾ßÌåÄÚÈİµÄÊµÌå¡£ËùÒÔ»áµ½×¢²áµÄ±íÀïÈ¥²éÑ¯Æ¥Åä£¬´Ó¶ø½«UnresolvedAttributeÖĞµÄÊôĞÔÃûÓë¶ÔÓ¦Attribute×öÓ³Éä¡£
-¾ßÌåÊµÏÖÔÚ`resolveAsTableColumn`ÏÂ¡£
+3. ç¬¬ä¸‰æ¡è§„åˆ™æ˜¯`ResolveReferences`ï¼Œå…¶å°†UnresolvedAttributeè§£æä¸ºè¿å‘å­DataSetä¸­å…·ä½“å±æ€§çš„å¼•ç”¨ï¼Œå³AttributeReferenceã€‚ä½†AttributeReferenceæœ¬èº«ç»§æ‰¿è‡ªUnevaluableï¼Œæ‰€ä»¥å¹¶æœªæ±‚å€¼ã€‚
+é‚£ä¹ˆå®ƒæ˜¯æ€ä¹ˆå°†å±æ€§åå’Œå…·ä½“å±æ€§è”ç³»èµ·æ¥çš„å‘¢ï¼Ÿå› ä¸ºè§£ææ¯ä¸ªDataSetçš„æ—¶å€™ä¼šæ³¨å†Œå¾ˆå¤šå±æ€§ï¼Œè¿™ä¸ªå±æ€§æ˜¯åŒ…å«å…·ä½“å†…å®¹çš„å®ä½“ã€‚æ‰€ä»¥ä¼šåˆ°æ³¨å†Œçš„è¡¨é‡Œå»æŸ¥è¯¢åŒ¹é…ï¼Œä»è€Œå°†UnresolvedAttributeä¸­çš„å±æ€§åä¸å¯¹åº”Attributeåšæ˜ å°„ã€‚
+å…·ä½“å®ç°åœ¨`resolveAsTableColumn`ä¸‹ã€‚
 
 	//LogicalPlan
 	protected def resolve(
@@ -399,19 +399,19 @@ AnalyzerÖĞ°üº¬´óÁ¿µÄ¹æÔò£¬¹²·ÖÎª6Àà£¬×îÖØÒªµÄÁ½ÀàÊÇ£ºÌæ»»£¨Substitution£©ºÍ½âÎö£
 		}
 	}
 	
-ÊäÈë²ÎÊıÖĞµÄ`nameParts`±íÊ¾²éÑ¯Óï¾äÖĞµÄÊôĞÔÃû£¬ÎªÊ²Ã´ÊÇĞòÁĞÀàĞÍÄØ£¿ÒòÎªÓĞ`tableName.colName.fieldName`µÄĞÎÊ½¡£
-`attribute`±íÊ¾¿ÉÄÜµÄÊôĞÔ£¬ÒòÎª×îÏÈ²»ÖªµÀµÄÊ±ºòÖ»ÄÜ¸ù¾İ×î¿ªÍ·µÄÃû×Ö£¨±íÃûtableName£©Ò»¸ö¸öÈ¥ÅÅ²é¡£È»ºóµ÷ÓÃ`resolveAsColumn`È¥ÑéÖ¤ÊÇ·ñ¸Ã`attribute`µÄÃû×ÖÓëcolNameÊÇ·ñÆ¥Åä£¬ÈôÊÇÆ¥Åä£¬¾Í·µ»Ø¸Ã`attribute`ºÍĞèÒªµÄÆäËû×Ö¶Î£¨ÈçfieldName£©µÄÓ³Éä¡£
-µ±È»»¹ÓĞ½âÎö²»µ½µÄÇé¿ö£¬Õâ²»ÊÇËµÃ÷Õâ¸öÊôĞÔ²»´æÔÚ£¬ÒòÎªÉÏÒ»²½ÊÇÕë¶Ô`tableName.colName...`µÄĞÎÊ½£¬È»ºóÕë¶ÔÖ±½ÓÊÇ`colName...`ĞÎÊ½Æ¥Åä¡£
+è¾“å…¥å‚æ•°ä¸­çš„`nameParts`è¡¨ç¤ºæŸ¥è¯¢è¯­å¥ä¸­çš„å±æ€§åï¼Œä¸ºä»€ä¹ˆæ˜¯åºåˆ—ç±»å‹å‘¢ï¼Ÿå› ä¸ºæœ‰`tableName.colName.fieldName`çš„å½¢å¼ã€‚
+`attribute`è¡¨ç¤ºå¯èƒ½çš„å±æ€§ï¼Œå› ä¸ºæœ€å…ˆä¸çŸ¥é“çš„æ—¶å€™åªèƒ½æ ¹æ®æœ€å¼€å¤´çš„åå­—ï¼ˆè¡¨åtableNameï¼‰ä¸€ä¸ªä¸ªå»æ’æŸ¥ã€‚ç„¶åè°ƒç”¨`resolveAsColumn`å»éªŒè¯æ˜¯å¦è¯¥`attribute`çš„åå­—ä¸colNameæ˜¯å¦åŒ¹é…ï¼Œè‹¥æ˜¯åŒ¹é…ï¼Œå°±è¿”å›è¯¥`attribute`å’Œéœ€è¦çš„å…¶ä»–å­—æ®µï¼ˆå¦‚fieldNameï¼‰çš„æ˜ å°„ã€‚
+å½“ç„¶è¿˜æœ‰è§£æä¸åˆ°çš„æƒ…å†µï¼Œè¿™ä¸æ˜¯è¯´æ˜è¿™ä¸ªå±æ€§ä¸å­˜åœ¨ï¼Œå› ä¸ºä¸Šä¸€æ­¥æ˜¯é’ˆå¯¹`tableName.colName...`çš„å½¢å¼ï¼Œç„¶åé’ˆå¯¹ç›´æ¥æ˜¯`colName...`å½¢å¼åŒ¹é…ã€‚
 
-×îºóÈç¹ûÃ»ÓĞÆäËû×Ö¶Î£¨¾ÍÊÇÄÚÇ¶µÄÊôĞÔÃû£©¾ÍÖ±½Ó·µ»Ø¸ÃDataSetµÄAttrubute¡£·´Ö®Ôò½«¸ÃÊôĞÔÀàĞÍ¾ßÌåµÄ³ÉÔ±±äÁ¿µÄÌáÈ¡º¯ÊıÓë`tableName.colName.fieldName`×÷ÁªÏµÆğÀ´£¬ÄÇÃ´Ê¹ÓÃ`tableName.colName.fieldName`¾ÍÏàµ±ÓÚÖ±½Ó»ñÈ¡`colName`¶ÔÏó¾ßÌåµÄ³ÉÔ±±äÁ¿¡£
+æœ€åå¦‚æœæ²¡æœ‰å…¶ä»–å­—æ®µï¼ˆå°±æ˜¯å†…åµŒçš„å±æ€§åï¼‰å°±ç›´æ¥è¿”å›è¯¥DataSetçš„Attrubuteã€‚åä¹‹åˆ™å°†è¯¥å±æ€§ç±»å‹å…·ä½“çš„æˆå‘˜å˜é‡çš„æå–å‡½æ•°ä¸`tableName.colName.fieldName`ä½œè”ç³»èµ·æ¥ï¼Œé‚£ä¹ˆä½¿ç”¨`tableName.colName.fieldName`å°±ç›¸å½“äºç›´æ¥è·å–`colName`å¯¹è±¡å…·ä½“çš„æˆå‘˜å˜é‡ã€‚
 
-ÆäËûµÄ¹æÔòÀàËÆ£¬¶¼ÊÇ½«UnresolvedµÄLogicalPlan½ÚµãÓë¾ßÌå²Ù×÷»òÕßÊµÌå½øĞĞ¶ÔÓ¦¡£ÈçÍ¼ËùÊ¾£º
+å…¶ä»–çš„è§„åˆ™ç±»ä¼¼ï¼Œéƒ½æ˜¯å°†Unresolvedçš„LogicalPlanèŠ‚ç‚¹ä¸å…·ä½“æ“ä½œæˆ–è€…å®ä½“è¿›è¡Œå¯¹åº”ã€‚å¦‚å›¾æ‰€ç¤ºï¼š
 
-[unresolved-to-resolved][generateLogicalPlan]
+![unresolved-to-resolved][generateLogicalPlan]
 
 ***
 
-> `execute`·½·¨ÔÚRuleExecutorÖĞ£¬Ö÷Òª×÷ÓÃ¾ÍÊÇÀûÓÃAnalyzerÖĞµÄ¹æÔò¼¯ºÏBatchesÀ´´¦ÀíLogicalPlan¡£´¦Àí·½Ê½ÔÚ[Spark SQL »ù´¡ÖªÊ¶][1]ÖĞÓĞÌáµ½£¬¾ÍÊÇ²»¶ÏÓ¦ÓÃ¹æÔò´ïµ½Fixed Point£¨¿ÉÒÔÉèÖÃ²ßÂÔÀ´±£Ö¤ÓĞÏŞÊ±¼äÒÔÄÚ£©¡£
+> `execute`æ–¹æ³•åœ¨RuleExecutorä¸­ï¼Œä¸»è¦ä½œç”¨å°±æ˜¯åˆ©ç”¨Analyzerä¸­çš„è§„åˆ™é›†åˆBatchesæ¥å¤„ç†LogicalPlanã€‚å¤„ç†æ–¹å¼åœ¨[Spark SQL åŸºç¡€çŸ¥è¯†][1]ä¸­æœ‰æåˆ°ï¼Œå°±æ˜¯ä¸æ–­åº”ç”¨è§„åˆ™è¾¾åˆ°Fixed Pointï¼ˆå¯ä»¥è®¾ç½®ç­–ç•¥æ¥ä¿è¯æœ‰é™æ—¶é—´ä»¥å†…ï¼‰ã€‚
 
 
 
