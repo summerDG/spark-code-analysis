@@ -171,7 +171,7 @@ Operator通常会组成多级的Plan。Operator的类都在basicLogicalOperators
 |`GlobalLimit`(limitExpr: Expression, child: LogicalPlan)|对Child输出的数据进行Limit限制|
 |`Sample`(child: LogicalPlan,....)|根据一些参数，从child输出的Rows进行一定比例的取样|
 |`Aggregate`(groupingExpressions: Seq[Expression],aggregateExpressions: Seq[NamedExpression],child: LogicalPlan)|对child输出row进行aggregate操作，比如groupby之类的操作|
-|`Generate`(generator: Generator,join: Boolean,outer: Boolean,ualifier: Option[String],generatorOutput: Seq[Attribute],child: LogicalPlan)|可以用于递归等操作，输入行以流的形式输入，并以流的形式输出。类似于`flatMap`，但允许将输入与输出连接在一起|
+|`Generate`(generator: Generator,join: Boolean,outer: Boolean,ualifier: Option[String],generatorOutput: Seq[Attribute],child: LogicalPlan)|可以用于复杂的查询，将子查询结果以View形式作为输入，输入行以流的形式输入，并以流的形式输出。类似于`flatMap`，但允许将输入与输出连接在一起，也就是将子查询的分析结果作为父查询的输入|
 |`Range`(start: Long,end: Long,step: Long,numSlices: Option[Int],output: Seq[Attribute])|对输出数据的范围进行约束|
 |`GroupingSets`(bitmasks: Seq[Int],groupByExprs: Seq[Expression],child: LogicalPlan,aggregations: Seq[NamedExpression])|相当于把多个Group By操作合并起来|
 
