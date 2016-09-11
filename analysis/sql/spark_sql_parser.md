@@ -184,7 +184,7 @@ ExternalRDD本身是一个LogicalPlan节点的子类，并且是叶子节点，�
 其实这部分的代码如果了解Antlr 4 的解析过程的话会很容易懂，可以参考[Antlr v4入门教程和实例][2]，如果想深入了解参考[ANTLR 4权威参考读书笔记][3]。
 Antlr首先对字符串进行词法解析，即`lexer`，这里用Spark本身的`ParseErrorListener`替换了原有的词法错误监听器，其实作用就是将过去的错误类型转化为异常信息。
 利用`lexer`生成token流（符号流）。然后利用token流进行`parse`过程，生成语法树。`parse`过程中加入Spark自己的解析器`PostProcessor`针对特殊情况做处理，例如：
-将标识符（表名或属性名）中的两个“`”换做单个（因为不同数据库操作人员的习惯不同），以及将所有非保留字（select，where等）的token全部当做标识符。
+将标识符（表名或属性名）中的两个``“`”``换做单个（因为不同数据库操作人员的习惯不同），以及将所有非保留字（select，where等）的token全部当做标识符。
 之后设置语法树生成策略（SLL或LL，前者快但能力较弱，没具体了解）。重点进入`toResult`方法，分析其解析过程。
 
 	//AbstractSqlParser

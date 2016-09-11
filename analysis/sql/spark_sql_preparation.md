@@ -171,9 +171,10 @@ Operator通常会组成多级的Plan。Operator的类都在basicLogicalOperators
 |`GlobalLimit`(limitExpr: Expression, child: LogicalPlan)|对Child输出的数据进行Limit限制|
 |`Sample`(child: LogicalPlan,....)|根据一些参数，从child输出的Rows进行一定比例的取样|
 |`Aggregate`(groupingExpressions: Seq[Expression],aggregateExpressions: Seq[NamedExpression],child: LogicalPlan)|对child输出row进行aggregate操作，比如groupby之类的操作|
-|`Generate`(generator: Generator,join: Boolean,outer: Boolean,ualifier: Option[String],generatorOutput: Seq[Attribute],child: LogicalPlan)|可以用于复杂的查询，将子查询结果以View形式作为输入，输入行以流的形式输入，并以流的形式输出。类似于`flatMap`，但允许将输入与输出连接在一起，也就是将子查询的分析结果作为父查询的输入|
+|`Generate`(generator: Generator,join: Boolean,outer: Boolean,ualifier: Option[String],generatorOutput: Seq[Attribute],child: LogicalPlan)|可以用于复杂的查询，将子查询结果以View形式作为输入，输入行以流的形式输入，并以流的形式输出。类似于`flatMap`，但允许将输入与输出连接在一起，也就是将子查询的分析结果作为父查询的输入和部分输出|
 |`Range`(start: Long,end: Long,step: Long,numSlices: Option[Int],output: Seq[Attribute])|对输出数据的范围进行约束|
-|`GroupingSets`(bitmasks: Seq[Int],groupByExprs: Seq[Expression],child: LogicalPlan,aggregations: Seq[NamedExpression])|相当于把多个Group By操作合并起来|
+|`GroupingSets`(bitmasks: Seq[Int],groupByExprs: Seq[Expression],child: LogicalPlan,aggregations: Seq[NamedExpression])|相当于把多个Group By操作合并起来，具体参考[将 GROUP BY 与 ROLLUP、CUBE 和 GROUPING SETS 一起使用][5]。其中的掩码是将各个Expression按照1,2,4,8...顺序进行编号，然后用编号的和来表示集合，类似于linux中的权限设置|
+|`Expand`(bitmasks: Seq[Int],groupByAliases: Seq[Alias],groupByAttrs: Seq[Attribute],gid: Attribute,child: LogicalPlan)|利用表示集合的掩码以及输入的输入的属性（包括其别名）将，每行数据进行扩展，为保证输出长度统一，集合中不包含的属性用Null表示。主要用于GROUPINGSETS|
 
 下面介绍Command类，这些类都继承自Command，而且数量比Operator多。
 
@@ -233,5 +234,6 @@ Spark SQL对Plan Tree或者内部Expression Tree的遍历分为几个阶段：
 [2]:http://stackoverflow.com/questions/12218641/scala-what-is-a-typetag-and-how-do-i-use-it
 [3]:http://docs.scala-lang.org/overviews/reflection/overview.html
 [4]:http://blog.csdn.net/u010376788/article/details/47206571
+[5]:https://technet.microsoft.com/zh-cn/library/bb522495(v=sql.105).aspx
 [calalyst_flow]:../../pic/Catalyst-Optimizer-diagram.png
 [plan_img]:../../pic/plan.png
