@@ -1,17 +1,17 @@
 #Catalyst Logical Plan Optimizer
 
-Éú³ÉResolved LogicalPlanÖ®ºóµÄ¹¤×÷¾ÍÊÇÖ´ĞĞLogical Plan Optimize¡£¸Ã½×¶ÎµÄÖ÷ÒªÈÎÎñ¾ÍÊÇ¶ÔLogical Plan½øĞĞ¼ôÖ¦ºÏ²¢µÈ²Ù×÷£¬É¾³ıÎŞÓÃ¼ÆËã»òÕß¶ÔÒ»Ğ©¼ÆËãµÄ¶à¸ö²½Öè½øĞĞºÏ²¢¡£ÔÚ[Spark Catalyst ·ÖÎö½×¶Î][1]ÖĞÒ²ÓĞ¶ÔLogicalPlan½á¹¹µÄ¸Ä±ä£¬²»¹ıÄÇÖ»ÊÇ½«¶à¸öLogicalPlanºÏ²¢³ÉÒ»¸ö£¬ÕâÀïÊÇ½«ÔÚÒ»¸öLogicalPlanµÄ»ù´¡ÉÏ½øĞĞ½á¹¹±ä»¯¡£
+ç”ŸæˆResolved LogicalPlanä¹‹åçš„å·¥ä½œå°±æ˜¯æ‰§è¡ŒLogical Plan Optimizeã€‚è¯¥é˜¶æ®µçš„ä¸»è¦ä»»åŠ¡å°±æ˜¯å¯¹Logical Planè¿›è¡Œå‰ªæåˆå¹¶ç­‰æ“ä½œï¼Œåˆ é™¤æ— ç”¨è®¡ç®—æˆ–è€…å¯¹ä¸€äº›è®¡ç®—çš„å¤šä¸ªæ­¥éª¤è¿›è¡Œåˆå¹¶ã€‚åœ¨[Spark Catalyst åˆ†æé˜¶æ®µ][1]ä¸­ä¹Ÿæœ‰å¯¹LogicalPlanç»“æ„çš„æ”¹å˜ï¼Œä¸è¿‡é‚£åªæ˜¯å°†å¤šä¸ªLogicalPlanåˆå¹¶æˆä¸€ä¸ªï¼Œè¿™é‡Œæ˜¯å°†åœ¨ä¸€ä¸ªLogicalPlançš„åŸºç¡€ä¸Šè¿›è¡Œç»“æ„å˜åŒ–ã€‚
 
-[logicalPlan optimizer][logicalPlan_optimizer] 
+![logicalPlan optimizer][logicalPlan_optimizer] 
 
-¹ØÓÚOptimizer£ºÓÅ»¯°üÀ¨RBO£¨Rule Based Optimizer£©/CBO(Cost Based Optimizer)£¬ÆäÖĞSpark CatalystÊÇÊôÓÚRBO£¬¼´»ùÓÚÒ»Ğ©¾­Ñé¹æÔò£¨Rule£©¶ÔLogical PlanµÄÓï·¨½á¹¹½øĞĞÓÅ»¯£»ÔÚÉú³ÉPhysical PlanÊ±ºò£¬»¹»á»ùÓÚCost´ú¼Û×ö½øÒ»²½µÄÓÅ»¯£¬±ÈÈç¶à±íjoin£¬ÓÅÏÈÑ¡ÔñĞ¡±í½øĞĞjoin£¬ÒÔ¼°¸ù¾İÊı¾İ´óĞ¡£¬ÔÚHashJoin/SortMergeJoin/BroadcastJoinÈıÕßÖ®¼ä½øĞĞ¾ñÔñ¡£
+å…³äºOptimizerï¼šä¼˜åŒ–åŒ…æ‹¬RBOï¼ˆRule Based Optimizerï¼‰/CBO(Cost Based Optimizer)ï¼Œå…¶ä¸­Spark Catalystæ˜¯å±äºRBOï¼Œå³åŸºäºä¸€äº›ç»éªŒè§„åˆ™ï¼ˆRuleï¼‰å¯¹Logical Plançš„è¯­æ³•ç»“æ„è¿›è¡Œä¼˜åŒ–ï¼›åœ¨ç”ŸæˆPhysical Planæ—¶å€™ï¼Œè¿˜ä¼šåŸºäºCostä»£ä»·åšè¿›ä¸€æ­¥çš„ä¼˜åŒ–ï¼Œæ¯”å¦‚å¤šè¡¨joinï¼Œä¼˜å…ˆé€‰æ‹©å°è¡¨è¿›è¡Œjoinï¼Œä»¥åŠæ ¹æ®æ•°æ®å¤§å°ï¼Œåœ¨HashJoin/SortMergeJoin/BroadcastJoinä¸‰è€…ä¹‹é—´è¿›è¡ŒæŠ‰æ‹©ã€‚
 
-ÓÅ»¯²Ù×÷µÄÊÇÔÚ±»´¥·¢Ö®ºó²Å»áÖ´ĞĞ£¬ËùÒÔ´ÓDataSetµÄÒ»¸öAction²Ù×÷ÈëÊÖ£¬ÕâÀï¾ÍÑ¡`collect`¡£È»ºóµ÷ÓÃ`QueryExecution.executedPlan`¡£
-QueryExecutionÖĞÓĞ¶à¸öPlanĞèÒªLazyÖ´ĞĞ£¬Ê×ÏÈÊÇÀûÓÃ`analyzed`Éú³É`withCachedData`£¬È»ºóÀûÓÃ`withCachedData`Éú³É`optimizedPlan`£¬ÕâÖ®Ç°µÄ²Ù×÷¶¼ÊÇÔÚLogicalPlanÉÏÖ´ĞĞµÄ£¬²¢ÇÒÉú³ÉµÄÒ²¶¼ÊÇLogicalPlan¡£È»ºó¾ÍÊÇÉú³É`sparkPlan`£¬¼´PhysicalPlan£¬¼Ì¶øÊÇ`executedPlan`¡£
+ä¼˜åŒ–æ“ä½œçš„æ˜¯åœ¨è¢«è§¦å‘ä¹‹åæ‰ä¼šæ‰§è¡Œï¼Œæ‰€ä»¥ä»DataSetçš„ä¸€ä¸ªActionæ“ä½œå…¥æ‰‹ï¼Œè¿™é‡Œå°±é€‰`collect`ã€‚ç„¶åè°ƒç”¨`QueryExecution.executedPlan`ã€‚
+QueryExecutionä¸­æœ‰å¤šä¸ªPlanéœ€è¦Lazyæ‰§è¡Œï¼Œé¦–å…ˆæ˜¯åˆ©ç”¨`analyzed`ç”Ÿæˆ`withCachedData`ï¼Œç„¶ååˆ©ç”¨`withCachedData`ç”Ÿæˆ`optimizedPlan`ï¼Œè¿™ä¹‹å‰çš„æ“ä½œéƒ½æ˜¯åœ¨LogicalPlanä¸Šæ‰§è¡Œçš„ï¼Œå¹¶ä¸”ç”Ÿæˆçš„ä¹Ÿéƒ½æ˜¯LogicalPlanã€‚ç„¶åå°±æ˜¯ç”Ÿæˆ`sparkPlan`ï¼Œå³PhysicalPlanï¼Œç»§è€Œæ˜¯`executedPlan`ã€‚
 
 ##withCachedData
 
-ÔÚ½øÈëLogicalPlan OptimizerÖ®Ç°£¬Ê×ÏÈĞèÒªÉú³É`withCachedData`¡£Æä×÷ÓÃ¾ÍÊÇ½«LogicalPlanÖĞµÄÄ³Ğ©²¿·ÖÌæ»»³ÉÒÑ¾­cached£¬´Ó¶ø¼õÉÙ²»±ØÒªµÄ·ÖÎöÔËËã¡£¿ÉÒÔËµÕâÒ²ÊÇOptimizerµÄÒ»²¿·Ö¡£
+åœ¨è¿›å…¥LogicalPlan Optimizerä¹‹å‰ï¼Œé¦–å…ˆéœ€è¦ç”Ÿæˆ`withCachedData`ã€‚å…¶ä½œç”¨å°±æ˜¯å°†LogicalPlanä¸­çš„æŸäº›éƒ¨åˆ†æ›¿æ¢æˆå·²ç»cachedï¼Œä»è€Œå‡å°‘ä¸å¿…è¦çš„åˆ†æè¿ç®—ã€‚å¯ä»¥è¯´è¿™ä¹Ÿæ˜¯Optimizerçš„ä¸€éƒ¨åˆ†ã€‚
 
 	//CacheManager
 	def useCachedData(plan: LogicalPlan): LogicalPlan = {
@@ -23,7 +23,7 @@ QueryExecutionÖĞÓĞ¶à¸öPlanĞèÒªLazyÖ´ĞĞ£¬Ê×ÏÈÊÇÀûÓÃ`analyzed`Éú³É`withCachedData`
 		}
 	}
 	
-²Ù×÷¾ÍÊÇ°´ÕÕÇ°Ğò±éÀú£¨`transformDown`ÊÇÇ°Ğò±éÀú¶ÔÃ¿¸ö½ÚµãÔËĞĞ¹æÔò£¬`transformUp`ÊÇºóĞò±éÀú¶ÔÃ¿¸ö½ÚµãÔËĞĞ¹æÔò£©ÖğÒ»²éÑ¯¸÷¸öLogicalPlan½ÚµãµÄ½á¹ûÊÇ·ñÒÑ¾­±»cached£¬ÈôÊÇÔòÖ±½ÓÓÃcachedºóµÄ½á¹ûÌæ»»¡£
+æ“ä½œå°±æ˜¯æŒ‰ç…§å‰åºéå†ï¼ˆ`transformDown`æ˜¯å‰åºéå†å¯¹æ¯ä¸ªèŠ‚ç‚¹è¿è¡Œè§„åˆ™ï¼Œ`transformUp`æ˜¯ååºéå†å¯¹æ¯ä¸ªèŠ‚ç‚¹è¿è¡Œè§„åˆ™ï¼‰é€ä¸€æŸ¥è¯¢å„ä¸ªLogicalPlanèŠ‚ç‚¹çš„ç»“æœæ˜¯å¦å·²ç»è¢«cachedï¼Œè‹¥æ˜¯åˆ™ç›´æ¥ç”¨cachedåçš„ç»“æœæ›¿æ¢ã€‚
 
 	//CacheManager
 	def lookupCachedData(plan: LogicalPlan): Option[CachedData] = readLock {
@@ -41,11 +41,11 @@ QueryExecutionÖĞÓĞ¶à¸öPlanĞèÒªLazyÖ´ĞĞ£¬Ê×ÏÈÊÇÀûÓÃ`analyzed`Éú³É`withCachedData`
 		  (left.children, right.children).zipped.forall(_ sameResult _)
 	}
 
-ÏÈ½âÊÍÒ»ÏÂInMemoryRelationÕâ¸öÀà£¬Æä°üº¬ÁËÒ»¸öÄÚ´æÖĞµÄRelationµÄĞÅÏ¢£¬ÊôĞÔÁĞ±í£¬´æ´¢²ã¼¶£¬ÒÔ¼°±íÃû£¬ÏàÓ¦RDD£¬ÆäRDDÖĞÊı¾İµÄÀàĞÍÊÇCatchedBatch£¬Õâ¸öÀàĞÍ°üº¬¸ÃÌõÊı¾İµÄĞĞºÅ£¬ÒÔ¼°Êı¾İBuffer£¬ÀàĞÍÊÇArray[Array[Byte]]£¬»¹ÓĞÒ»¸öInternalRowµÄ±äÁ¿statsÖ¸Ã÷Ã¿Ìõ¼ÇÂ¼ÖĞµÄ¸÷¸öµ¥ÔªÊÇÊ²Ã´ÀàĞÍ£¬ÒòÎªÕâÀïÒÔArray[Byte]À´´æ´¢Ã¿¸öÊı¾İ£¬ËùÒÔÒªÖ¸Ã÷Êı¾İÀàĞÍ£¬´Ó¶øÎÒÃÇÔÚÕâÀïÃ÷È·InternalRow²¢Ã»ÓĞÊ²Ã´Êı¾İ£¬²»¹ı¾ÍÊÇÓÃÓÚÖ¸Ã÷Êı¾İÀàĞÍ¡£
-`cachedData`ÀàĞÍÎªArrayBuffer[CacheData]£¬Ïàµ±ÓÚÒ»¸öLogicalPlanºÍInMemoryRelationµÄÓ³Éä¡£ÔÚCacheManagerÖĞµÄ`cacheQuery`ÖĞ¿ÉÒÔ·¢ÏÖ£¬ÕâÀïµÄLogicalPlan¾ÍÊÇQueryExecutionÖĞµÄ`analyzed`µÄLogicalPlan£¬Ò²¾ÍÊÇËµÃ»ÓĞ¾­¹ıÓÅ»¯´¦ÀíµÄ¡£*ÕâÑùµÄ´¦ÀíÒ²ÊÇ±È½ÏºÏÀíµÄ£¬ÒòÎª¾­¹ıÓÅ»¯µÄLogicalPlan¿ÉÄÜ¸ù¾İÕûÌå²éÑ¯µÄ²îÒì¶øµ¼ÖÂ¼´Ê¹ÏàÍ¬µÄ²éÑ¯Ò²²»ÄÜÆ¥Åä£¬Æä´ÎÓÅ»¯ÊÇĞèÒª´¦ÀíÊ±¼äµÄ£¬Ã¿¸ö×Ó²éÑ¯µÄÓÅ»¯ÊÖ¶Î²¢²»ÄÜÏñÕûÌåÓÅ»¯ÄÇÑùÊÇÈ·¶¨µÄ£¬ÕâÑù»á´øÀ´ºÜ´óµÄ¿ªÏú*¡£
-LogicalPlanµÄ`canonicalized`ĞÎÌ¬¾ÍÊÇ½«×Ó²éÑ¯µÄ±ğÃûÈ¥µô£¬ÕâÑùµÄ»°²»»áÒòÎªÁ½¸öLogicalPlan½ö½öÒòÎª×Ó²éÑ¯±ğÃû²»Í¬¾ÍÅĞ¶Ï²»ÏàÍ¬£¬È»ºó¾ÍÊÇÒ»´Î±È½ÏÏà¹ØĞÅÏ¢¡£
+å…ˆè§£é‡Šä¸€ä¸‹InMemoryRelationè¿™ä¸ªç±»ï¼Œå…¶åŒ…å«äº†ä¸€ä¸ªå†…å­˜ä¸­çš„Relationçš„ä¿¡æ¯ï¼Œå±æ€§åˆ—è¡¨ï¼Œå­˜å‚¨å±‚çº§ï¼Œä»¥åŠè¡¨åï¼Œç›¸åº”RDDï¼Œå…¶RDDä¸­æ•°æ®çš„ç±»å‹æ˜¯CatchedBatchï¼Œè¿™ä¸ªç±»å‹åŒ…å«è¯¥æ¡æ•°æ®çš„è¡Œå·ï¼Œä»¥åŠæ•°æ®Bufferï¼Œç±»å‹æ˜¯Array[Array[Byte]]ï¼Œè¿˜æœ‰ä¸€ä¸ªInternalRowçš„å˜é‡statsæŒ‡æ˜æ¯æ¡è®°å½•ä¸­çš„å„ä¸ªå•å…ƒæ˜¯ä»€ä¹ˆç±»å‹ï¼Œå› ä¸ºè¿™é‡Œä»¥Array[Byte]æ¥å­˜å‚¨æ¯ä¸ªæ•°æ®ï¼Œæ‰€ä»¥è¦æŒ‡æ˜æ•°æ®ç±»å‹ï¼Œä»è€Œæˆ‘ä»¬åœ¨è¿™é‡Œæ˜ç¡®InternalRowå¹¶æ²¡æœ‰ä»€ä¹ˆæ•°æ®ï¼Œä¸è¿‡å°±æ˜¯ç”¨äºæŒ‡æ˜æ•°æ®ç±»å‹ã€‚
+`cachedData`ç±»å‹ä¸ºArrayBuffer[CacheData]ï¼Œç›¸å½“äºä¸€ä¸ªLogicalPlanå’ŒInMemoryRelationçš„æ˜ å°„ã€‚åœ¨CacheManagerä¸­çš„`cacheQuery`ä¸­å¯ä»¥å‘ç°ï¼Œè¿™é‡Œçš„LogicalPlanå°±æ˜¯QueryExecutionä¸­çš„`analyzed`çš„LogicalPlanï¼Œä¹Ÿå°±æ˜¯è¯´æ²¡æœ‰ç»è¿‡ä¼˜åŒ–å¤„ç†çš„ã€‚*è¿™æ ·çš„å¤„ç†ä¹Ÿæ˜¯æ¯”è¾ƒåˆç†çš„ï¼Œå› ä¸ºç»è¿‡ä¼˜åŒ–çš„LogicalPlanå¯èƒ½æ ¹æ®æ•´ä½“æŸ¥è¯¢çš„å·®å¼‚è€Œå¯¼è‡´å³ä½¿ç›¸åŒçš„æŸ¥è¯¢ä¹Ÿä¸èƒ½åŒ¹é…ï¼Œå…¶æ¬¡ä¼˜åŒ–æ˜¯éœ€è¦å¤„ç†æ—¶é—´çš„ï¼Œæ¯ä¸ªå­æŸ¥è¯¢çš„ä¼˜åŒ–æ‰‹æ®µå¹¶ä¸èƒ½åƒæ•´ä½“ä¼˜åŒ–é‚£æ ·æ˜¯ç¡®å®šçš„ï¼Œè¿™æ ·ä¼šå¸¦æ¥å¾ˆå¤§çš„å¼€é”€*ã€‚
+LogicalPlançš„`canonicalized`å½¢æ€å°±æ˜¯å°†å­æŸ¥è¯¢çš„åˆ«åå»æ‰ï¼Œè¿™æ ·çš„è¯ä¸ä¼šå› ä¸ºä¸¤ä¸ªLogicalPlanä»…ä»…å› ä¸ºå­æŸ¥è¯¢åˆ«åä¸åŒå°±åˆ¤æ–­ä¸ç›¸åŒï¼Œç„¶åå°±æ˜¯ä¸€æ¬¡æ¯”è¾ƒç›¸å…³ä¿¡æ¯ã€‚
 
-½ÓÏÂÀ´¾ÍÊÇÀûÓÃ`_.cachedRepresentation.withOutput(currentFragment.output)`Õâ¾äÌæ»»Ô­ÓĞLogicalPlan×ÓÊ÷`currentFragment`µÄÊä³ö¡£
+æ¥ä¸‹æ¥å°±æ˜¯åˆ©ç”¨`_.cachedRepresentation.withOutput(currentFragment.output)`è¿™å¥æ›¿æ¢åŸæœ‰LogicalPlanå­æ ‘`currentFragment`çš„è¾“å‡ºã€‚
 
 	//InMemoryRelation
 	def withOutput(newOutput: Seq[Attribute]): InMemoryRelation = {
@@ -54,7 +54,7 @@ LogicalPlanµÄ`canonicalized`ĞÎÌ¬¾ÍÊÇ½«×Ó²éÑ¯µÄ±ğÃûÈ¥µô£¬ÕâÑùµÄ»°²»»áÒòÎªÁ½¸öLogi
 			_cachedColumnBuffers, batchStats)
 	}
 
-Ö®Ç°µÄÎÄÕÂ½éÉÜ¹ıÃ¿¸öLogicalPlanµÄÊä³öÊÇÒ»×éAttribute£¬ÕâÀïÉú³ÉÒ»¸öĞÂµÄRelation£¬µ«ÊÇAttribute¾­¹ıÁËÌæ»»¡£ÕâÀïÒªÇ¿µ÷Ò»ÏÂ£¬InMemoryRelation±¾ÉíÒ²ÊÇÒ»¸öLogicalPlanµÄ×ÓÀà£¬ËùÒÔÌæ»»¹ı³Ì¾ÍÕâÑùÍê³ÉÁË¡£
+ä¹‹å‰çš„æ–‡ç« ä»‹ç»è¿‡æ¯ä¸ªLogicalPlançš„è¾“å‡ºæ˜¯ä¸€ç»„Attributeï¼Œè¿™é‡Œç”Ÿæˆä¸€ä¸ªæ–°çš„Relationï¼Œä½†æ˜¯Attributeç»è¿‡äº†æ›¿æ¢ã€‚è¿™é‡Œè¦å¼ºè°ƒä¸€ä¸‹ï¼ŒInMemoryRelationæœ¬èº«ä¹Ÿæ˜¯ä¸€ä¸ªLogicalPlançš„å­ç±»ï¼Œæ‰€ä»¥æ›¿æ¢è¿‡ç¨‹å°±è¿™æ ·å®Œæˆäº†ã€‚
 
 ##optimizedPlan
 
@@ -77,21 +77,21 @@ LogicalPlanµÄ`canonicalized`ĞÎÌ¬¾ÍÊÇ½«×Ó²éÑ¯µÄ±ğÃûÈ¥µô£¬ÕâÑùµÄ»°²»»áÒòÎªÁ½¸öLogi
 		Batch("User Provided Optimizers", fixedPoint, experimentalMethods.extraOptimizations: _*)
 	}
 
-¿ÉÒÔ·¢ÏÖÓÅ»¯¹æÔò³ıÁË¸¸ÀàµÄÖ®Íâ·ÖÎª3¸öÖ÷Òª²¿·Ö£º
-1. ÓÃÓÚÖ»Ğè·¢ÏÖpartition²ãÃæµÄÔªÊı¾İ¾Í¿ÉÒÔ»Ø´ğµÄ²éÑ¯¡£Ó¦ÓÃÓÚ£¬µ±ËùÓĞ±»É¨ÃèµÄcolumns¶¼ÊÇpartition columns£¨¾ÍÊÇGROUP BY Ëã×ÓºóÃæµÄcolumn£¬ÒòÎªÕâ¸ö²Ù×÷ĞèÒªPartition£©¡£²éÑ¯±í´ïÊ½Âú×ãÒÔÏÂÌõ¼ş£º
-	* ¾ÛºÏ±í´ïÊ½±¾Éí¾ÍÊÇpartition columns£¬Àı£ºSELECT col FROM tbl GROUP BY col£»
-	* ÔÚpartition columnsÉÏµÄ¾ÛºÏ²Ù×÷×÷ÓÃÓÚDISTINCT£¬Àı£ºSELECT col1, count(DISTINCT col2) FROM tbl GROUP BY col1£»
-	* ÔÚpartition columnsÉÏµÄ¾ÛºÏ²Ù×÷ÊÇ`Max`£¬`Min`£¬`First`ºÍ`Last`£¬ÒòÎª²»¹Ü°ü²»°üº¬DISTINCT£¬Æä½á¹û¶¼Ò»Ñù£¬Àı£ºSELECT col1, Max(col2) FROM tbl GROUP BY col1¡£
-2. ÓÃÓÚPython£¬²»¹ØĞÄ¡£
-3. ÓÃ»§Ìá¹©µÄÓÅ»¯Æ÷£¬µ«ÊÇÊµ¼ÊÉÏSparkSQLÄÚ²¿ÓĞÌá¹©Ò»¸ö½Ó¿Ú£¬ExperimentalMethods¡£Õâ¸öÀàÏÂÃæÓĞ`extraStrategies`ºÍ`extraOptimizations`Á½¸öº¯ÊıÓÃÓÚÌáÈ¡»òÉèÖÃ²ßÂÔºÍÓÅ»¯¹æÔò¡£
+å¯ä»¥å‘ç°ä¼˜åŒ–è§„åˆ™é™¤äº†çˆ¶ç±»çš„ä¹‹å¤–åˆ†ä¸º3ä¸ªä¸»è¦éƒ¨åˆ†ï¼š
+1. ç”¨äºåªéœ€å‘ç°partitionå±‚é¢çš„å…ƒæ•°æ®å°±å¯ä»¥å›ç­”çš„æŸ¥è¯¢ã€‚åº”ç”¨äºï¼Œå½“æ‰€æœ‰è¢«æ‰«æçš„columnséƒ½æ˜¯partition columnsï¼ˆå°±æ˜¯GROUP BY ç®—å­åé¢çš„columnï¼Œå› ä¸ºè¿™ä¸ªæ“ä½œéœ€è¦Partitionï¼‰ã€‚æŸ¥è¯¢è¡¨è¾¾å¼æ»¡è¶³ä»¥ä¸‹æ¡ä»¶ï¼š
+	* èšåˆè¡¨è¾¾å¼æœ¬èº«å°±æ˜¯partition columnsï¼Œä¾‹ï¼šSELECT col FROM tbl GROUP BY colï¼›
+	* åœ¨partition columnsä¸Šçš„èšåˆæ“ä½œä½œç”¨äºDISTINCTï¼Œä¾‹ï¼šSELECT col1, count(DISTINCT col2) FROM tbl GROUP BY col1ï¼›
+	* åœ¨partition columnsä¸Šçš„èšåˆæ“ä½œæ˜¯`Max`ï¼Œ`Min`ï¼Œ`First`å’Œ`Last`ï¼Œå› ä¸ºä¸ç®¡åŒ…ä¸åŒ…å«DISTINCTï¼Œå…¶ç»“æœéƒ½ä¸€æ ·ï¼Œä¾‹ï¼šSELECT col1, Max(col2) FROM tbl GROUP BY col1ã€‚
+2. ç”¨äºPythonï¼Œä¸å…³å¿ƒã€‚
+3. ç”¨æˆ·æä¾›çš„ä¼˜åŒ–å™¨ï¼Œä½†æ˜¯å®é™…ä¸ŠSparkSQLå†…éƒ¨æœ‰æä¾›ä¸€ä¸ªæ¥å£ï¼ŒExperimentalMethodsã€‚è¿™ä¸ªç±»ä¸‹é¢æœ‰`extraStrategies`å’Œ`extraOptimizations`ä¸¤ä¸ªå‡½æ•°ç”¨äºæå–æˆ–è®¾ç½®ç­–ç•¥å’Œä¼˜åŒ–è§„åˆ™ã€‚
 
-µÚÒ»ÀàµÄ·½°¸¾ÍÊÇ°ÑÕë¶ÔPartitioned±í£¨´æ´¢µÄ¶¼ÊÇÔªÊı¾İÎÄ¼ş£¬ÈçHDFSµÄÔªÊı¾İÎÄ¼ş»òÕßCataLog±í£¬¼´ÔªÊı¾İ±í£©µÄ½ÚµãÕâÖÖÖ±½ÓÓÃÏàÓ¦µÄpartition valuesÌæ»»ÎªÊı¾İ¿âÖ§³ÖµÄÀàĞÍ¡£½ö½öÊÇ×öÁËÊı¾İ×ª»»¡£±ÈÈçÉÏÃæµÄ²Ù×÷ÓÃ¶¼¿ÉÒÔÓÃÃ¿¸öPartitionµÄÔªÊı¾İĞÅÏ¢»Ø´ğ¡£
+ç¬¬ä¸€ç±»çš„æ–¹æ¡ˆå°±æ˜¯æŠŠé’ˆå¯¹Partitionedè¡¨ï¼ˆå­˜å‚¨çš„éƒ½æ˜¯å…ƒæ•°æ®æ–‡ä»¶ï¼Œå¦‚HDFSçš„å…ƒæ•°æ®æ–‡ä»¶æˆ–è€…CataLogè¡¨ï¼Œå³å…ƒæ•°æ®è¡¨ï¼‰çš„èŠ‚ç‚¹è¿™ç§ç›´æ¥ç”¨ç›¸åº”çš„partition valuesæ›¿æ¢ä¸ºæ•°æ®åº“æ”¯æŒçš„ç±»å‹ã€‚ä»…ä»…æ˜¯åšäº†æ•°æ®è½¬æ¢ã€‚æ¯”å¦‚ä¸Šé¢çš„æ“ä½œç”¨éƒ½å¯ä»¥ç”¨æ¯ä¸ªPartitionçš„å…ƒæ•°æ®ä¿¡æ¯å›ç­”ã€‚
 
-Ò»°ã¹æÔòµÄÓÅ»¯ÔÚOptimizerÕâ¸öÀàÏÂÃæ£¬¼´ÉÏÃæ´úÂëÖĞµÄ`super.batches`£¬Õâ¸ö`batches`°üº¬µÄÓÅ»¯Éæ¼°µ½ºÜ¶à´óÀà¡£
+ä¸€èˆ¬è§„åˆ™çš„ä¼˜åŒ–åœ¨Optimizerè¿™ä¸ªç±»ä¸‹é¢ï¼Œå³ä¸Šé¢ä»£ç ä¸­çš„`super.batches`ï¼Œè¿™ä¸ª`batches`åŒ…å«çš„ä¼˜åŒ–æ¶‰åŠåˆ°å¾ˆå¤šå¤§ç±»ã€‚
 
-Ê×ÏÈ¡°Finish Analysis¡±²¢²»ÊôÓÚÓÅ»¯·¶³ë£¬¶øÊÇÊôÓÚAnalyzerµÄ·¶³ë£¬±£Ö¤ÁË½á¹ûÒ»ÖÂĞÔ£¨ÕıÈ·ĞÔ£¬ÀıÈç½«ËùÓĞµÄCurrentData½øĞĞÍ¬²½£©£¬²¢½øĞĞ¹æ·¶»¯²Ù×÷£¨½«×Ó²éÑ¯±ğÃûÈ¥³ı£©¡£
+é¦–å…ˆâ€œFinish Analysisâ€å¹¶ä¸å±äºä¼˜åŒ–èŒƒç•´ï¼Œè€Œæ˜¯å±äºAnalyzerçš„èŒƒç•´ï¼Œä¿è¯äº†ç»“æœä¸€è‡´æ€§ï¼ˆæ­£ç¡®æ€§ï¼Œä¾‹å¦‚å°†æ‰€æœ‰çš„CurrentDataè¿›è¡ŒåŒæ­¥ï¼‰ï¼Œå¹¶è¿›è¡Œè§„èŒƒåŒ–æ“ä½œï¼ˆå°†å­æŸ¥è¯¢åˆ«åå»é™¤ï¼‰ã€‚
 
-###ÓÅ»¯¹æÔò
+###ä¼˜åŒ–è§„åˆ™
 
 	 Batch("Union", Once,
 		  CombineUnions) ::
@@ -119,52 +119,52 @@ LogicalPlanµÄ`canonicalized`ĞÎÌ¬¾ÍÊÇ½«×Ó²éÑ¯µÄ±ğÃûÈ¥µô£¬ÕâÑùµÄ»°²»»áÒòÎªÁ½¸öLogi
 		  RewritePredicateSubquery,
 		  CollapseProject) :: Nil
 	
-¿ÉÒÔ¿´µ½ºÜ¶àÓÅ»¯¹æÔò×é³ÉµÄBatch£¬[Spark-Catalyst Optimizer][2]ÖĞ½éÉÜÁËºÜ´óÒ»²¿·Ö¡£ÕâÀïĞŞ¸Ä²¿·ÖÓÅ»¯¹æÔò½éÉÜ£¬²¢ÇÒ²¹³äÆäËû¹æÔò¡£
+å¯ä»¥çœ‹åˆ°å¾ˆå¤šä¼˜åŒ–è§„åˆ™ç»„æˆçš„Batchï¼Œ[Spark-Catalyst Optimizer][2]ä¸­ä»‹ç»äº†å¾ˆå¤§ä¸€éƒ¨åˆ†ã€‚è¿™é‡Œä¿®æ”¹éƒ¨åˆ†ä¼˜åŒ–è§„åˆ™ä»‹ç»ï¼Œå¹¶ä¸”è¡¥å……å…¶ä»–è§„åˆ™ã€‚
 
-1. OptimizeIn×÷ÓÃÓĞÁ½µã£º
-	* Ïû³ıIN²Ù×÷µÄĞòÁĞµÄÏàÍ¬ÔªËØ£¬ÀıÈç½«In (value, seq[Literal])×ªÎªIn (value, ExpressionSet(seq[Literal]))
-	* Èç¹ûÏû³ıÖØ¸´ºóµÄĞòÁĞµÄÔªËØÊıÄ¿³¬¹ı`conf.optimizerInSetConversionThreshold`£¨Ä¬ÈÏ10£©£¬×ª»¯ÎªINSET²Ù×÷£¬¼´×Ô¶¯½«ExpressionSet×ª»»ÎªHashset£¬Ìá¸ßIN²Ù×÷µÄĞÔÄÜ¡£
-2. ColumnPruningÉæ¼°µ½µÄÂß¼­ºÜ¶à£¬ÕâÀïÖ÷Òª·ÖÎª£º
-	* Èô×Ó²éÑ¯ÖĞµÄProject/Aggregate/Expand²Ù×÷°üº¬×îÖÕProject²Ù×÷ÖĞ²»°üº¬µÄÊôĞÔ£¬¼ôÈ¥¶àÓà²¿·Ö
-	* Èô×Ó²Ù×÷ÖĞ°üº¬DeserializeToObject/Aggregate/Expand/GenerateÖĞÃ»ÓĞµÄÊôĞÔ£¬¼ôÈ¥¶àÓà²¿·Ö
-	* ¶ÔÓÚGenerate²Ù×÷£¬Èç¹ûÆä×ÓÊ÷²»³öÏÖÔÚGenerateÊä³öÖĞ£¬²¢ÇÒ×îÖÕµÄProjectµÄÊôĞÔ¼¯»¹ÊÇGenerateÊä³öÊôĞÔµÄ×Ó¼¯£¬ÄÇÃ´ËµÃ÷×îÖÕ¶¼Ã»ÓĞÓÃµ½Generate×ÓÊ÷µÄÄÇ²¿·ÖÊä³ö£¬ÕâÀï¾ÍÁîGenerateÊä³ö²»ÓëÊäÈë×ÓÊ÷Á¬½Ó¡£
-	* ¶ÔÓÚLeft-Semi-Join£¬½«ÓÒ±ßµÄ×Ó²éÑ¯·ÖÁ¿µÄÎŞ¹ØÊôĞÔÈ¥³ı£¬¼´Ö»±£ÁôÆäÓÃÓÚJoinµÄÊôĞÔ
-	* ¶ÔÓÚProject(_, child)²Ù×÷£¬Ö»±£ÁôchildÖĞÓëProjectÓĞ¹ØµÄÊôĞÔ£¬ÒÀ¾İÀàĞÍ²»Í¬£¬²¿·ÖÇé¿öÏÂÉõÖÁ¿ÉÒÔÖ»Çóchild
-3. CombineTypedFiltersºÍCombineFiltersµÄ²Ù×÷ÀàËÆ£¬Çø±ğÔÚÓÚTypedFilterÊôÓÚÒ»ÖÖÌØÊâµÄFilter£¬ÆäÌõ¼şº¯Êı¿ÉÒÔ×Ô¼º¶¨Òå£¬Ö»ÒªÊÇÒ»¸öÒÔĞĞÎ´ÊäÈë£¬·µ»ØbooleanµÄº¯Êı¼´¿É£¬Õâ¸ö¹æÔòºÏ²¢µÄÊÇÌõ¼şº¯Êı
-4. CombineUnionsÕë¶Ô¶à¸öunion²Ù×÷½øĞĞºÏ²¢£¬ÀıÈç£º(select a from tb1) union (select b from tb2) union (select c from tb3) => select a,b,c from union(tb1,tb2,tb3)
-5. OptimizeSubqueriesÕë¶ÔËùÓĞ×Ó²éÑ¯×öOptimizerÖĞÓÅ»¯¹æÔò
-6. RemoveLiteralFromGroupExpressionsÊÇ½«ËùÓĞGroup byÖĞµÄ±í´ïÊ½ÖĞµÄ³£Á¿ÒÆ³ıµô£¬ÒòÎªÆä²»»áÓ°Ïì½á¹û
-7. RemoveRepetitionFromGroupExpressionsÊÇ½«Group byÖĞµÄ±í´ïÊ½ÖĞÏàÍ¬µÄ±í´ïÊ½ÒÆ³ıµô
-8. PushProjectionThroughUnionÓÃÓÚ½«ProjectÏòÏÂÒÆ¶¯µ½Ã¿¸ö×ÓUnion±í´ïÊ½£¬´Ó¶øÌáÔçËõĞ¡·¶Î§
-9. ReorderJoin£¬°ÑËùÓĞµÄÌõ¼ş±í´ïÊ½·ÖÅäµ½joinµÄ×ÓÊ÷ÖĞ£¬Ê¹Ã¿¸ö×ÓÊ÷ÖÁÉÙÓĞÒ»¸öÌõ¼ş±í´ïÊ½¡£ÖØÅÅĞòµÄË³ĞòÒÀ¾İÌõ¼şË³Ğò£¬ÀıÈç£ºselect * from tb1,tb2,tb3 where tb1.a=tb3.c and tb3.b=tb2.b£¬ÄÇÃ´joinµÄË³Ğò¾ÍÊÇjoin(tb1,tb3,tb1.a=tb3.c)£¬join(tb3,tb2,tb3.b=tb2.b)
-10. EliminateOuterJoin£¬ÕâÌõ¹æÔòÊÇ¾¡Á¿½«fullOuterJoin×ª»¯Îªleft/right outer join£¬ÉõÖÁÊÇinner join£¬**null-unsupplyingÎ½´Ê±íÊ¾£¬Èç¹ûÓĞnull×÷ÎªÊäÈëÔò·µ»Øfalse»ònull£¬Ò²¾ÍÊÇËµ²»Ö§³Ö¾­¹ı¸ÃÎ½´Ê¹ıÂËµÄ½á¹ûÖĞ»¹°üº¬null**£¬°üº¬5ÖÖÇé¿ö£º
-	* ¶ÔÓÚfull outer£¬Èç¹û×ó±ß×ÓÊ÷µÄÎ½´ÊÊÇnull-unsupplying£¬full outer -> left outer£»·´Ö®£¬Èç¹ûÓÒ±ßÓĞÕâÖÖÎ½´Ê£¬full outer -> right outer£»ÈôÁ½±ß¶¼ÓĞ£¬full outer -> inner
-	* ¶ÔÓÚleft outer£¬ÈôÓÒ±ß×ÓÊ÷°üº¬null-unsupplying£¬left outer -> inner
-	* ¶ÔÓÚright outer£¬Èô×ó±ß×ÓÊ÷°üº¬null-unsupplying£¬right outer -> inner
-11. InferFiltersFromConstraintsÊÇ½«×ÜµÄFilterÖĞÏà¶ÔÓÚ×ÓÊ÷Ô¼Êø¶àÓàµÄÔ¼ÊøÉ¾³ıµô£¬Ö»Ö§³Öinter joinºÍleftsemi join£¬ÀıÈç£ºselect * from (select * from tb1 where a) as x, (select * from tb2 where b) as y where a, b ==> select * from (select * from tb1 where a) as x, (select * from tb2 where b) as y
-12. FoldablePropagation£¬ÏÈ¶ÔÓĞ±ğÃûµÄ¿ÉÕÛµş±í´ïÊ½ÖĞµÄÊôĞÔºÍÆä±ğÃû½¨Á¢Ë÷Òı£¬È»ºó½«LogicalPlanÖĞµÄËùÓĞ¸ÃÊôĞÔµÄ½ÚµãÓÃÆä±ğÃû´úÌæ
-13. ConstantFolding£¬½«¿ÉÒÔ¾²Ì¬Ö±½ÓÇóÖµµÄ±í´ïÊ½Ö±½ÓÇó³ö³£Á¿£¬Add(1,2)==>3
-14. ReorderAssociativeOperator£¬½«ÓëÕûĞÍÏà¹ØµÄ¿ÉÈ·¶¨µÄ±í´ïÊ½Ö±½Ó¼ÆËã³öÆä²¿·Ö½á¹û£¬ÀıÈç£ºAdd(Add(1,a),2)==>Add(a,3)£»ÓëConstantFolding²»Í¬µÄÊÇ£¬ÕâÀïµÄAdd»òMultiplyÊÇ²»È·¶¨µÄ£¬µ«ÊÇ¿ÉÒÔ¾¡¿ÉÄÜ¼ÆËã³ö²¿·Ö½á¹û
-15. RemoveDispensableExpressions£¬Õâ¸ö¹æÔò½ö½öÈ¥µôÃ»±ØÒªµÄ½Úµã£¬°üÀ¨Á½Àà£ºUnaryPositiveºÍPromotePrecision£¬¶şÕß½ö½öÊÇ¶Ô×Ó±í´ïÊ½µÄ·â×°£¬²¢ÎŞ¶îÍâ²Ù×÷
-16. EliminateSorts£¬Ê×ÏÈÃ÷È·sort byÄ¬ÈÏÖ»±£Ö¤partitionÓĞĞò£¬Ö»ÓĞÔÚÉèÖÃÈ«¾ÖÓĞĞòµÄÇé¿öÏÂ²Å±£Ö¤È«¾ÖÓĞĞò£»¸Ã¹æÔòÊÇÏû³ıÃ»ÓĞÆğ×÷ÓÃµÄÅÅĞòËã×Ó£¬ÒòÎªÅÅĞòËã×Ó¿ÉÄÜÊÇÈ·¶¨µÄ£¨Óï·¨ÕıÈ·£¬Âß¼­ÓĞÎÊÌâ£©£¬ÄÇÃ´ÕâÑùµÄÅÅĞòËã×Ó¾ÍÃ»ÓĞÒâÒå£¬ÀıÈç£ºselect a from tb1 sort by 1+1 ==> select a from tb1
-17. RewriteCorrelatedScalarSubquery£¬ScalarSubqueryÖ¸µÄÊÇÖ»·µ»ØÒ»¸öÔªËØ£¨Ò»ĞĞÒ»ÁĞ£©µÄ²éÑ¯£¬Èç¹ûFilter£¬Project£¬Aggregate²Ù×÷ÖĞ°üº¬ÏàÓ¦µÄScalarSubquery£¬¾ÍÖØĞ´Ö®£¬Ë¼Ïë¾ÍÊÇÒòÎªScalarSubquery½á¹ûºÜĞ¡£¬¿ÉÒÔ¹ıÂË´ó²¿·ÖÎŞÓÃÔªËØ£¬ËùÒÔÓÅÏÈÊ¹ÓÃleft semi join¹ıÂË£º
-	* Aggregate²Ù×÷£¬ÀıÈçselect max(a), b from tb1 group by max(a) ==> select max(a), b from tb1 left semi join max(a) group by max(a)£¬ÕâÑùÏÈ×öjoin£¬Ğ§ÂÊÒª±ÈÏÈ×ögroup by²Ù×÷Ğ§ÂÊ¸ß
-	* Project²Ù×÷£¬ÀıÈçselect max(a), b from tb1 ==> select max(a), b from tb1 left semi join max(a)
-	* Filter£¬ÀıÈçselect b from tb1 where max(a) ==> select b (select * from tb1 left semi join max(a) where max(a))
-18. EliminateSerialization£¬ºÜ¶à²Ù×÷ĞèÒªÏÈĞòÁĞ»¯£¬È»ºó·´ĞòÁĞ»¯£¬Èç¹û·´ĞòÁĞ»¯µÄÊä³öÀàĞÍºÍĞòÁĞ»¯Ç°µÄÊäÈëÀàĞÍÏàÍ¬£¬¾ÍÊ¡ÂÔĞòÁĞ»¯ºÍ·´ĞòÁĞ»¯µÄ²Ù×÷
-19. RemoveAliasOnlyProject£¬Ïû³ı½ö½öÓÉ×Ó²éÑ¯µÄÊä³öµÄ±ğÃû¹¹³ÉµÄProject£¬ÀıÈç£ºselect a from (select a from t) ==> select a from t
-20. OptimizeCodegen£¬¶ÔÓÚÌØ¶¨µÄÇé¿ö£¬½«Ò»²¿·Ö²éÑ¯Éú³ÉÕû¿éµÄ´úÂë£¬¶ø²»ÊÇÍ¨¹ıÒ»¸ö¸öËã×Ó½øĞĞ²Ù×÷£¬²Î¿¼[Apache Spark as a Compiler: Joining a Billion Rows per Second on a Laptop][3]
-21. RewritePredicateSubquery£¬½«EXISTS/NOT EXISTS¸ÄÎªleft semi/anti joinĞÎÊ½£¬½«IN/NOT INÒ²¸ÄÎªleft semi/anti joinĞÎÊ½
-22. ConvertToLocalRelation£¬½«ProjectÖĞµÄÃ¿¸öÎŞĞèÊı¾İ½»»»µÄ±í´ïÊ½Ó¦ÓÃÓÚLocalRelationÖĞµÄÏàÓ¦ÔªËØ£¬ÀıÈçselect a + 1 from tb1×ªÎªÒ»¸öÊôĞÔÃûÎª¡°a+1¡±µÄrelation£¬²¢ÇÒtb1.aµÄÃ¿¸öÖµ¶¼ÊÇ¼Ó¹ı1µÄ
-23. PropagateEmptyRelation£¬Õë¶ÔÓĞ¿Õ±íµÄLogicalPlan½øĞĞ±ä»»
-	* Èç¹ûUnionµÄ×Ó²éÑ¯¶¼ÊÇ¿Õ£¬Æä½á¹ûÒ²Îª¿Õ£»
-	* Èç¹ûJoinµÄ×Ó²éÑ¯´æÔÚ¿Õ±í£¬
-		- `Inner => empty(p)`£¬
-		- `LeftOuter | LeftSemi | LeftAnti if isEmptyLocalRelation(p.left) => empty(p)`£¬
-		- `RightOuter if isEmptyLocalRelation(p.right) => empty(p)`£¬
+1. OptimizeInä½œç”¨æœ‰ä¸¤ç‚¹ï¼š
+	* æ¶ˆé™¤INæ“ä½œçš„åºåˆ—çš„ç›¸åŒå…ƒç´ ï¼Œä¾‹å¦‚å°†In (value, seq[Literal])è½¬ä¸ºIn (value, ExpressionSet(seq[Literal]))
+	* å¦‚æœæ¶ˆé™¤é‡å¤åçš„åºåˆ—çš„å…ƒç´ æ•°ç›®è¶…è¿‡`conf.optimizerInSetConversionThreshold`ï¼ˆé»˜è®¤10ï¼‰ï¼Œè½¬åŒ–ä¸ºINSETæ“ä½œï¼Œå³è‡ªåŠ¨å°†ExpressionSetè½¬æ¢ä¸ºHashsetï¼Œæé«˜INæ“ä½œçš„æ€§èƒ½ã€‚
+2. ColumnPruningæ¶‰åŠåˆ°çš„é€»è¾‘å¾ˆå¤šï¼Œè¿™é‡Œä¸»è¦åˆ†ä¸ºï¼š
+	* è‹¥å­æŸ¥è¯¢ä¸­çš„Project/Aggregate/Expandæ“ä½œåŒ…å«æœ€ç»ˆProjectæ“ä½œä¸­ä¸åŒ…å«çš„å±æ€§ï¼Œå‰ªå»å¤šä½™éƒ¨åˆ†
+	* è‹¥å­æ“ä½œä¸­åŒ…å«DeserializeToObject/Aggregate/Expand/Generateä¸­æ²¡æœ‰çš„å±æ€§ï¼Œå‰ªå»å¤šä½™éƒ¨åˆ†
+	* å¯¹äºGenerateæ“ä½œï¼Œå¦‚æœå…¶å­æ ‘ä¸å‡ºç°åœ¨Generateè¾“å‡ºä¸­ï¼Œå¹¶ä¸”æœ€ç»ˆçš„Projectçš„å±æ€§é›†è¿˜æ˜¯Generateè¾“å‡ºå±æ€§çš„å­é›†ï¼Œé‚£ä¹ˆè¯´æ˜æœ€ç»ˆéƒ½æ²¡æœ‰ç”¨åˆ°Generateå­æ ‘çš„é‚£éƒ¨åˆ†è¾“å‡ºï¼Œè¿™é‡Œå°±ä»¤Generateè¾“å‡ºä¸ä¸è¾“å…¥å­æ ‘è¿æ¥ã€‚
+	* å¯¹äºLeft-Semi-Joinï¼Œå°†å³è¾¹çš„å­æŸ¥è¯¢åˆ†é‡çš„æ— å…³å±æ€§å»é™¤ï¼Œå³åªä¿ç•™å…¶ç”¨äºJoinçš„å±æ€§
+	* å¯¹äºProject(_, child)æ“ä½œï¼Œåªä¿ç•™childä¸­ä¸Projectæœ‰å…³çš„å±æ€§ï¼Œä¾æ®ç±»å‹ä¸åŒï¼Œéƒ¨åˆ†æƒ…å†µä¸‹ç”šè‡³å¯ä»¥åªæ±‚child
+3. CombineTypedFilterså’ŒCombineFiltersçš„æ“ä½œç±»ä¼¼ï¼ŒåŒºåˆ«åœ¨äºTypedFilterå±äºä¸€ç§ç‰¹æ®Šçš„Filterï¼Œå…¶æ¡ä»¶å‡½æ•°å¯ä»¥è‡ªå·±å®šä¹‰ï¼Œåªè¦æ˜¯ä¸€ä¸ªä»¥è¡Œæœªè¾“å…¥ï¼Œè¿”å›booleançš„å‡½æ•°å³å¯ï¼Œè¿™ä¸ªè§„åˆ™åˆå¹¶çš„æ˜¯æ¡ä»¶å‡½æ•°
+4. CombineUnionsé’ˆå¯¹å¤šä¸ªunionæ“ä½œè¿›è¡Œåˆå¹¶ï¼Œä¾‹å¦‚ï¼š(select a from tb1) union (select b from tb2) union (select c from tb3) => select a,b,c from union(tb1,tb2,tb3)
+5. OptimizeSubqueriesé’ˆå¯¹æ‰€æœ‰å­æŸ¥è¯¢åšOptimizerä¸­ä¼˜åŒ–è§„åˆ™
+6. RemoveLiteralFromGroupExpressionsæ˜¯å°†æ‰€æœ‰Group byä¸­çš„è¡¨è¾¾å¼ä¸­çš„å¸¸é‡ç§»é™¤æ‰ï¼Œå› ä¸ºå…¶ä¸ä¼šå½±å“ç»“æœ
+7. RemoveRepetitionFromGroupExpressionsæ˜¯å°†Group byä¸­çš„è¡¨è¾¾å¼ä¸­ç›¸åŒçš„è¡¨è¾¾å¼ç§»é™¤æ‰
+8. PushProjectionThroughUnionç”¨äºå°†Projectå‘ä¸‹ç§»åŠ¨åˆ°æ¯ä¸ªå­Unionè¡¨è¾¾å¼ï¼Œä»è€Œææ—©ç¼©å°èŒƒå›´
+9. ReorderJoinï¼ŒæŠŠæ‰€æœ‰çš„æ¡ä»¶è¡¨è¾¾å¼åˆ†é…åˆ°joinçš„å­æ ‘ä¸­ï¼Œä½¿æ¯ä¸ªå­æ ‘è‡³å°‘æœ‰ä¸€ä¸ªæ¡ä»¶è¡¨è¾¾å¼ã€‚é‡æ’åºçš„é¡ºåºä¾æ®æ¡ä»¶é¡ºåºï¼Œä¾‹å¦‚ï¼šselect * from tb1,tb2,tb3 where tb1.a=tb3.c and tb3.b=tb2.bï¼Œé‚£ä¹ˆjoinçš„é¡ºåºå°±æ˜¯join(tb1,tb3,tb1.a=tb3.c)ï¼Œjoin(tb3,tb2,tb3.b=tb2.b)
+10. EliminateOuterJoinï¼Œè¿™æ¡è§„åˆ™æ˜¯å°½é‡å°†fullOuterJoinè½¬åŒ–ä¸ºleft/right outer joinï¼Œç”šè‡³æ˜¯inner joinï¼Œ**null-unsupplyingè°“è¯è¡¨ç¤ºï¼Œå¦‚æœæœ‰nullä½œä¸ºè¾“å…¥åˆ™è¿”å›falseæˆ–nullï¼Œä¹Ÿå°±æ˜¯è¯´æ”¹è°“è¯ä¸æ”¯æŒåŒ…å«nullçš„è¾“å…¥**ï¼ŒåŒ…å«5ç§æƒ…å†µï¼š
+	* å¯¹äºfull outerï¼Œå¦‚æœå·¦è¾¹å­æ ‘çš„è°“è¯æ˜¯null-unsupplyingï¼Œfull outer -> left outerï¼›åä¹‹ï¼Œå¦‚æœå³è¾¹æœ‰è¿™ç§è°“è¯ï¼Œfull outer -> right outerï¼›è‹¥ä¸¤è¾¹éƒ½æœ‰ï¼Œfull outer -> inner
+	* å¯¹äºleft outerï¼Œè‹¥å³è¾¹å­æ ‘åŒ…å«null-unsupplyingï¼Œleft outer -> inner
+	* å¯¹äºright outerï¼Œè‹¥å·¦è¾¹å­æ ‘åŒ…å«null-unsupplyingï¼Œright outer -> inner
+11. InferFiltersFromConstraintsæ˜¯å°†æ€»çš„Filterä¸­ç›¸å¯¹äºå­æ ‘çº¦æŸå¤šä½™çš„çº¦æŸåˆ é™¤æ‰ï¼Œåªæ”¯æŒinter joinå’Œleftsemi joinï¼Œä¾‹å¦‚ï¼šselect * from (select * from tb1 where a) as x, (select * from tb2 where b) as y where a, b ==> select * from (select * from tb1 where a) as x, (select * from tb2 where b) as y
+12. FoldablePropagationï¼Œå…ˆå¯¹æœ‰åˆ«åçš„å¯æŠ˜å è¡¨è¾¾å¼ä¸­çš„å±æ€§å’Œå…¶åˆ«åå»ºç«‹ç´¢å¼•ï¼Œç„¶åå°†LogicalPlanä¸­çš„æ‰€æœ‰è¯¥å±æ€§çš„èŠ‚ç‚¹ç”¨å…¶åˆ«åä»£æ›¿
+13. ConstantFoldingï¼Œå°†å¯ä»¥é™æ€ç›´æ¥æ±‚å€¼çš„è¡¨è¾¾å¼ç›´æ¥æ±‚å‡ºå¸¸é‡ï¼ŒAdd(1,2)==>3
+14. ReorderAssociativeOperatorï¼Œå°†ä¸æ•´å‹ç›¸å…³çš„å¯ç¡®å®šçš„è¡¨è¾¾å¼ç›´æ¥è®¡ç®—å‡ºå…¶éƒ¨åˆ†ç»“æœï¼Œä¾‹å¦‚ï¼šAdd(Add(1,a),2)==>Add(a,3)ï¼›ä¸ConstantFoldingä¸åŒçš„æ˜¯ï¼Œè¿™é‡Œçš„Addæˆ–Multiplyæ˜¯ä¸ç¡®å®šçš„ï¼Œä½†æ˜¯å¯ä»¥å°½å¯èƒ½è®¡ç®—å‡ºéƒ¨åˆ†ç»“æœ
+15. RemoveDispensableExpressionsï¼Œè¿™ä¸ªè§„åˆ™ä»…ä»…å»æ‰æ²¡å¿…è¦çš„èŠ‚ç‚¹ï¼ŒåŒ…æ‹¬ä¸¤ç±»ï¼šUnaryPositiveå’ŒPromotePrecisionï¼ŒäºŒè€…ä»…ä»…æ˜¯å¯¹å­è¡¨è¾¾å¼çš„å°è£…ï¼Œå¹¶æ— é¢å¤–æ“ä½œ
+16. EliminateSortsï¼Œé¦–å…ˆæ˜ç¡®sort byé»˜è®¤åªä¿è¯partitionæœ‰åºï¼Œåªæœ‰åœ¨è®¾ç½®å…¨å±€æœ‰åºçš„æƒ…å†µä¸‹æ‰ä¿è¯å…¨å±€æœ‰åºï¼›è¯¥è§„åˆ™æ˜¯æ¶ˆé™¤æ²¡æœ‰èµ·ä½œç”¨çš„æ’åºç®—å­ï¼Œå› ä¸ºæ’åºç®—å­å¯èƒ½æ˜¯ç¡®å®šçš„ï¼ˆè¯­æ³•æ­£ç¡®ï¼Œé€»è¾‘æœ‰é—®é¢˜ï¼‰ï¼Œé‚£ä¹ˆè¿™æ ·çš„æ’åºç®—å­å°±æ²¡æœ‰æ„ä¹‰ï¼Œä¾‹å¦‚ï¼šselect a from tb1 sort by 1+1 ==> select a from tb1
+17. RewriteCorrelatedScalarSubqueryï¼ŒScalarSubqueryæŒ‡çš„æ˜¯åªè¿”å›ä¸€ä¸ªå…ƒç´ ï¼ˆä¸€è¡Œä¸€åˆ—ï¼‰çš„æŸ¥è¯¢ï¼Œå¦‚æœFilterï¼ŒProjectï¼ŒAggregateæ“ä½œä¸­åŒ…å«ç›¸åº”çš„ScalarSubqueryï¼Œå°±é‡å†™ä¹‹ï¼Œæ€æƒ³å°±æ˜¯å› ä¸ºScalarSubqueryç»“æœå¾ˆå°ï¼Œå¯ä»¥è¿‡æ»¤å¤§éƒ¨åˆ†æ— ç”¨å…ƒç´ ï¼Œæ‰€ä»¥ä¼˜å…ˆä½¿ç”¨left semi joinè¿‡æ»¤ï¼š
+	* Aggregateæ“ä½œï¼Œä¾‹å¦‚select max(a), b from tb1 group by max(a) ==> select max(a), b from tb1 left semi join max(a) group by max(a)ï¼Œè¿™æ ·å…ˆåšjoinï¼Œæ•ˆç‡è¦æ¯”å…ˆåšgroup byæ“ä½œæ•ˆç‡é«˜
+	* Projectæ“ä½œï¼Œä¾‹å¦‚select max(a), b from tb1 ==> select max(a), b from tb1 left semi join max(a)
+	* Filterï¼Œä¾‹å¦‚select b from tb1 where max(a) ==> select b (select * from tb1 left semi join max(a) where max(a))
+18. EliminateSerializationï¼Œå¾ˆå¤šæ“ä½œéœ€è¦å…ˆåºåˆ—åŒ–ï¼Œç„¶åååºåˆ—åŒ–ï¼Œå¦‚æœååºåˆ—åŒ–çš„è¾“å‡ºç±»å‹å’Œåºåˆ—åŒ–å‰çš„è¾“å…¥ç±»å‹ç›¸åŒï¼Œå°±çœç•¥åºåˆ—åŒ–å’Œååºåˆ—åŒ–çš„æ“ä½œ
+19. RemoveAliasOnlyProjectï¼Œæ¶ˆé™¤ä»…ä»…ç”±å­æŸ¥è¯¢çš„è¾“å‡ºçš„åˆ«åæ„æˆçš„Projectï¼Œä¾‹å¦‚ï¼šselect a from (select a from t) ==> select a from t
+20. OptimizeCodegenï¼Œå¯¹äºç‰¹å®šçš„æƒ…å†µï¼Œå°†ä¸€éƒ¨åˆ†æŸ¥è¯¢ç”Ÿæˆæ•´å—çš„ä»£ç ï¼Œè€Œä¸æ˜¯é€šè¿‡ä¸€ä¸ªä¸ªç®—å­è¿›è¡Œæ“ä½œï¼Œå‚è€ƒ[Apache Spark as a Compiler: Joining a Billion Rows per Second on a Laptop][3]
+21. RewritePredicateSubqueryï¼Œå°†EXISTS/NOT EXISTSæ”¹ä¸ºleft semi/anti joinå½¢å¼ï¼Œå°†IN/NOT INä¹Ÿæ”¹ä¸ºleft semi/anti joinå½¢å¼
+22. ConvertToLocalRelationï¼Œå°†Projectä¸­çš„æ¯ä¸ªæ— éœ€æ•°æ®äº¤æ¢çš„è¡¨è¾¾å¼åº”ç”¨äºLocalRelationä¸­çš„ç›¸åº”å…ƒç´ ï¼Œä¾‹å¦‚select a + 1 from tb1è½¬ä¸ºä¸€ä¸ªå±æ€§åä¸ºâ€œa+1â€çš„relationï¼Œå¹¶ä¸”tb1.açš„æ¯ä¸ªå€¼éƒ½æ˜¯åŠ è¿‡1çš„
+23. PropagateEmptyRelationï¼Œé’ˆå¯¹æœ‰ç©ºè¡¨çš„LogicalPlanè¿›è¡Œå˜æ¢
+	* å¦‚æœUnionçš„å­æŸ¥è¯¢éƒ½æ˜¯ç©ºï¼Œå…¶ç»“æœä¹Ÿä¸ºç©ºï¼›
+	* å¦‚æœJoinçš„å­æŸ¥è¯¢å­˜åœ¨ç©ºè¡¨ï¼Œ
+		- `Inner => empty(p)`ï¼Œ
+		- `LeftOuter | LeftSemi | LeftAnti if isEmptyLocalRelation(p.left) => empty(p)`ï¼Œ
+		- `RightOuter if isEmptyLocalRelation(p.right) => empty(p)`ï¼Œ
 		- `FullOuter if p.children.forall(isEmptyLocalRelation) => empty(p)`
-	* ¶ÔÓÚµ¥½ÚµãPlan£¬ÈôÆä×Ó½ÚµãÎª¿Õ±í£¬ÔòÕûÌåÎª¿Õ±í
-24. DecimalAggregatesÓ¦¸ÃÊÇÓÃÓÚ¼ÓËÙ¸¡µãÊı¼ÆËãµÄ£¬ÒòÎª¸¡µãÊı¼ÆËãÒª¿ØÖÆ¾«¶È£¨ÍùÍùĞèÒªÍ¨¹ıÀ©³ä³¤¶ÈÀ´±£Ö¤¾«¶È£©£¬µ«ÊÇÒ»¶¨·¶Î§ÄÚ¿ÉÒÔ²»¿ØÖÆ£¬¼´²»ĞèÒªÃ¿Ò»²½µÄ¸¡µãÔËËã¶¼¿ØÖÆ¾«¶È
+	* å¯¹äºå•èŠ‚ç‚¹Planï¼Œè‹¥å…¶å­èŠ‚ç‚¹ä¸ºç©ºè¡¨ï¼Œåˆ™æ•´ä½“ä¸ºç©ºè¡¨
+24. DecimalAggregatesåº”è¯¥æ˜¯ç”¨äºåŠ é€Ÿæµ®ç‚¹æ•°è®¡ç®—çš„ï¼Œå› ä¸ºæµ®ç‚¹æ•°è®¡ç®—è¦æ§åˆ¶ç²¾åº¦ï¼ˆå¾€å¾€éœ€è¦é€šè¿‡æ‰©å……é•¿åº¦æ¥ä¿è¯ç²¾åº¦ï¼‰ï¼Œä½†æ˜¯ä¸€å®šèŒƒå›´å†…å¯ä»¥ä¸æ§åˆ¶ï¼Œå³ä¸éœ€è¦æ¯ä¸€æ­¥çš„æµ®ç‚¹è¿ç®—éƒ½æ§åˆ¶ç²¾åº¦
 
 [1]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/sql/spark_sql_parser.md
 [2]:https://github.com/ColZer/DigAndBuried/blob/master/spark/spark-catalyst-optimizer.md
