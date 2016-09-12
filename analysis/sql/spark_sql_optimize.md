@@ -78,10 +78,12 @@ LogicalPlan的`canonicalized`形态就是将子查询的别名去掉，这样的
 	}
 
 可以发现优化规则除了父类的之外分为3个主要部分：
-1. 用于只需发现partition层面的元数据就可以回答的查询。应用于，当所有被扫描的columns都是partition columns（就是GROUP BY 算子后面的column，因为这个操作需要Partition）。查询表达式满足以下条件：
-	* 聚合表达式本身就是partition columns，例：SELECT col FROM tbl GROUP BY col；
-	* 在partition columns上的聚合操作作用于DISTINCT，例：SELECT col1, count(DISTINCT col2) FROM tbl GROUP BY col1；
+
+1. 用于只需发现partition层面的元数据就可以回答的查询。应用环境是，当所有被扫描的columns都是partition columns（就是列式存储下，column本身就是一个partition）。查询表达式满足以下条件：
+	* 聚合表达式（例中select后面的col）本身就是partition columns，例：SELECT col FROM tbl GROUP BY col；
+	* 聚合操作（count，avg，sum等）作用于DISTINCT过的partition columns，例：SELECT col1, count(DISTINCT col2) FROM tbl GROUP BY col1；
 	* 在partition columns上的聚合操作是`Max`，`Min`，`First`和`Last`，因为不管包不包含DISTINCT，其结果都一样，例：SELECT col1, Max(col2) FROM tbl GROUP BY col1。
+
 2. 用于Python，不关心。
 3. 用户提供的优化器，但是实际上SparkSQL内部有提供一个接口，ExperimentalMethods。这个类下面有`extraStrategies`和`extraOptimizations`两个函数用于提取或设置策略和优化规则。
 
@@ -122,7 +124,7 @@ LogicalPlan的`canonicalized`形态就是将子查询的别名去掉，这样的
 可以看到很多优化规则组成的Batch，[Spark-Catalyst Optimizer][2]中介绍了很大一部分。这里修改部分优化规则介绍，并且补充其他规则。
 
 1. OptimizeIn作用有两点：
-	* 消除IN操作的序列的相同元素，例如将In (value, seq[Literal])转为In (value, ExpressionSet(seq[Literal]))
+	* 消除IN操作的序列中的相同元素，例如将In (value, seq[Literal])转为In (value, ExpressionSet(seq[Literal]))
 	* 如果消除重复后的序列的元素数目超过`conf.optimizerInSetConversionThreshold`（默认10），转化为INSET操作，即自动将ExpressionSet转换为Hashset，提高IN操作的性能。
 2. ColumnPruning涉及到的逻辑很多，这里主要分为：
 	* 若子查询中的Project/Aggregate/Expand操作包含最终Project操作中不包含的属性，剪去多余部分
