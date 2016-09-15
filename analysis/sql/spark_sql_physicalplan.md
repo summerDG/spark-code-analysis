@@ -184,24 +184,24 @@
 		case _ => Nil
 	}
 
-`ExpressionSet`类其实是用于过滤掉规范化后形式相同的表达式，例如"a+1"和"1+a"规范化后的形式是一样的，所以这算是一步去冗余的操作。`normalizedFilters`的作用是将条件表达式中的属性名统一成输出的属性名。
+* `ExpressionSet`类其实是用于过滤掉规范化后形式相同的表达式，例如"a+1"和"1+a"规范化后的形式是一样的，所以这算是一步去冗余的操作。`normalizedFilters`的作用是将条件表达式中的属性名统一成输出的属性名。
 
-`partitionColumns`是将HadoopFsRelation的partition schema（就是那些用于Partition分区的key属性）和resolver传入，从而解析出该HadoopFsRelation的partition属性。这里有个疑问，这一步不应该在解析成Realoved LogicalPlan的时候就做了吗？实际上哪一步的操作有些遗漏，就是针对外部系统的表，
+* `partitionColumns`是将HadoopFsRelation的partition schema（就是那些用于Partition分区的key属性）和resolver传入，从而解析出该HadoopFsRelation的partition属性。这里有个疑问，这一步不应该在解析成Realoved LogicalPlan的时候就做了吗？实际上哪一步的操作有些遗漏，就是针对外部系统的表，
 当时只是查询了Catalog有没有，并没有将其相应属性进行连接，变为真正的resolved状态。`partitionSet`作用也是去除重复的属性。
 
-`partitionKeyFilters`是找到条件表达式中**只**包含partition属性的表达式集合。这样在进行过滤时可以直接通过partition编号进行，从而提高操作的效率。
+* `partitionKeyFilters`是找到条件表达式中**只**包含partition属性的表达式集合。这样在进行过滤时可以直接通过partition编号进行，从而提高操作的效率。
 
-`dataColumns`对应的是存储数据的属性，主要是非partition属性，但是如果partition属性有数据，那么也会保留。`dataFilters`是那些只包含非partition属性的filter。
+* `dataColumns`对应的是存储数据的属性，主要是非partition属性，但是如果partition属性有数据，那么也会保留。`dataFilters`是那些只包含非partition属性的filter。
 
-`afterScanFilters`表示的是经过扫描有才能确定的Filter，例如：`partitionKeyFilters`只需要针对与key值对应的partition即可，但是其他情况必须将所有表都扫描完才能确定。
+* `afterScanFilters`表示的是经过扫描有才能确定的Filter，例如：`partitionKeyFilters`只需要针对与key值对应的partition即可，但是其他情况必须将所有表都扫描完才能确定。
 
-所以`requiredAttributes`是需要的属性，`readDataColumn`是最终需要查询属性中的非partition属性。然后输出相应的Schema信息`outputSchema`。
+* 所以`requiredAttributes`是需要的属性，`readDataColumn`是最终需要查询属性中的非partition属性。然后输出相应的Schema信息`outputSchema`。
 
-`pushedDownFilters `是将`dataFilter`中的filter原先的常量替换成Scala的原生类型（因为Catalyst中的类型不能函数操作，其只是用于表示）。
+* `pushedDownFilters `是将`dataFilter`中的filter原先的常量替换成Scala的原生类型（因为Catalyst中的类型不能函数操作，其只是用于表示）。
 
-实际上扫描表输出的属性除了`readDataColumn`还有`partitionColumns`，即`outputAttributes`。首先需要强调`requiredAttributes`和`outputAttributes`不同，后者包含了所有的Partition column，前者只包含部分。
+* 实际上扫描表输出的属性除了`readDataColumn`还有`partitionColumns`，即`outputAttributes`。首先需要强调`requiredAttributes`和`outputAttributes`不同，后者包含了所有的Partition column，前者只包含部分。
 
-然后创建扫描HadoopFsRelation中数据的PhysicalPlan节点，`scan`。**那么之前的操作说到底都是在做过滤，就是过滤没必要查询的属性列。**
+* 然后创建扫描HadoopFsRelation中数据的PhysicalPlan节点，`scan`。**那么之前的操作说到底都是在做过滤，就是过滤没必要查询的属性列。**
 
 > 之前这里一直有个疑问，`afterScanFilters`和`dataColumns`是什么关系？其实后者是前者的子集，后者存在的目的是为之后的扫描缩小范围，前者之所以要包含后者是因为有些操作，只有在第二次扫描的时候才能最终确定。
 例如：select * from tb1 where a < c and b < c and b = max(c)，令a是partition key，那么第一遍即使传入了b < c and b = max(c)也只是缩小了范围b = max(c)并不能马上计算，因为a < c在之后才能确定，所以由于很难区分`dataFilter`中这些操作，只能统一重新计算，保证正确性。
@@ -426,6 +426,8 @@ def pruneFilterProject(
 直接将基本的操作转化为PhysicalPlan节点，没有额外的策略选择。
 
 > 由于有的LogicalPlan同时满足多种策略，所以通常每层分析会有多种策略可供选择，但每种策略只会返回一种。现在的SQL暂时还没有实现基于Cost的策略选择，而且也没有实现剪枝（去除不好的策略，以免组合爆炸），但是这些都在TODO中。
+可以发现PhysicalPlan和LogicalPlan节点是很不一样的，LogicalPlan的节点就是操作逻辑，很好理解，但是PhysicalPlan节点是尽量把LogicalPlan中的多个操作合并在一起进行处理，从而减少实际查询的开销。并且和LogicalPlan不同的是，
+并没有PhysicalPlan这个类，代码中出现的PhysicalPlan只是泛型的名称，实际上代表PhysicalPlan的就是SparkPlan。
 
 [1]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/sql/spark_sql_optimize.md
 [2]:http://www.cnblogs.com/CareySon/p/3411176.html

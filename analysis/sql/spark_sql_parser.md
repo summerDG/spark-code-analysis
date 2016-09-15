@@ -353,7 +353,6 @@ Analyzer中包含大量的规则，共分为6类，最重要的两类是：替�
 		  nameParts: Seq[String],
 		  input: Seq[Attribute],
 		  resolver: Resolver): Option[NamedExpression] = {
-
 		var candidates: Seq[(Attribute, List[String])] = {
 		  // If the name has 2 or more parts, try to resolve it as `table.column` first.
 		  if (nameParts.length > 1) {
@@ -364,7 +363,6 @@ Analyzer中包含大量的规则，共分为6类，最重要的两类是：替�
 			Seq.empty
 		  }
 		}
-
 		if (candidates.isEmpty) {
 		  candidates = input.flatMap { candidate =>
 			resolveAsColumn(nameParts, resolver, candidate)
@@ -385,6 +383,7 @@ Analyzer中包含大量的规则，共分为6类，最重要的两类是：替�
 		  ...
 		}
 	}
+	
 	private def resolveAsTableColumn(
 		  nameParts: Seq[String],
 		  resolver: Resolver,
