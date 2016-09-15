@@ -63,47 +63,47 @@
 	
 1. 将ShuffleExchange类型的节点做处理，这个类只会出现在repartition的时候，所以如果该节点的子节点已经可以保证partition，那么就用子节点代替该节点。
 
-	//EnsureRequirements
-	private def ensureDistributionAndOrdering(operator: SparkPlan): SparkPlan = {
-		val requiredChildDistributions: Seq[Distribution] = operator.requiredChildDistribution
-		val requiredChildOrderings: Seq[Seq[SortOrder]] = operator.requiredChildOrdering
-		assert(requiredChildDistributions.length == operator.children.length)
-		assert(requiredChildOrderings.length == operator.children.length)
+		//EnsureRequirements
+		private def ensureDistributionAndOrdering(operator: SparkPlan): SparkPlan = {
+			val requiredChildDistributions: Seq[Distribution] = operator.requiredChildDistribution
+			val requiredChildOrderings: Seq[Seq[SortOrder]] = operator.requiredChildOrdering
+			assert(requiredChildDistributions.length == operator.children.length)
+			assert(requiredChildOrderings.length == operator.children.length)
 
-		def createShuffleExchange(dist: Distribution, child: SparkPlan) =
-		  ShuffleExchange(createPartitioning(dist, defaultNumPreShufflePartitions), child)
+			def createShuffleExchange(dist: Distribution, child: SparkPlan) =
+			  ShuffleExchange(createPartitioning(dist, defaultNumPreShufflePartitions), child)
 
-		var (parent, children) = operator match {
-		  case PartialAggregate(childDist) if !operator.outputPartitioning.satisfies(childDist) =>
-			val (mergeAgg, mapSideAgg) = AggUtils.createMapMergeAggregatePair(operator)
-			(mergeAgg, createShuffleExchange(requiredChildDistributions.head, mapSideAgg) :: Nil)
-		  case _ =>
-			// Ensure that the operator's children satisfy their output distribution requirements:
-			val childrenWithDist = operator.children.zip(requiredChildDistributions)
-			val newChildren = childrenWithDist.map {
-			  case (child, distribution) if child.outputPartitioning.satisfies(distribution) =>
-				child
-			  case (child, BroadcastDistribution(mode)) =>
-				BroadcastExchangeExec(mode, child)
-			  case (child, distribution) =>
-				createShuffleExchange(distribution, child)
+			var (parent, children) = operator match {
+			  case PartialAggregate(childDist) if !operator.outputPartitioning.satisfies(childDist) =>
+				val (mergeAgg, mapSideAgg) = AggUtils.createMapMergeAggregatePair(operator)
+				(mergeAgg, createShuffleExchange(requiredChildDistributions.head, mapSideAgg) :: Nil)
+			  case _ =>
+				// Ensure that the operator's children satisfy their output distribution requirements:
+				val childrenWithDist = operator.children.zip(requiredChildDistributions)
+				val newChildren = childrenWithDist.map {
+				  case (child, distribution) if child.outputPartitioning.satisfies(distribution) =>
+					child
+				  case (child, BroadcastDistribution(mode)) =>
+					BroadcastExchangeExec(mode, child)
+				  case (child, distribution) =>
+					createShuffleExchange(distribution, child)
+				}
+				(operator, newChildren)
 			}
-			(operator, newChildren)
+
+			def requireCompatiblePartitioning(distribution: Distribution): Boolean = distribution match {
+			  case UnspecifiedDistribution => false
+			  case BroadcastDistribution(_) => false
+			  case _ => true
+			}
+			...
+
+			children = withExchangeCoordinator(children, requiredChildDistributions)
+
+			...
+
+			parent.withNewChildren(children)
 		}
-
-		def requireCompatiblePartitioning(distribution: Distribution): Boolean = distribution match {
-		  case UnspecifiedDistribution => false
-		  case BroadcastDistribution(_) => false
-		  case _ => true
-		}
-		...
-
-		children = withExchangeCoordinator(children, requiredChildDistributions)
-
-		...
-
-		parent.withNewChildren(children)
-	}
 	
 2. 其他类型的节点的处理函数如上。
 
@@ -408,7 +408,7 @@ UnsafeRowWriter的`write`方法就是把数据写到BufferHolder的`buffer`中，然后调用`res
 [1]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/sql/spark_sql_physicalplan.md
 [2]:https://databricks.com/blog/2016/05/23/apache-spark-as-a-compiler-joining-a-billion-rows-per-second-on-a-laptop.html
 [ensureDistributionAndOrdering]:../../pic/sort-distribution.png
-[execution]:../../example.png
+[execution]:../../pic/example.png
 [iterator]:../../pic/Iterator.png
 
 

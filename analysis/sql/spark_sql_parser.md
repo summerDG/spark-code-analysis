@@ -348,55 +348,55 @@ Analyzer中包含大量的规则，共分为6类，最重要的两类是：替�
 那么它是怎么将属性名和具体属性联系起来的呢？因为解析每个DataSet的时候会注册很多属性，这个属性是包含具体内容的实体。所以会到注册的表里去查询匹配，从而将UnresolvedAttribute中的属性名与对应Attribute做映射。
 具体实现在`resolveAsTableColumn`下。
 
-	//LogicalPlan
-	protected def resolve(
-		  nameParts: Seq[String],
-		  input: Seq[Attribute],
-		  resolver: Resolver): Option[NamedExpression] = {
-		var candidates: Seq[(Attribute, List[String])] = {
-		  // If the name has 2 or more parts, try to resolve it as `table.column` first.
-		  if (nameParts.length > 1) {
-			input.flatMap { option =>
-			  resolveAsTableColumn(nameParts, resolver, option)
+		//LogicalPlan
+		protected def resolve(
+			  nameParts: Seq[String],
+			  input: Seq[Attribute],
+			  resolver: Resolver): Option[NamedExpression] = {
+			var candidates: Seq[(Attribute, List[String])] = {
+			  // If the name has 2 or more parts, try to resolve it as `table.column` first.
+			  if (nameParts.length > 1) {
+				input.flatMap { option =>
+				  resolveAsTableColumn(nameParts, resolver, option)
+				}
+			  } else {
+				Seq.empty
+			  }
 			}
-		  } else {
-			Seq.empty
-		  }
-		}
-		if (candidates.isEmpty) {
-		  candidates = input.flatMap { candidate =>
-			resolveAsColumn(nameParts, resolver, candidate)
-		  }
-		}
+			if (candidates.isEmpty) {
+			  candidates = input.flatMap { candidate =>
+				resolveAsColumn(nameParts, resolver, candidate)
+			  }
+			}
 
-		def name = UnresolvedAttribute(nameParts).name
+			def name = UnresolvedAttribute(nameParts).name
 
-		candidates.distinct match {
-		  case Seq((a, Nil)) => Some(a)
+			candidates.distinct match {
+			  case Seq((a, Nil)) => Some(a)
 
-		  case Seq((a, nestedFields)) =>
-			
-			val fieldExprs = nestedFields.foldLeft(a: Expression)((expr, fieldName) =>
-			  ExtractValue(expr, Literal(fieldName), resolver))
-			Some(Alias(fieldExprs, nestedFields.last)())
+			  case Seq((a, nestedFields)) =>
+				
+				val fieldExprs = nestedFields.foldLeft(a: Expression)((expr, fieldName) =>
+				  ExtractValue(expr, Literal(fieldName), resolver))
+				Some(Alias(fieldExprs, nestedFields.last)())
 
-		  ...
+			  ...
+			}
 		}
-	}
-	
-	private def resolveAsTableColumn(
-		  nameParts: Seq[String],
-		  resolver: Resolver,
-		  attribute: Attribute): Option[(Attribute, List[String])] = {
-		assert(nameParts.length > 1)
-		if (attribute.qualifier.exists(resolver(_, nameParts.head))) {
-		  // At least one qualifier matches. See if remaining parts match.
-		  val remainingParts = nameParts.tail
-		  resolveAsColumn(remainingParts, resolver, attribute)
-		} else {
-		  None
+		
+		private def resolveAsTableColumn(
+			  nameParts: Seq[String],
+			  resolver: Resolver,
+			  attribute: Attribute): Option[(Attribute, List[String])] = {
+			assert(nameParts.length > 1)
+			if (attribute.qualifier.exists(resolver(_, nameParts.head))) {
+			  // At least one qualifier matches. See if remaining parts match.
+			  val remainingParts = nameParts.tail
+			  resolveAsColumn(remainingParts, resolver, attribute)
+			} else {
+			  None
+			}
 		}
-	}
 	
 输入参数中的`nameParts`表示查询语句中的属性名，为什么是序列类型呢？因为有`tableName.colName.fieldName`的形式。
 `attribute`表示可能的属性，因为最先不知道的时候只能根据最开头的名字（表名tableName）一个个去排查。然后调用`resolveAsColumn`去验证是否该`attribute`的名字与colName是否匹配，若是匹配，就返回该`attribute`和需要的其他字段（如fieldName）的映射。
