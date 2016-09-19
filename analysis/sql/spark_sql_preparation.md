@@ -194,7 +194,7 @@ LogicalPlan需要被转换为最终的PhysicalPlan才能真正具有可执行的
 
 ##Tree的操作
 
-TreeNode节点本身类型为Product（在Scala中Product是最基本数据类型之一，其子类包含所有Tuple、List、Option和case类等，如果一个Case Class`继承Product，
+TreeNode节点本身类型为Product（在Scala中Product是最基本数据类型之一，其子类包含所有Tuple、List、Option和case类等，如果一个`Case Class`继承Product，
 那么便可以通过`productElement`函数或者`productIterator`迭代器对`Case Class`的**参数信息**进行索引和遍历），并且所有Expression和Plan都是属于`Product`类型，
 因此可以通过TreeNode内部定义的`mapProductIterator`函数对节点参数进行遍历。
 
