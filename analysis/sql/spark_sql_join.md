@@ -189,7 +189,7 @@ Partitoning的子类包含：BroadcastPartitioning，RoundRobinPartitioning，Ha
 
 代码只保留最核心的代码，调用关系如下图。
 
-![partition表达式](../../pic/pmod)
+![partition表达式](../../pic/pmod.png)
 
 `$rowWriter.write($index, ${input.value});`这句将表达式计算的结果写入RDD，这里最终每条结果的类型是UnsafeRow，但是只保存一个field，即partition id。所以在ShuffleExchange的`getPartitionKeyExtractor()`中执行`projection(row).getInt(0)`就可以获取到Partition Id。
 获取到partition id后，生成ShuffleDependency（在ShuffleExchange的prepareShuffleDependency中）。这个对象之后被传入doExcute中。

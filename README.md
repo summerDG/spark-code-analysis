@@ -40,6 +40,8 @@
 
 [Spark SQL 执行阶段][10]：在PhysicalPlan生成之后，就是执行阶段，执行的时候会涉及到部分的优化方案，并且本节对DataSet的原理进行了分析。
 
+[Spark SQL Join][11]:针对具体的Join算子，从LogicalPlan到Spark core中具体的shuffle操作之前做了分析。
+
 [1]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/core/spark_shuffle.md
 [2]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/core/spark_sort_shuffle.md
 [3]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/core/task_schedule.md
@@ -50,4 +52,5 @@
 [8]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/sql/spark_sql_optimize.md
 [9]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/sql/spark_sql_physicalplan.md
 [10]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/sql/spark_sql_execution.md
+[11]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/sql/spark_sql_join.md
 [Catalyst]:pic/Catalyst-Optimizer-diagram.png
