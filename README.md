@@ -26,7 +26,9 @@
 
 ##spark sql
 
-该章主要是完成对Catalyst的分析，从sql语句的解析到logical plan，再到logical plan优化，然后是physical plan，最后是执行。如下图所示。
+该章分为两部分。
+
+1. 前半部分是完成对Catalyst的分析，从sql语句的解析到logical前半部分是完成对Catalyst的分析，从sql语句的解析到logical plan，再到logical plan优化，然后是physical plan，最后是执行。如下图所示。
 
 ![Catalyst实现][Catalyst]
 
@@ -40,7 +42,10 @@
 
 [Spark SQL 执行阶段][10]：在PhysicalPlan生成之后，就是执行阶段，执行的时候会涉及到部分的优化方案，并且本节对DataSet的原理进行了分析。
 
-[Spark SQL Join][11]:针对具体的Join算子，从LogicalPlan到Spark core中具体的shuffle操作之前做了分析。
+2. 后半部分主要是针对Join算子的分析，前半部分的分析涵盖基本的处理思路，但是并不会细致到每个算子都分析，如果相分析具体算子可以沿着前半部分的思路去挖掘。
+
+[Spark SQL Join分析——上][11]：针对具体的Join算子，分析了从SQL语句的AST树解析到LogicalPlan优化完成，也就是生成PhysicalPlan之前，的代码。
+[Spark SQL Join分析——下][12]：针对具体的Join算子，从LogicalPlan到Spark core中具体的shuffle操作之前做了分析。
 
 [1]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/core/spark_shuffle.md
 [2]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/core/spark_sort_shuffle.md
@@ -52,5 +57,6 @@
 [8]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/sql/spark_sql_optimize.md
 [9]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/sql/spark_sql_physicalplan.md
 [10]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/sql/spark_sql_execution.md
-[11]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/sql/spark_sql_join.md
+[11]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/sql/spark_sql_join_1.md
+[12]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/sql/spark_sql_join_2.md
 [Catalyst]:pic/Catalyst-Optimizer-diagram.png

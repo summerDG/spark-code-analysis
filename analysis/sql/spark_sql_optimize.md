@@ -167,8 +167,10 @@ LogicalPlan的`canonicalized`形态就是将子查询的别名去掉，这样的
 		- `FullOuter if p.children.forall(isEmptyLocalRelation) => empty(p)`
 	* 对于单节点Plan，若其子节点为空表，则整体为空表
 24. DecimalAggregates应该是用于加速浮点数计算的，因为浮点数计算要控制精度（往往需要通过扩充长度来保证精度），但是一定范围内可以不控制，即不需要每一步的浮点运算都控制精度
+25. PushPredicateThroughJoin是将Filter中的条件下移到Join算子中，详情见[Spark SQL Join 上][4]。
 
 [1]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/sql/spark_sql_parser.md
 [2]:https://github.com/ColZer/DigAndBuried/blob/master/spark/spark-catalyst-optimizer.md
 [3]:https://databricks.com/blog/2016/05/23/apache-spark-as-a-compiler-joining-a-billion-rows-per-second-on-a-laptop.html
+[4]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/sql/spark_sql_join_1.md
 [logicalPlan_optimizer]:../../pic/Optimizer-diagram.png
