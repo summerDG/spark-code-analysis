@@ -75,6 +75,7 @@ AstBuilder中引入了ParserUtils，所以其[隐式类](http://docs.scala-lang.
 
 设该relation为(tb1 __join__ tb2 __on__ c1) __join__ (tb3 __join__ (tb4 __join__ tb5 __on__ c4) __on__ c3) __on__ c2。那么会生成如下的二叉树。
 ![join tree](../../pic/jointree.png)
+
 必须说明**这里生成的Join二叉树中各个节点的join类型是任意的，包括outer join(left,right,full)，semi join等**。
 每个relation都会生成一棵Join二叉树，`visitFromClause`中的操作是将这些二叉树再进行合并，只是条件并没有给定，这是因为条件在where语句中。
 ##从Unresolved LogicalPlan到Resolved LogicalPlan
@@ -107,6 +108,7 @@ Analyzer的Resolution规则集中涉及到resolve Join的规则有：ResolveRefe
 	    }
 	}
 从上面的代码可以看出USING块是一种特殊的Natural Join，Natural Join使用的Join key就是两个Relation的相同属性，而USING块是指定了Join key（两个Relation共同拥有）的Natural Join。上面的规则作用是：
+
 1. 对USING块指定的Join key进行验证，可能存在不满足“两个Relation共同拥有”这一条件。
 2. 由于Natural Join没有指明Join Key，在这里进行指明。
 
@@ -118,6 +120,7 @@ Analyzer的Resolution规则集中涉及到resolve Join的规则有：ResolveRefe
 本文着重关注InnerJoin，所以EliminateOuterJoin不介绍。
 ###PushPredicateThroughJoin
 该优化规则是将Filter中的条件下移到Join算子中。
+
 1. 当Filter中的条件只需要Join中的left child或right child的输出属性求出来，就更新该节点。以InnerJoin为例（本文只关注InnerJoin）
 
 		//PushPredicateThroughJoin.apply
@@ -143,11 +146,16 @@ Analyzer的Resolution规则集中涉及到resolve Join的规则有：ResolveRefe
 		         }
 				  ...
 		}
-其中`split`方法是将Filter算子（Where块）中的条件分为3部分：1）可以通过Join的左节点直接求值的；2）可以通过有节点直接求值的；3）涉及到两个子节点的属性，必须通过两个节点求值的，或者其他属性（如子查询）。
-然后针对前两种情况直接在子节点上面生成Filter节点。
-对于第3种情况，首先会将该部分的条件分为两部分，非子查询条件或子查询条件。这里主要关注非子查询条件，因为这部分和Join有关。非子查询条件说明是涉及到左右两个子节点的属性，所以理应加到Join的连接条件当中。所以这里会将这部分条件与原来Join中的连接条件连接到一起生成新的Join条件。
-最后，如果子查询条件为空，就直接返回Join节点，省去了Filter节点（减少了一次算子的运行）。反之将子查询条件作为Filter的新条件，向下连接Join节点。这一步同时处理了fromClause中不同relation之间连接的问题（之前只是生成Join节点，但并没有连接条件）。
+	其中`split`方法是将Filter算子（Where块）中的条件分为3部分：1）可以通过Join的左节点直接求值的；2）可以通过有节点直接求值的；3）涉及到两个子节点的属性，必须通过两个节点求值的，或者其他属性（如子查询）。
+
+	然后针对前两种情况直接在子节点上面生成Filter节点。
+
+	对于第3种情况，首先会将该部分的条件分为两部分，非子查询条件或子查询条件。这里主要关注非子查询条件，因为这部分和Join有关。非子查询条件说明是涉及到左右两个子节点的属性，所以理应加到Join的连接条件当中。所以这里会将这部分条件与原来Join中的连接条件连接到一起生成新的Join条件。
+	
+	最后，如果子查询条件为空，就直接返回Join节点，省去了Filter节点（减少了一次算子的运行）。反之将子查询条件作为Filter的新条件，向下连接Join节点。这一步同时处理了fromClause中不同relation之间连接的问题（之前只是生成Join节点，但并没有连接条件）。
+
 2. 只是将Join节点中的连接条件下移到左右子节点。即如果连接条件中的部分条件可以完全由左（右）子节点求值，就没必要将其放到Join的判断条件中，毕竟Join关注的应该是和Shuffle相关的条件才对。这部分代码类似于1中的前半部分，所以就不贴了。
+
 ###ReorderJoin
 该规则只对InnerJoin进行重新排序，把所有的条件表达式分配到join的子树中，使每个叶子节点至少有一个条件表达式。
 
