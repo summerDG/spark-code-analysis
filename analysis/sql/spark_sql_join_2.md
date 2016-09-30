@@ -28,7 +28,55 @@
 	    }
 	  }
 
-ExtractEquiJoinKeys主要是用于equi-Join，而没有Join key或者Inner-Join的时候会用Logical.Join。以常见的equi-Join为对象，即ExtractEquiJoinKeys，进行分析。由于在没有特殊设置的情况下会调用SortMergeJoin，所以进入SortMergeJoinExec，传入的参数包括left child和right child，以及对应的join key，还有约束条件。
+ExtractEquiJoinKeys主要是用于equi-Join，而没有Join key或者Inner-Join的时候会用Logical.Join。以常见的equi-Join为对象，即ExtractEquiJoinKeys，进行分析。
+
+	//pattern.scala
+	object ExtractEquiJoinKeys extends Logging with PredicateHelper {
+	  /** (joinType, leftKeys, rightKeys, condition, leftChild, rightChild) */
+	  type ReturnType =
+	    (JoinType, Seq[Expression], Seq[Expression], Option[Expression], LogicalPlan, LogicalPlan)
+	
+	  def unapply(plan: LogicalPlan): Option[ReturnType] = plan match {
+	    case join @ Join(left, right, joinType, condition) =>
+	      logDebug(s"Considering join on: $condition")
+	      // Find equi-join predicates that can be evaluated before the join, and thus can be used
+	      // as join keys.
+	      val predicates = condition.map(splitConjunctivePredicates).getOrElse(Nil)
+	      val joinKeys = predicates.flatMap {
+	        case EqualTo(l, r) if canEvaluate(l, left) && canEvaluate(r, right) => Some((l, r))
+	        case EqualTo(l, r) if canEvaluate(l, right) && canEvaluate(r, left) => Some((r, l))
+	        // Replace null with default value for joining key, then those rows with null in it could
+	        // be joined together
+	        case EqualNullSafe(l, r)...
+	        case other => None
+	      }
+	      val otherPredicates = predicates.filterNot {
+	        case EqualTo(l, r) =>
+	          canEvaluate(l, left) && canEvaluate(r, right) ||
+	            canEvaluate(l, right) && canEvaluate(r, left)
+	        case other => false
+	      }
+	
+	      if (joinKeys.nonEmpty) {
+	        val (leftKeys, rightKeys) = joinKeys.unzip
+	        logDebug(s"leftKeys:$leftKeys | rightKeys:$rightKeys")
+	        Some((joinType, leftKeys, rightKeys, otherPredicates.reduceOption(And), left, right))
+	      } else {
+	        None
+	      }
+	    case _ => None
+		}
+	  }
+
+首先就是针对Join操作中的连接条件进行提取，如果是Equi-Join，就将左右子节点的Join Key都提取出来。这里有两种情况：EqualTo和EqualNullSafe，这两者的区别在于对空值是否敏感。EqualTo对空值是敏感的，也就是说对于空值没有额外的处理，而EqualNullSafe情况下的处理逻辑基本和EqualTo一样，但是它会对空值做处理，即赋予相应类型的默认值。那么什么情况下会使用这两种情况呢？实际是用户指定的，条件表达式为“=”或“==”时使用EqualTo，当为“<=>”使用EqualNullSafe。
+`otherPredicates`是记录除了EqualTo类型之外的条件表达式，这里主要是除EqualTo之外的表达式（求值），还有就是EqualNullSafe表达式（这里将EqualNullSafe再次加入`otherPredicates`的目的是）。之后生成的结果就是提取出来的Equi-Join Key，并且把其他连接条件也提取出来。
+
+> Note: Spark SQL暂时没有实现Theta Join（真是高看它了，Hive也没有实现，09年就提出了，PR已提交，但至今没解决），但是范围约束之前的Logical Plan优化是处理过一次的，这里是另一部分，即那些不能马上得出的，如求值表达式（至于IN，BETWEEN等在不在里边，暂时不确定）。
+
+所以`otherPredicates`中的内容基本上可以Shuffle之后在各个数据集上分别处理。
+
+由于在没有特殊设置的情况下会调用SortMergeJoin，所以进入SortMergeJoinExec，传入的参数包括left child和right child，以及对应的join key，还有约束条件。
+
 Shuffle的操作是[执行](https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/sql/spark_sql_execution.md)的时候添加的。在EnsureRequirements的`ensureDistributionAndOrdering`会获取Join的分布策略，该策略是通过`requiredChildDistribution`获取的。
 
 	//SortMergeJoinExec
