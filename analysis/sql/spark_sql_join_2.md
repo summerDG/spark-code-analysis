@@ -119,7 +119,10 @@ Shuffle的操作是[执行](https://github.com/summerDG/spark-code-ananlysis/blo
 	  }
 	 
 回顾EnsureRequirements，这次关注的是ShuffleExchange和Partitioning。构造ShuffleExchange之前首先要构造Partitioning。Partitioning本质上就是一个以数据为输入（InternalRow类型），输出为partition id的表达式。
-ShuffleExchange只是合并了Partitioning和对应child RDD。这样RDD就可以通过Partitioning生成对应的partition id了。
+
+> 上面的函数还用于生成排序节点，join操作实际上是要先shuffle，然后排序，最后找相同的key，Shuffle操作由ShuffleExchange节点完成，虽说Spark使用的是sortPartition进行Shuffle，但这里的Sort并不会保证partition内部的数据有序，其只是保证Shuffle时各个Partititon之间是有序的。所以这里还要增加SortExec节点，也就是说在原本child节点上面增加了两层父节点，先是把结果传给ShuffleExchange进行Shuffle，然后再传给SortExec节点进行排序。
+
+ShuffleExchange只是合并了Partitioning和对应child RDD。这样RDD就可以通过Partitioning生成对应的partition id了。上面提到额Distribution最主要的作用就是生成对应的Partitioning，真正用于计算Partition id的是Partitioning，而非Distribution，可以把Distribution当做计算Partitioning的参数集合。
 
 	//ShuffleExchange
 	def getPartitionKeyExtractor(): InternalRow => Any = newPartitioning match {
