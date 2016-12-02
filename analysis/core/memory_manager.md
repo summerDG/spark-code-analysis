@@ -19,16 +19,20 @@ Spark中的内存管理最近几个版本一直有变化。Spark1.6中将过去�
 3. Spark Memory：
 这部分内存的大小就是_usableMemory * spark.memory.storageFraction_。其共分为两部分一部分是Execution Memory和Storage Memory。虽然会设置`spark.memory.storageFraction`，但两者的边界并不是固定的，任何一部分内存都可以向另一部分去借内存。当然可以设置`spark.memory.offHeap.enabled`为`true`，并设置`spark.memory.offHeap.size`，即off-heap Memory的大小。这种配置下，在off-heap Memory上的Execution Memory和Storage Memory也一样遵循前文的策略。
 
-* Execution Memory表示的是用于shuffles、join、sorts和 aggregations的内存。Execution Memory当然也可以向Storage Memory借空闲内存，当然也不是无限制地借，而是最多借到初始状况，也就是说Storage Memory最少也不会少于初始值。但是
-Execution Memory的非空闲内存__永远都不会__被腾出来用于Storage Memory存储，所以Storage Memory借不到内存的时候就会把已存块按照存储层级踢出去（踢到磁盘或者直接不存）。
+* Execution Memory表示的是用于shuffles、join、sorts和 aggregations的内存。Execution Memory当然也可以向Storage Memory借空闲内存。Execution Memory向Storage Memory借内存的情况有两种：
+
+1. 当Storage Memory中有空闲内存，那么就最多能借空闲内存的总量。
+2. 当Storage Memory已经超过了初始值，那么Execution Memory最多能踢出Storage Memory越界的那部分内存。
+但是Execution Memory的非空闲内存__永远都不会__被腾出来用于Storage Memory存储，所以Storage Memory借不到内存的时候就会把已存块按照存储层级踢出去（踢到磁盘或者直接不存）。
 
 * Storage Memory表示用于persist（cache）、跨集群传递内部数据的内存，以及临时用于序列化数据“unroll”的内存。而且所有广播变量的数据
 都作为cached blocks（存储层级为`MEMORY_AND_DISK`）存储在这里。当这部分内存不足的时候，它可以去向Execution Memory申请
 __空闲__内存。但是当Execution Memory需要收回这部分内存的时候，要踢出部分cached blocks来满足Execution Memory的请求。
 
-> 
-1. Execution Memory <= _usableMemory * spark.memory.storageFraction_ * (1 - spark.memory.storageFraction)，但是它可以踢掉Storage Memory额外占用的它的那部分内存。
-2. Storage Memory >= _usableMemory * spark.memory.storageFraction * spark.memory.storageFraction，但它无权踢掉Execution Memory的非空闲内存。
+> 那么设置Storage Memory的占比有什么意义呢？它指明了Execution Memory不可以无限制剔除Storage Memory，其不能踢出初始值以内的非空闲的Storage Memory。
+e.g. 
+1. 当Storage Memory内存默认大小为1G，有200MB的空闲内存，而Execution Storage默认1G，需要300MB的内存用于运行，那么向Storage Memory最多借200MB。
+2. 当Storage Memory之前向Execution Memory 借了200MB内存，即1.2G，那么Execution Storage若需要300MB内存，那么它最多踢掉200MB用于自己运行。
 
 ##Spark Tungtsen的内存思路
 
