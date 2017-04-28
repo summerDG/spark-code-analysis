@@ -1,13 +1,13 @@
-# Spark SQL Ö´ĞĞ½×¶Î
+# Spark SQL æ‰§è¡Œé˜¶æ®µ
 
-±¾ÎÄÊÇ´ÓÉú³ÉPhysicalPlanÖ®ºó¿ªÊ¼ËµÆğ¡£
+æœ¬æ–‡æ˜¯ä»ç”ŸæˆPhysicalPlanä¹‹åå¼€å§‹è¯´èµ·ã€‚
 
 	//QueryExecution
 	lazy val executedPlan: SparkPlan = prepareForExecution(sparkPlan)
 
 	lazy val toRdd: RDD[InternalRow] = executedPlan.execute()
 	
-Ö÷ÒªÕë¶ÔÒÔÉÏÁ½ÌõÓï¾ä¡£Ê×ÏÈ`executedPlan`ÊÇ¶ÔÒÑÉú³ÉµÄPhysicalPlan×öÒ»Ğ©´¦Àí£¬Ö÷ÒªÊÇ²åÈëshuffle²Ù×÷ºÍinternal rowµÄ¸ñÊ½×ª»»¡£
+ä¸»è¦é’ˆå¯¹ä»¥ä¸Šä¸¤æ¡è¯­å¥ã€‚é¦–å…ˆ`executedPlan`æ˜¯å¯¹å·²ç”Ÿæˆçš„PhysicalPlanåšä¸€äº›å¤„ç†ï¼Œä¸»è¦æ˜¯æ’å…¥shuffleæ“ä½œå’Œinternal rowçš„æ ¼å¼è½¬æ¢ã€‚
 
 	  //QueryExecution
 	  protected def prepareForExecution(plan: SparkPlan): SparkPlan = {
@@ -22,9 +22,9 @@
 		ReuseExchange(sparkSession.sessionState.conf),
 		ReuseSubquery(sparkSession.sessionState.conf))
 
-## Preparations¹æÔò
+## Preparationsè§„åˆ™
 
-ºÍPythonÏà¹ØµÄ²»½éÉÜ¡£
+å’ŒPythonç›¸å…³çš„ä¸ä»‹ç»ã€‚
 
 ### PlanSubqueries
 
@@ -43,10 +43,10 @@
 	  }
 	}
 	
-1. ½«ScalarSubqueryÉú³ÉSparkPlan£¬ÆäÊµ»Ø¹ËÉÏÒ»Æª[Spark SQL Physical Plan][1]£¬²¢Ã»ÓĞ¶ÔScalarSubquery×ö´¦Àí¡£Ô­ÒòºÎÔÚ£¿Êµ¼ÊÉÏÈç¹û½âÎöµÄÊÇSQLÓï¾ä£¬ÊÇ²»»á²úÉúÕâ¸ö½ÚµãµÄ£¬
-Ö»ÓĞÔÚÈËÎª²úÉúLogicalPlanµÄÊ±ºò²Å¿ÉÄÜ»á³öÏÖ¡£ËùÒÔSubqueryÖ®Ç°ÊÇÒ»Ö±Ã»ÓĞ±»×ª»¯µÄ£¬ÕâÀï¾Í½øĞĞ×ª»¯£¬Æä¶ÔÓ¦µÄSparkPlan½ÚµãÊÇScalarSubquery£¨execution£©£¬ºÍÖ®Ç°µÄScalarSubquery£¨expressions£©ÊÇ²»Í¬µÄ£¬¶şÕßÊôÓÚ²»Í¬µÄ°ü£¬Ö»ÊÇÍ¬Ãû¡£
-2. ½«PredicateSubqueryÉú³ÉSparkPlan¡£ºÎÎ½PredicateSubquery£¿¸ÃÖÖ×Ó²éÑ¯»á¼ì²éÆä×Ó²éÑ¯½á¹ûÖĞÊÇ·ñ´æÔÚÄ³¸öÖµ£¬ÏÖÔÚÖ»ÔÊĞí½«Î½´Ê±í´ïÊ½·ÅÔÚFilter PlanÖĞ£¨WHERE»òHAVING¿éÖĞ£©¡£Êµ¼ÊÉÏ¸Ã²éÑ¯ºÍScalarSubqueryÒ»Ñù£¬Èç¹ûÖ±½Ó½âÎöSQLÓï¾ä£¬ÊÇ²»»á³öÏÖÕâ¸öÀàµÄ¡£
-ÆäÊµSubqueryÀàµÄ×ÓÀàÖĞÖ»ÓĞÕâÁ½ÀàÊÇSQLÓï¾ä²»»áÉú³ÉµÄ£¬ÆäËûÁ½¸öÊÇExistºÍListQuery£¨¼´IN°üº¬µÄ¿é£©¡£¸Ã¹æÔò×îºóÉú³ÉInSubquery£¬¸ÃÀà¾ÍÊÇ¼ì²é²éÑ¯ÖĞµÄ¼ÇÂ¼°ü²»°üº¬Î½´Ê±í´ïÊ½µÄ½á¹û£¬ËùÒÔ¸Ã½ÚµãµÄ½á¹ûÓĞtrue¡¢false¡¢nullÈıÖÖ¡£
+1. å°†ScalarSubqueryç”ŸæˆSparkPlanï¼Œå…¶å®å›é¡¾ä¸Šä¸€ç¯‡[Spark SQL Physical Plan][1]ï¼Œå¹¶æ²¡æœ‰å¯¹ScalarSubqueryåšå¤„ç†ã€‚åŸå› ä½•åœ¨ï¼Ÿå®é™…ä¸Šå¦‚æœè§£æçš„æ˜¯SQLè¯­å¥ï¼Œæ˜¯ä¸ä¼šäº§ç”Ÿè¿™ä¸ªèŠ‚ç‚¹çš„ï¼Œ
+åªæœ‰åœ¨äººä¸ºäº§ç”ŸLogicalPlançš„æ—¶å€™æ‰å¯èƒ½ä¼šå‡ºç°ã€‚æ‰€ä»¥Subqueryä¹‹å‰æ˜¯ä¸€ç›´æ²¡æœ‰è¢«è½¬åŒ–çš„ï¼Œè¿™é‡Œå°±è¿›è¡Œè½¬åŒ–ï¼Œå…¶å¯¹åº”çš„SparkPlanèŠ‚ç‚¹æ˜¯ScalarSubqueryï¼ˆexecutionï¼‰ï¼Œå’Œä¹‹å‰çš„ScalarSubqueryï¼ˆexpressionsï¼‰æ˜¯ä¸åŒçš„ï¼ŒäºŒè€…å±äºä¸åŒçš„åŒ…ï¼Œåªæ˜¯åŒåã€‚
+2. å°†PredicateSubqueryç”ŸæˆSparkPlanã€‚ä½•è°“PredicateSubqueryï¼Ÿè¯¥ç§å­æŸ¥è¯¢ä¼šæ£€æŸ¥å…¶å­æŸ¥è¯¢ç»“æœä¸­æ˜¯å¦å­˜åœ¨æŸä¸ªå€¼ï¼Œç°åœ¨åªå…è®¸å°†è°“è¯è¡¨è¾¾å¼æ”¾åœ¨Filter Planä¸­ï¼ˆWHEREæˆ–HAVINGå—ä¸­ï¼‰ã€‚å®é™…ä¸Šè¯¥æŸ¥è¯¢å’ŒScalarSubqueryä¸€æ ·ï¼Œå¦‚æœç›´æ¥è§£æSQLè¯­å¥ï¼Œæ˜¯ä¸ä¼šå‡ºç°è¿™ä¸ªç±»çš„ã€‚
+å…¶å®Subqueryç±»çš„å­ç±»ä¸­åªæœ‰è¿™ä¸¤ç±»æ˜¯SQLè¯­å¥ä¸ä¼šç”Ÿæˆçš„ï¼Œå…¶ä»–ä¸¤ä¸ªæ˜¯Existå’ŒListQueryï¼ˆå³INåŒ…å«çš„å—ï¼‰ã€‚è¯¥è§„åˆ™æœ€åç”ŸæˆInSubqueryï¼Œè¯¥ç±»å°±æ˜¯æ£€æŸ¥æŸ¥è¯¢ä¸­çš„è®°å½•åŒ…ä¸åŒ…å«è°“è¯è¡¨è¾¾å¼çš„ç»“æœï¼Œæ‰€ä»¥è¯¥èŠ‚ç‚¹çš„ç»“æœæœ‰trueã€falseã€nullä¸‰ç§ã€‚
 
 ### EnsureRequirements
 
@@ -61,7 +61,7 @@
 		case operator: SparkPlan => ensureDistributionAndOrdering(operator)
 	}
 	
-1. ½«ShuffleExchangeÀàĞÍµÄ½Úµã×ö´¦Àí£¬Õâ¸öÀàÖ»»á³öÏÖÔÚrepartitionµÄÊ±ºò£¬ËùÒÔÈç¹û¸Ã½ÚµãµÄ×Ó½ÚµãÒÑ¾­¿ÉÒÔ±£Ö¤partition£¬ÄÇÃ´¾ÍÓÃ×Ó½Úµã´úÌæ¸Ã½Úµã¡£
+1. å°†ShuffleExchangeç±»å‹çš„èŠ‚ç‚¹åšå¤„ç†ï¼Œè¿™ä¸ªç±»åªä¼šå‡ºç°åœ¨repartitionçš„æ—¶å€™ï¼Œæ‰€ä»¥å¦‚æœè¯¥èŠ‚ç‚¹çš„å­èŠ‚ç‚¹å·²ç»å¯ä»¥ä¿è¯partitionï¼Œé‚£ä¹ˆå°±ç”¨å­èŠ‚ç‚¹ä»£æ›¿è¯¥èŠ‚ç‚¹ã€‚
 
 		//EnsureRequirements
 		private def ensureDistributionAndOrdering(operator: SparkPlan): SparkPlan = {
@@ -105,31 +105,31 @@
 			parent.withNewChildren(children)
 		}
 	
-2. ÆäËûÀàĞÍµÄ½ÚµãµÄ´¦Àíº¯ÊıÈçÉÏ¡£
+2. å…¶ä»–ç±»å‹çš„èŠ‚ç‚¹çš„å¤„ç†å‡½æ•°å¦‚ä¸Šã€‚
 
-* DIstribution±íÊ¾Êı¾İµÄ·Ö²¼·½Ê½£¬Æä·Ö²¼·½Ê½ÓĞÁ½¸ö·½Ãæ£¬¼¯Èº·Ö²¼ºÍµ¥¸öpartitionÄÚµÄ·Ö²¼£¬·Ö±ğ±íÊ¾Êı¾İÈçºÎ±»·Ö²¼µ½¼¯ÈºÉÏºÍÃ¿¸öpartitionÄÚ²¿µÄ·Ö²¼Çé¿ö¡£`requiredChildDistribution`»áÓĞ²»Í¬µÄÊµÏÖ£¬¼òµ¥¿´ÁËÒ»ÏÂAggregation²Ù×÷µÄÊµÏÖ£¬ÆäÊµ¾ÍÊÇ¾¡Á¿½«ÓĞÁªÏµµÄtuple·ÅÔÚÒ»Æğ£¨ÓÃ±í´ïÊ½ÅĞ¶ÏÁªÏµ£©¡£×÷ÓÃµ¥Î»ÊÇÒ»¸öSparkPlan½Úµã¡£
-* SortOrder£¬Ò»¸ö±í´ïÊ½¿ÉÒÔÓÃÓÚ¶Ôtuple½øĞĞÅÅĞò£¬×÷ÓÃµ¥Î»ÊÇExpression¡£
+* DIstributionè¡¨ç¤ºæ•°æ®çš„åˆ†å¸ƒæ–¹å¼ï¼Œå…¶åˆ†å¸ƒæ–¹å¼æœ‰ä¸¤ä¸ªæ–¹é¢ï¼Œé›†ç¾¤åˆ†å¸ƒå’Œå•ä¸ªpartitionå†…çš„åˆ†å¸ƒï¼Œåˆ†åˆ«è¡¨ç¤ºæ•°æ®å¦‚ä½•è¢«åˆ†å¸ƒåˆ°é›†ç¾¤ä¸Šå’Œæ¯ä¸ªpartitionå†…éƒ¨çš„åˆ†å¸ƒæƒ…å†µã€‚`requiredChildDistribution`ä¼šæœ‰ä¸åŒçš„å®ç°ï¼Œç®€å•çœ‹äº†ä¸€ä¸‹Aggregationæ“ä½œçš„å®ç°ï¼Œå…¶å®å°±æ˜¯å°½é‡å°†æœ‰è”ç³»çš„tupleæ”¾åœ¨ä¸€èµ·ï¼ˆç”¨è¡¨è¾¾å¼åˆ¤æ–­è”ç³»ï¼‰ã€‚ä½œç”¨å•ä½æ˜¯ä¸€ä¸ªSparkPlanèŠ‚ç‚¹ã€‚
+* SortOrderï¼Œä¸€ä¸ªè¡¨è¾¾å¼å¯ä»¥ç”¨äºå¯¹tupleè¿›è¡Œæ’åºï¼Œä½œç”¨å•ä½æ˜¯Expressionã€‚
 
-¿ÉÒÔ·¢ÏÖ`requiredChildDistributions`ºÍ`requiredChildOrderings`³¤¶È¶¼ÊÇ¸ÃSparkPlanµÄ×Ó½Úµã¸öÊı£¬Ò²¾ÍÊÇÃ¿¸ö×Ó½Úµã¿ÉÄÜÓĞ²»Í¬µÄ·Ö²¼ºÍÅÅĞò¡£
+å¯ä»¥å‘ç°`requiredChildDistributions`å’Œ`requiredChildOrderings`é•¿åº¦éƒ½æ˜¯è¯¥SparkPlançš„å­èŠ‚ç‚¹ä¸ªæ•°ï¼Œä¹Ÿå°±æ˜¯æ¯ä¸ªå­èŠ‚ç‚¹å¯èƒ½æœ‰ä¸åŒçš„åˆ†å¸ƒå’Œæ’åºã€‚
 
-È»ºóÀûÓÃPartialAggregateÌáÈ¡³ö¸ÃPlanµÚÒ»¸ö×Ó½ÚµãµÄ·Ö²¼·½Ê½£¨Í¬Ê±ÅĞ¶ÏÊÇ·ñÖ§³Öpartial aggregations£¬¸Ã²Ù×÷ÀàËÆÓÚcombiner£¬µ«ÊÊÓÃ·¶Î§¸ü¹ã£¬²»Ö§³Ö¸ÃÌØĞÔµÄ²Ù×÷²»¶à£¬ÔÚ[ÉÏÒ»Æª][1]ÖĞÓĞ½éÉÜ£©£¬²¢ÇÒÆäÊä³ö²»Âú×ã¸Ã·Ö²¼£¬ÄÇÃ´¾ÍÎªÆäÉú³ÉÒ»¸ömap¶ËµÄaggregation½ÚµãºÍÒ»¸öºÏ²¢½Úµã£¬²¢ÇÒÀûÓÃmap¶ËµÄaggregation½ÚµãÉú³ÉShuffleExchange½Úµã¡£
-**¼ò¶øÑÔÖ®£¬Èç¹ûÒ»¸öAggregation²Ù×÷ĞèÒªShuffle²¢ÇÒÖ§³Öpartial aggregations£¬ÏÈÔÚmap¶Ë½øĞĞ²¿·Öaggregations£¬È»ºóshuffle£¬×îºóºÏ²¢¡£**
+ç„¶ååˆ©ç”¨PartialAggregateæå–å‡ºè¯¥Planç¬¬ä¸€ä¸ªå­èŠ‚ç‚¹çš„åˆ†å¸ƒæ–¹å¼ï¼ˆåŒæ—¶åˆ¤æ–­æ˜¯å¦æ”¯æŒpartial aggregationsï¼Œè¯¥æ“ä½œç±»ä¼¼äºcombinerï¼Œä½†é€‚ç”¨èŒƒå›´æ›´å¹¿ï¼Œä¸æ”¯æŒè¯¥ç‰¹æ€§çš„æ“ä½œä¸å¤šï¼Œåœ¨[ä¸Šä¸€ç¯‡][1]ä¸­æœ‰ä»‹ç»ï¼‰ï¼Œå¹¶ä¸”å…¶è¾“å‡ºä¸æ»¡è¶³è¯¥åˆ†å¸ƒï¼Œé‚£ä¹ˆå°±ä¸ºå…¶ç”Ÿæˆä¸€ä¸ªmapç«¯çš„aggregationèŠ‚ç‚¹å’Œä¸€ä¸ªåˆå¹¶èŠ‚ç‚¹ï¼Œå¹¶ä¸”åˆ©ç”¨mapç«¯çš„aggregationèŠ‚ç‚¹ç”ŸæˆShuffleExchangeèŠ‚ç‚¹ã€‚
+**ç®€è€Œè¨€ä¹‹ï¼Œå¦‚æœä¸€ä¸ªAggregationæ“ä½œéœ€è¦Shuffleå¹¶ä¸”æ”¯æŒpartial aggregationsï¼Œå…ˆåœ¨mapç«¯è¿›è¡Œéƒ¨åˆ†aggregationsï¼Œç„¶åshuffleï¼Œæœ€ååˆå¹¶ã€‚**
 
-¶ÔÓÚÆäËû½Úµã£¬¾ÍÊÇÈç¹û×Ó½ÚµãµÄÊä³öÒÑ¾­Âú×ã¸Ã×Ó½Úµã¶ÔÓ¦µÄ·Ö²¼Çé¿ö£¬¾ÍÖ±½ÓÓÃ×Ó½Úµã´úÌæ£¨Ê¡È¥ÁËÖØĞÂ·Ö²¼£¬¼´shuffleµÄ¹ı³Ì£©¡£Èç¹û×Ó½ÚµãµÄ·Ö²¼Ä£Ê½ÊÇ`BroadcastDistribution`£¬¾ÍÎªÆäÉú³ÉÒ»¸ö`BroadcastExchangeExec`ÀàĞÍµÄ½Úµã¡£ÆäËûÇé¿ö¾ÍÖ±½ÓÉú³ÉShuffleExchange½Úµã¡£
+å¯¹äºå…¶ä»–èŠ‚ç‚¹ï¼Œå°±æ˜¯å¦‚æœå­èŠ‚ç‚¹çš„è¾“å‡ºå·²ç»æ»¡è¶³è¯¥å­èŠ‚ç‚¹å¯¹åº”çš„åˆ†å¸ƒæƒ…å†µï¼Œå°±ç›´æ¥ç”¨å­èŠ‚ç‚¹ä»£æ›¿ï¼ˆçœå»äº†é‡æ–°åˆ†å¸ƒï¼Œå³shuffleçš„è¿‡ç¨‹ï¼‰ã€‚å¦‚æœå­èŠ‚ç‚¹çš„åˆ†å¸ƒæ¨¡å¼æ˜¯`BroadcastDistribution`ï¼Œå°±ä¸ºå…¶ç”Ÿæˆä¸€ä¸ª`BroadcastExchangeExec`ç±»å‹çš„èŠ‚ç‚¹ã€‚å…¶ä»–æƒ…å†µå°±ç›´æ¥ç”ŸæˆShuffleExchangeèŠ‚ç‚¹ã€‚
 
-Ê¡ÂÔµÄ´úÂëºÜ³¤£¬Ö÷Òª¹¦ÄÜ¾ÍÊÇµ±¸ÃSparkPlanÓĞ¶à¸ö×Ó½ÚµãµÄÊ±ºò£¬²¢ÇÒÖ¸¶¨ÁË×Ó½ÚµãµÄ·Ö²¼£¬ÄÇÃ´×Ó½ÚµãµÄÊä³ö·ÖÇøÒ»¶¨ÒªÏà»¥¼æÈİ¡£¼æ²»¼æÈİµÄÅĞ¶ÏÌõ¼şÊÇ£¬·ÖÇøÊı²»Í¬Ò»¶¨²»¼æÈİ£¬·ÖÇøÊıÏàÍ¬µÄÇé¿öÏÂ·ÖÇø¿´²ßÂÔÊÇ·ñÏàÍ¬¡£
-Èç¹û²»¼æÈİ£¬Ê×ÏÈÅĞ¶Ï×Ó½ÚµãµÄÊä³ö·ÖÇøÊÇ·ñ¶¼Âú×ã¸÷×ÔµÄ·Ö²¼²ßÂÔ£¬Èç¹ûÊÇ¾Í²»×ö´¦Àí£¨ÒòÎª`requiredChildDistributions`ÖĞµÄ·Ö²¼ÊÇ¼æÈİµÄ£¬Òò´ËÕâÖÖÇé¿öÏÂ×Ó½ÚµãÊä³ö·ÖÇøÒ²Ïà»¥¼æÈİ£©¡£
-Èç¹ûÒÑ²»ÄÜÓÃÏÖÓĞ·ÖÇø£¬ÏÈÈ·¶¨ĞÂµÄ·ÖÇøÊı£¬²ßÂÔÊÇÈç¹ûËùÓĞ×Ó½ÚµãÊä³öµÄ·ÖÇøÓë¶ÔÓ¦·Ö²¼²ßÂÔ¶¼²»¼æÈİ£¬ÄÇÃ´¾ÍÓÃÄ¬ÈÏ·ÖÇøÊıÄ¿£¬·´Ö®ÔòÓÃÕâĞ©½ÚµãÖĞ×î´óµÄ·ÖÇøÊıÄ¿¡£×îºóÉ¨Ãè¸÷½Úµã£¬Èç¹ûÓëĞÂµÄ·Ö²¼²ßÂÔ²»Æ¥Åä£¬ÄÇÃ´¾Í¶ÔÆäÊä³öÖØĞÂShuffle£¨·Ö²¼²ßÂÔÒÀÈ»ÓÃ¶ÔÓ¦·ÖÇø²ßÂÔ£¬·ÖÇøÊıÄ¿¾ÍÊÇĞÂÈ·¶¨µÄ£©£¬ĞÎ³ÉĞÂµÄ·ÖÇø¡£
+çœç•¥çš„ä»£ç å¾ˆé•¿ï¼Œä¸»è¦åŠŸèƒ½å°±æ˜¯å½“è¯¥SparkPlanæœ‰å¤šä¸ªå­èŠ‚ç‚¹çš„æ—¶å€™ï¼Œå¹¶ä¸”æŒ‡å®šäº†å­èŠ‚ç‚¹çš„åˆ†å¸ƒï¼Œé‚£ä¹ˆå­èŠ‚ç‚¹çš„è¾“å‡ºåˆ†åŒºä¸€å®šè¦ç›¸äº’å…¼å®¹ã€‚å…¼ä¸å…¼å®¹çš„åˆ¤æ–­æ¡ä»¶æ˜¯ï¼Œåˆ†åŒºæ•°ä¸åŒä¸€å®šä¸å…¼å®¹ï¼Œåˆ†åŒºæ•°ç›¸åŒçš„æƒ…å†µä¸‹åˆ†åŒºçœ‹ç­–ç•¥æ˜¯å¦ç›¸åŒã€‚
+å¦‚æœä¸å…¼å®¹ï¼Œé¦–å…ˆåˆ¤æ–­å­èŠ‚ç‚¹çš„è¾“å‡ºåˆ†åŒºæ˜¯å¦éƒ½æ»¡è¶³å„è‡ªçš„åˆ†å¸ƒç­–ç•¥ï¼Œå¦‚æœæ˜¯å°±ä¸åšå¤„ç†ï¼ˆå› ä¸º`requiredChildDistributions`ä¸­çš„åˆ†å¸ƒæ˜¯å…¼å®¹çš„ï¼Œå› æ­¤è¿™ç§æƒ…å†µä¸‹å­èŠ‚ç‚¹è¾“å‡ºåˆ†åŒºä¹Ÿç›¸äº’å…¼å®¹ï¼‰ã€‚
+å¦‚æœå·²ä¸èƒ½ç”¨ç°æœ‰åˆ†åŒºï¼Œå…ˆç¡®å®šæ–°çš„åˆ†åŒºæ•°ï¼Œç­–ç•¥æ˜¯å¦‚æœæ‰€æœ‰å­èŠ‚ç‚¹è¾“å‡ºçš„åˆ†åŒºä¸å¯¹åº”åˆ†å¸ƒç­–ç•¥éƒ½ä¸å…¼å®¹ï¼Œé‚£ä¹ˆå°±ç”¨é»˜è®¤åˆ†åŒºæ•°ç›®ï¼Œåä¹‹åˆ™ç”¨è¿™äº›èŠ‚ç‚¹ä¸­æœ€å¤§çš„åˆ†åŒºæ•°ç›®ã€‚æœ€åæ‰«æå„èŠ‚ç‚¹ï¼Œå¦‚æœä¸æ–°çš„åˆ†å¸ƒç­–ç•¥ä¸åŒ¹é…ï¼Œé‚£ä¹ˆå°±å¯¹å…¶è¾“å‡ºé‡æ–°Shuffleï¼ˆåˆ†å¸ƒç­–ç•¥ä¾ç„¶ç”¨å¯¹åº”åˆ†åŒºç­–ç•¥ï¼Œåˆ†åŒºæ•°ç›®å°±æ˜¯æ–°ç¡®å®šçš„ï¼‰ï¼Œå½¢æˆæ–°çš„åˆ†åŒºã€‚
 
-½ÓÏÂÀ´µÄ¹¤×÷¾ÍÊÇÎª×Ó½ÚµãÔö¼ÓExchangeCoordinator£¬¸ÃÀà±íÊ¾Ò»¸öĞ­µ÷Æ÷£¬ÏÖÔÚÊÇÏëµÄ×÷ÓÃ¾ÍÊÇÈ·¶¨ShuffleºópartitionµÄÊıÄ¿¡£
+æ¥ä¸‹æ¥çš„å·¥ä½œå°±æ˜¯ä¸ºå­èŠ‚ç‚¹å¢åŠ ExchangeCoordinatorï¼Œè¯¥ç±»è¡¨ç¤ºä¸€ä¸ªåè°ƒå™¨ï¼Œç°åœ¨æ˜¯æƒ³çš„ä½œç”¨å°±æ˜¯ç¡®å®šShuffleåpartitionçš„æ•°ç›®ã€‚
 
-ÏÂÃæÊ¡ÂÔµÄ´úÂë±íÊ¾Îª×Ó½ÚµãÔö¼Ó±ØÒªµÄÅÅĞò·½Ê½£¬²ßÂÔÀàËÆÓÚÇ°Ãæ£¬¾ÍÊÇÈç¹û×Ó½ÚµãÊä³öµÄÅÅĞòÒÑ¾­Âú×ã¶ÔÓ¦µÄÅÅĞò£¬¼´Ö±½ÓÓÃ×Ó½Úµã£¬·ñÔò¾ÍÔÚÆä°ü¹üÒ»²ãÅÅĞò½Úµã¡£×îºóÒ»¾ä¾ÍÊÇºÏ²¢¡£ÆäÕûÌå½á¹¹ÈçÏÂ£º
+ä¸‹é¢çœç•¥çš„ä»£ç è¡¨ç¤ºä¸ºå­èŠ‚ç‚¹å¢åŠ å¿…è¦çš„æ’åºæ–¹å¼ï¼Œç­–ç•¥ç±»ä¼¼äºå‰é¢ï¼Œå°±æ˜¯å¦‚æœå­èŠ‚ç‚¹è¾“å‡ºçš„æ’åºå·²ç»æ»¡è¶³å¯¹åº”çš„æ’åºï¼Œå³ç›´æ¥ç”¨å­èŠ‚ç‚¹ï¼Œå¦åˆ™å°±åœ¨å…¶åŒ…è£¹ä¸€å±‚æ’åºèŠ‚ç‚¹ã€‚æœ€åä¸€å¥å°±æ˜¯åˆå¹¶ã€‚å…¶æ•´ä½“ç»“æ„å¦‚ä¸‹ï¼š
 
 ![add shuffle and sort][ensureDistributionAndOrdering]
 
 ### CollapseCodegenStages
 
-¸Ã¹æÔòÊÇÔÚÖ§³ÖcodegenµÄ½Úµã¶¥¶Ë²åÈëWholeStageCodegen¡£¿É²Î¿¼[Apache Spark as a Compiler: Joining a Billion Rows per Second on a Laptop][2]¡£
+è¯¥è§„åˆ™æ˜¯åœ¨æ”¯æŒcodegençš„èŠ‚ç‚¹é¡¶ç«¯æ’å…¥WholeStageCodegenã€‚å¯å‚è€ƒ[Apache Spark as a Compiler: Joining a Billion Rows per Second on a Laptop][2]ã€‚
 
 	//WholeStageCodegenExec.scala
 	private def insertWholeStageCodegen(plan: SparkPlan): SparkPlan = plan match {
@@ -153,27 +153,27 @@
 		case _ => false
 	}
 
-Ö»ÓĞÒ»ÖÖÌõ¼ş£¨µÚ¶ş¸öcase£©»á²åÈëWholeStageCodegen¡£µÚÒ»ÖÖÌõ¼ş±íÃ÷Êä³öÀàĞÍÊÇÌØ¶¨ÀàĞÍ²¢ÇÒ½öÊä³öÒ»¸öÊôĞÔ¡£ÄÇÃ´Ê²Ã´ËãÊÇÖ§³ÖcodegenÄØ£¿Ê×ÏÈ±ØĞë¼Ì³ĞÁËCodegenSupportÌØÖÊ£¬²¢ÇÒ`supportCodegen`Îªtrue£¬
-ºÜ¶à½Úµã¶¼ÊµÏÖÁË¸Ãtrait£¬µ«ÊÇÊÇ·ñÖ§³ÖµÄÅĞ¶ÏÌõ¼ş¸÷²»ÏàÍ¬£¬ÕâÀï²»×¸Êö¡£ÕâÀïÓĞ¶Ô`supportCodegen`µÄÖØÔØ£¬`willFallBack`ÓÃÓÚÅĞ¶ÏÊÇ·ñÓĞ±í´ïÊ½µÄ´úÂëÉú³ÉÖ§³Ö»Ø¹ö£¬ÎªÊ²Ã´»Ø¹öµÄ²»ÄÜÉú³ÉWholeStageCodegen£¿
-´ó¸ÅÊÇÒòÎªÊµÏÖÁË¸ÃtraitµÄÀà±¾ÉíÃ»ÓĞÏàÓ¦µÄÖ´ĞĞ·½Ê½£¬Æä²Ù×÷Ì«¸´ÔÓ»òÕßÓĞĞ©µÚÈı·½×é¼şÎŞ·¨¼¯³Éµ½Éú³ÉµÄ´úÂëÖĞ£¬ËùÒÔÃ»ÓĞÓÃjava£¨scala£©´úÂëÉú³É¡£`hasTooManyOutputFields`±£Ö¤Êä³öµÄÊı¾İÀàĞÍ²»ÄÜÓĞÌ«¶àµÄfield¡£
-¶øÇÒ`hasTooManyInputFields`±íÃ÷Ã¿¸ö×Ó½ÚµãµÄÊäÈëÊı¾İÒ²¶¼²»ÄÜ³¬³öÉÏÏŞ£¨conf.wholeStageMaxNumFields£©¡£
+åªæœ‰ä¸€ç§æ¡ä»¶ï¼ˆç¬¬äºŒä¸ªcaseï¼‰ä¼šæ’å…¥WholeStageCodegenã€‚ç¬¬ä¸€ç§æ¡ä»¶è¡¨æ˜è¾“å‡ºç±»å‹æ˜¯ç‰¹å®šç±»å‹å¹¶ä¸”ä»…è¾“å‡ºä¸€ä¸ªå±æ€§ã€‚é‚£ä¹ˆä»€ä¹ˆç®—æ˜¯æ”¯æŒcodegenå‘¢ï¼Ÿé¦–å…ˆå¿…é¡»ç»§æ‰¿äº†CodegenSupportç‰¹è´¨ï¼Œå¹¶ä¸”`supportCodegen`ä¸ºtrueï¼Œ
+å¾ˆå¤šèŠ‚ç‚¹éƒ½å®ç°äº†è¯¥traitï¼Œä½†æ˜¯æ˜¯å¦æ”¯æŒçš„åˆ¤æ–­æ¡ä»¶å„ä¸ç›¸åŒï¼Œè¿™é‡Œä¸èµ˜è¿°ã€‚è¿™é‡Œæœ‰å¯¹`supportCodegen`çš„é‡è½½ï¼Œ`willFallBack`ç”¨äºåˆ¤æ–­æ˜¯å¦æœ‰è¡¨è¾¾å¼çš„ä»£ç ç”Ÿæˆæ”¯æŒå›æ»šï¼Œä¸ºä»€ä¹ˆå›æ»šçš„ä¸èƒ½ç”ŸæˆWholeStageCodegenï¼Ÿ
+å¤§æ¦‚æ˜¯å› ä¸ºå®ç°äº†è¯¥traitçš„ç±»æœ¬èº«æ²¡æœ‰ç›¸åº”çš„æ‰§è¡Œæ–¹å¼ï¼Œå…¶æ“ä½œå¤ªå¤æ‚æˆ–è€…æœ‰äº›ç¬¬ä¸‰æ–¹ç»„ä»¶æ— æ³•é›†æˆåˆ°ç”Ÿæˆçš„ä»£ç ä¸­ï¼Œæ‰€ä»¥æ²¡æœ‰ç”¨javaï¼ˆscalaï¼‰ä»£ç ç”Ÿæˆã€‚`hasTooManyOutputFields`ä¿è¯è¾“å‡ºçš„æ•°æ®ç±»å‹ä¸èƒ½æœ‰å¤ªå¤šçš„fieldã€‚
+è€Œä¸”`hasTooManyInputFields`è¡¨æ˜æ¯ä¸ªå­èŠ‚ç‚¹çš„è¾“å…¥æ•°æ®ä¹Ÿéƒ½ä¸èƒ½è¶…å‡ºä¸Šé™ï¼ˆconf.wholeStageMaxNumFieldsï¼‰ã€‚
 
 ### ReuseExchange
 
-¸Ã¹æÔòÊÇÕë¶ÔÖØ¸´µÄExchangeµÄ¡£ExchangeÊÇÒ»¸ö³éÏóÀà£¬ËùÓĞ×ÓÀà¶¼ºÍ¶àÏß³Ì»ò½ø³ÌµÄÊı¾İ½»»»ÓĞ¹Ø£¬Ö®Ç°Ìáµ½µÄShuffleExchangeºÍBroadcastExchangeExecÊÇËü½öÓĞµÄÁ½¸ö×ÓÀà¡£Èç¹ûÖ®Ç°ÓĞÏàÍ¬ÀàĞÍµÄExchange£¬²¢ÇÒÊä³ö½á¹ûÏàÍ¬£¨Ìõ¼ş¾ÍÊÇÅĞ¶Ïµİ¹éÊä³öÀàĞÍ£¬²ÎÊı¸öÊı£¬×ÓÊ÷´óĞ¡ÊÇ·ñÏàÍ¬£¬»ù±¾¾ÍÊÇËµÊ÷½á¹¹ÏàÍ¬£¬Êä³ö½á¹û¾ÍÏàÍ¬£©£¬
-ÄÇÃ´¾ÍÓÃÖ®Ç°Éú³ÉµÄ½ÚµãÌæ»»£¬¼´ÖØÓÃÖ®Ç°Éú³ÉµÄ½Úµã¡£¸Ã¹æÔòÂß¼­±È½Ï¼òµ¥ÇåÎú£¬ÕâÀï¾Í²»Ìù´úÂëÁË¡£
+è¯¥è§„åˆ™æ˜¯é’ˆå¯¹é‡å¤çš„Exchangeçš„ã€‚Exchangeæ˜¯ä¸€ä¸ªæŠ½è±¡ç±»ï¼Œæ‰€æœ‰å­ç±»éƒ½å’Œå¤šçº¿ç¨‹æˆ–è¿›ç¨‹çš„æ•°æ®äº¤æ¢æœ‰å…³ï¼Œä¹‹å‰æåˆ°çš„ShuffleExchangeå’ŒBroadcastExchangeExecæ˜¯å®ƒä»…æœ‰çš„ä¸¤ä¸ªå­ç±»ã€‚å¦‚æœä¹‹å‰æœ‰ç›¸åŒç±»å‹çš„Exchangeï¼Œå¹¶ä¸”è¾“å‡ºç»“æœç›¸åŒï¼ˆæ¡ä»¶å°±æ˜¯åˆ¤æ–­é€’å½’è¾“å‡ºç±»å‹ï¼Œå‚æ•°ä¸ªæ•°ï¼Œå­æ ‘å¤§å°æ˜¯å¦ç›¸åŒï¼ŒåŸºæœ¬å°±æ˜¯è¯´æ ‘ç»“æ„ç›¸åŒï¼Œè¾“å‡ºç»“æœå°±ç›¸åŒï¼‰ï¼Œ
+é‚£ä¹ˆå°±ç”¨ä¹‹å‰ç”Ÿæˆçš„èŠ‚ç‚¹æ›¿æ¢ï¼Œå³é‡ç”¨ä¹‹å‰ç”Ÿæˆçš„èŠ‚ç‚¹ã€‚è¯¥è§„åˆ™é€»è¾‘æ¯”è¾ƒç®€å•æ¸…æ™°ï¼Œè¿™é‡Œå°±ä¸è´´ä»£ç äº†ã€‚
 
 ### ReuseSubquery
 
-´¦Àí»ù±¾Í¬ReuseExchange£¬Ö»ÊÇ²Ù×÷¶ÔÏó»»³ÉÁËExecSubqueryExpression¡£
+å¤„ç†åŸºæœ¬åŒReuseExchangeï¼Œåªæ˜¯æ“ä½œå¯¹è±¡æ¢æˆäº†ExecSubqueryExpressionã€‚
 
-## execute·½·¨½éÉÜ
+## executeæ–¹æ³•ä»‹ç»
 
-Ã¿¸öSparkPlan¶¼ÓĞÒ»¸ö`execute`·½·¨£¬Æäµ÷ÓÃ`doExecute`·½·¨£¬¸÷¸ö×ÓÀà»áÊµÏÖ¾ßÌåµÄdoExecute·½·¨¡£ÕâÀïÒÔselect XXX from XXX where XXXÎªÀı½éÉÜ¡£¸ÃÓï¾äÉæ¼°µ½µÄSparkPlan½ÚµãºÜÉÙ£¬Ö»ÓĞFilterExec£¬ProjectExecºÍInMemoryTableScanExec£¨¼ÙÉèÊÇInMemoryRealtion£©¡£
+æ¯ä¸ªSparkPlanéƒ½æœ‰ä¸€ä¸ª`execute`æ–¹æ³•ï¼Œå…¶è°ƒç”¨`doExecute`æ–¹æ³•ï¼Œå„ä¸ªå­ç±»ä¼šå®ç°å…·ä½“çš„doExecuteæ–¹æ³•ã€‚è¿™é‡Œä»¥select XXX from XXX where XXXä¸ºä¾‹ä»‹ç»ã€‚è¯¥è¯­å¥æ¶‰åŠåˆ°çš„SparkPlanèŠ‚ç‚¹å¾ˆå°‘ï¼Œåªæœ‰FilterExecï¼ŒProjectExecå’ŒInMemoryTableScanExecï¼ˆå‡è®¾æ˜¯InMemoryRealtionï¼‰ã€‚
 
 ![execution example][execution]
 
-### ProjectExecÖ´ĞĞ
+### ProjectExecæ‰§è¡Œ
 
 	//ProjectExec
 	protected override def doExecute(): RDD[InternalRow] = {
@@ -184,11 +184,11 @@
 		}
 	}
 
-Ö´ĞĞ¹ı³ÌºÜ¼òµ¥¾ÍÊÇÕë¶Ô×Ó½ÚµãµÄÊä³öRDD[InternalRow]£¬ÒÔpartitionÎªµ¥Î»Ö´ĞĞÍ¶Ó°²Ù×÷£¬×¢ÒâÕâÀïÉú³ÉµÄ²¢²»ÊÇ×îºóµÄÊı¾İ£¬¶øÊÇRDD[InternalRow]£¬ÎÒÃÇÖ®Ç°ËµÃ÷InternalRow²¢²»±£´æÊµ¼ÊÊı¾İ¡£Ò²¾ÍÊÇexecuteÊÇtransform²Ù×÷£¬¶ø·Çaction²Ù×÷¡£
-µ«ÊÇRDD[InternalRow]ÓĞÒ»¸öºÜÖØÒªµÄ×÷ÓÃ¾ÍÊÇÖªµÀÃ¿²½²Ù×÷µÄ¶ÔÏó¡£ÀıÈç£ºRow[InternalRow]¼ÇÂ¼ÁËÕâÒ»²½ÊÇ¶ÔµÚx¸öµ¥ÔªµÄÊı¾İ¼ÓÒ»£¬xÊÇÒ»¸ö±äÁ¿£¬µ«ÊÇ×îºóÖ´ĞĞµÄÊ±ºò£¬Õâ²¿·Ö´úÂëÖ»ÊÇ×÷ÓÃÓÚÕæÊÇµÄÊı¾İ¡£¼ò¶øÑÔÖ®RDD[InternalRow]ÓÃÓÚÉú³ÉÏàÓ¦´úÂë¡£
-ÉÏÃæº¯ÊıÖĞµÄ`project`¾ÍÏàµ±ÓÚÒ»¸öÍ¶Ó°²Ù×÷µÄ´úÂëÉú³Éº¯Êı¡£
+æ‰§è¡Œè¿‡ç¨‹å¾ˆç®€å•å°±æ˜¯é’ˆå¯¹å­èŠ‚ç‚¹çš„è¾“å‡ºRDD[InternalRow]ï¼Œä»¥partitionä¸ºå•ä½æ‰§è¡ŒæŠ•å½±æ“ä½œï¼Œæ³¨æ„è¿™é‡Œç”Ÿæˆçš„å¹¶ä¸æ˜¯æœ€åçš„æ•°æ®ï¼Œè€Œæ˜¯RDD[InternalRow]ï¼Œæˆ‘ä»¬ä¹‹å‰è¯´æ˜InternalRowå¹¶ä¸ä¿å­˜å®é™…æ•°æ®ã€‚ä¹Ÿå°±æ˜¯executeæ˜¯transformæ“ä½œï¼Œè€Œéactionæ“ä½œã€‚
+ä½†æ˜¯RDD[InternalRow]æœ‰ä¸€ä¸ªå¾ˆé‡è¦çš„ä½œç”¨å°±æ˜¯çŸ¥é“æ¯æ­¥æ“ä½œçš„å¯¹è±¡ã€‚ä¾‹å¦‚ï¼šRow[InternalRow]è®°å½•äº†è¿™ä¸€æ­¥æ˜¯å¯¹ç¬¬xä¸ªå•å…ƒçš„æ•°æ®åŠ ä¸€ï¼Œxæ˜¯ä¸€ä¸ªå˜é‡ï¼Œä½†æ˜¯æœ€åæ‰§è¡Œçš„æ—¶å€™ï¼Œè¿™éƒ¨åˆ†ä»£ç åªæ˜¯ä½œç”¨äºçœŸæ˜¯çš„æ•°æ®ã€‚ç®€è€Œè¨€ä¹‹RDD[InternalRow]ç”¨äºç”Ÿæˆç›¸åº”ä»£ç ã€‚
+ä¸Šé¢å‡½æ•°ä¸­çš„`project`å°±ç›¸å½“äºä¸€ä¸ªæŠ•å½±æ“ä½œçš„ä»£ç ç”Ÿæˆå‡½æ•°ã€‚
 
-### FilterExecÖ´ĞĞ
+### FilterExecæ‰§è¡Œ
 
 	//FilterExec
 	protected override def doExecute(): RDD[InternalRow] = {
@@ -203,15 +203,15 @@
 		}
 	}
 	
-`predicate`Ïàµ±ÓÚÒ»¸öº¯ÊıÓÃÓÚÅĞ¶Ï¸ÃĞĞÂú²»Âú×ãÌõ¼ş£¬²»¹ıºÍÉÏÃæÒ»ÑùÊÇ´úÂëÉú³ÉµÄº¯Êı¡£
+`predicate`ç›¸å½“äºä¸€ä¸ªå‡½æ•°ç”¨äºåˆ¤æ–­è¯¥è¡Œæ»¡ä¸æ»¡è¶³æ¡ä»¶ï¼Œä¸è¿‡å’Œä¸Šé¢ä¸€æ ·æ˜¯ä»£ç ç”Ÿæˆçš„å‡½æ•°ã€‚
 
-### InMemoryTableScanExecÖ´ĞĞ
+### InMemoryTableScanExecæ‰§è¡Œ
 
-¸Ã½ÚµãµÄ`doExecute`·½·¨±È½Ï¸´ÔÓ¡£µ«Ë¼Â·¾ÍÊÇ²Ù×÷¾ßÌåÁĞ£¨ÒòÎª¾­¹ıÇ°ÃæµÄÓÅ»¯ºó£¬Ã»±ØÒªÊä³öËùÓĞÁĞ£©£¬×÷ÎªÊä³ö¡£
+è¯¥èŠ‚ç‚¹çš„`doExecute`æ–¹æ³•æ¯”è¾ƒå¤æ‚ã€‚ä½†æ€è·¯å°±æ˜¯æ“ä½œå…·ä½“åˆ—ï¼ˆå› ä¸ºç»è¿‡å‰é¢çš„ä¼˜åŒ–åï¼Œæ²¡å¿…è¦è¾“å‡ºæ‰€æœ‰åˆ—ï¼‰ï¼Œä½œä¸ºè¾“å‡ºã€‚
 
-##Óë¾ßÌåÊı¾İµÄÁªÏµ
+##ä¸å…·ä½“æ•°æ®çš„è”ç³»
 
-ÒÔ`collect`²Ù×÷ÎªÀı¡£
+ä»¥`collect`æ“ä½œä¸ºä¾‹ã€‚
 
 	//DataSet
 	def executeCollect(): Array[InternalRow] = {
@@ -244,13 +244,13 @@
 		}
 	}
 	
-`byteArrayRdd`¾ÍÊÇ¸ÃDataSet¶ÔÓ¦µÄRDD[Array[Byte]]¡£`getByteArrayRdd`¾ÍÊÇÀûÓÃ`execute`Éú³ÉµÄRDD[InternalRow]¡£RDD[InternalRow]ºÍÊı¾İÁªÏµµÄÇÅÁºÊÇÁ½¸ö£ºInterator[InternalRow]ºÍUnsafeRow¡£
+`byteArrayRdd`å°±æ˜¯è¯¥DataSetå¯¹åº”çš„RDD[Array[Byte]]ã€‚`getByteArrayRdd`å°±æ˜¯åˆ©ç”¨`execute`ç”Ÿæˆçš„RDD[InternalRow]ã€‚RDD[InternalRow]å’Œæ•°æ®è”ç³»çš„æ¡¥æ¢æ˜¯ä¸¤ä¸ªï¼šInterator[InternalRow]å’ŒUnsafeRowã€‚
 
-### Iterator[InternalRow]ºÍUnsafeRow
+### Iterator[InternalRow]å’ŒUnsafeRow
 
-InternalRowËäÈ»²»°üº¬Êı¾İ£¬µ«ÊÇ²¢²»·Á°­Iterator[InternalRow]¿ÉÒÔÊä³öÊı¾İ£¬ÒòÎª`hasNext`£¬`next`µÈº¯Êı¿ÉÒÔ±»ÖØĞ´¡£
-ÉÏÃæÔÚ[InMemoryTableScanExec][###InMemoryTableScanExecÖ´ĞĞ]ÖĞÃ»ÓĞÌáµ½µÄÊÇÆä`execute`µ÷ÓÃÁË`GenerateColumnAccessor.generate(columnTypes)`£¬¶ø¸Ãº¯ÊıÓÖµ÷ÓÃÁË`GenerateColumnAccessor.create(columnTypes)`¡£
-`create`µÄÖ÷Òª¹¦ÄÜ¾ÍÊÇÉú³É´úÂë£¨ÓÉÓÚÊÇ×Ö·û´®£¬ËùÒÔIDE¸ù±¾¼ì²â²»µ½£©¡£Éú³ÉµÄ´úÂëÖ÷ÒªÊÇÊµÏÖÁËSpecificColumnarIteratorÀà£¬¸ÃÀàÊÇColumnarIterator£¨¼Ì³Ğ×ÔInterator[InternalRow]£©µÄ×ÓÀà¡£ÆäÖĞ¾ÍÓĞ`buffers`£¬`rowWriter`µÈ±äÁ¿¡£
+InternalRowè™½ç„¶ä¸åŒ…å«æ•°æ®ï¼Œä½†æ˜¯å¹¶ä¸å¦¨ç¢Iterator[InternalRow]å¯ä»¥è¾“å‡ºæ•°æ®ï¼Œå› ä¸º`hasNext`ï¼Œ`next`ç­‰å‡½æ•°å¯ä»¥è¢«é‡å†™ã€‚
+ä¸Šé¢åœ¨[InMemoryTableScanExec][###InMemoryTableScanExecæ‰§è¡Œ]ä¸­æ²¡æœ‰æåˆ°çš„æ˜¯å…¶`execute`è°ƒç”¨äº†`GenerateColumnAccessor.generate(columnTypes)`ï¼Œè€Œè¯¥å‡½æ•°åˆè°ƒç”¨äº†`GenerateColumnAccessor.create(columnTypes)`ã€‚
+`create`çš„ä¸»è¦åŠŸèƒ½å°±æ˜¯ç”Ÿæˆä»£ç ï¼ˆç”±äºæ˜¯å­—ç¬¦ä¸²ï¼Œæ‰€ä»¥IDEæ ¹æœ¬æ£€æµ‹ä¸åˆ°ï¼‰ã€‚ç”Ÿæˆçš„ä»£ç ä¸»è¦æ˜¯å®ç°äº†SpecificColumnarIteratorç±»ï¼Œè¯¥ç±»æ˜¯ColumnarIteratorï¼ˆç»§æ‰¿è‡ªInterator[InternalRow]ï¼‰çš„å­ç±»ã€‚å…¶ä¸­å°±æœ‰`buffers`ï¼Œ`rowWriter`ç­‰å˜é‡ã€‚
 
 	//GenerateColumnAccessor
 	protected def create(columnTypes: Seq[DataType]): ColumnarIterator = {
@@ -308,11 +308,11 @@ InternalRowËäÈ»²»°üº¬Êı¾İ£¬µ«ÊÇ²¢²»·Á°­Iterator[InternalRow]¿ÉÒÔÊä³öÊı¾İ£¬ÒòÎª`h
 		CodeGenerator.compile(code).generate(Array.empty).asInstanceOf[ColumnarIterator]
 	}
 
-ÔÚÕâÀï¾Í»áÌå»áµ½ÆäÊµÔÚInterator[InternalRow]¾Í»áÓĞÊı¾İÁË¡£ÕâÀïÖ÷ÒªÀûÓÃµ½4¸ö±äÁ¿£º`buffer`£¬`unsafeRow`£¬`bufferHolder`£¬`rowWriter`¡£`buffer`µÄÀàĞÍºÃ½âÊÍ¡£ÏÂÃæ½âÊÍÆäËû3¸ö¶ÔÏóµÄÀàĞÍ¡£
+åœ¨è¿™é‡Œå°±ä¼šä½“ä¼šåˆ°å…¶å®åœ¨Interator[InternalRow]å°±ä¼šæœ‰æ•°æ®äº†ã€‚è¿™é‡Œä¸»è¦åˆ©ç”¨åˆ°4ä¸ªå˜é‡ï¼š`buffer`ï¼Œ`unsafeRow`ï¼Œ`bufferHolder`ï¼Œ`rowWriter`ã€‚`buffer`çš„ç±»å‹å¥½è§£é‡Šã€‚ä¸‹é¢è§£é‡Šå…¶ä»–3ä¸ªå¯¹è±¡çš„ç±»å‹ã€‚
 
 #### UnsafeRow
 
-¸ÃÀàĞÍ¼Ì³Ğ×ÔInternalRow£¬µ«Æä°üº¬ÁËÊı¾İ£¬¶øÇÒÆä²Ù×÷ÊÇÔ­ÉúÄÚ´æ²Ù×÷£¬ËùÒÔ²»ÊÇJava¶ÔÏó¡£ÆäÊı¾İ±£´æÔÚ`baseObject`¶ÔÏóÖĞ£¬¸Ã¶ÔÏóÊÇObjectÀàĞÍ¡£
+è¯¥ç±»å‹ç»§æ‰¿è‡ªInternalRowï¼Œä½†å…¶åŒ…å«äº†æ•°æ®ï¼Œè€Œä¸”å…¶æ“ä½œæ˜¯åŸç”Ÿå†…å­˜æ“ä½œï¼Œæ‰€ä»¥ä¸æ˜¯Javaå¯¹è±¡ã€‚å…¶æ•°æ®ä¿å­˜åœ¨`baseObject`å¯¹è±¡ä¸­ï¼Œè¯¥å¯¹è±¡æ˜¯Objectç±»å‹ã€‚
 
 	//UnsafeRow
 	public byte getByte(int ordinal) {
@@ -323,15 +323,15 @@ InternalRowËäÈ»²»°üº¬Êı¾İ£¬µ«ÊÇ²¢²»·Á°­Iterator[InternalRow]¿ÉÒÔÊä³öÊı¾İ£¬ÒòÎª`h
 		return baseOffset + bitSetWidthInBytes + ordinal * 8L;
 	}
 
-Ã¿¸öTupleÓÉÈı²¿·Ö×é³É£º[null bit set] [values] [variable length portion]¡£`baseOffset`ÊÇÒ»¸ö¶ÔÏóµÄÍ·²¿Õ¼ÓÃµÄ³¤¶È¡£
+æ¯ä¸ªTupleç”±ä¸‰éƒ¨åˆ†ç»„æˆï¼š[null bit set] [values] [variable length portion]ã€‚`baseOffset`æ˜¯ä¸€ä¸ªå¯¹è±¡çš„å¤´éƒ¨å ç”¨çš„é•¿åº¦ã€‚
 
-* [null bit set] ÓÃÓÚnullÎ»µÄ¸ú×Ù£¬³¤¶ÈÊÇ**8-Byte**£¨Èç¹ûÃ»ÓĞfield£¬¸ÃÓò³¤¶ÈÎª0£©£¬Æä»áÎªÃ¿¸öfield´æ´¢Ò»¸ö**bit**£¬ÓÃ0»ò1±íÊ¾ÊÇ·ñÎªnull¡£
-* [values]ÓòÖĞÎªÃ¿¸öfield´æ´¢ÁË8-ByteµÄÄÚÈİ£¬µ±È»¶ÔÓÚ¹Ì¶¨³¤¶ÈµÄÔ­Ê¼ÀàĞÍ£¬Èçlong£¬int£¬doubleµÈ£¬Ö±½Ó´æÈë¡£¶ÔÓÚ·ÇÔ­Ê¼ÀàĞÍ»ò¿É±ä³¤¶ÈµÄÖµ£¬´æ´¢µÄÊÇÒ»¸öÏà¶Ôoffset£¨Ö¸Ïò±ä³¤fieldµÄÆğÊ¼Î»ÖÃ£©ºÍ¸ÃfieldµÄ³¤¶È£¨[variable length portion]£©¡£
-ËùÒÔUnsafeRow¶ÔÏó¿ÉÒÔµ±×öÊÇÒ»¸öÖ¸ÏòÔ­Ê¼Êı¾İµÄÖ¸Õë¡£
+* [null bit set] ç”¨äºnullä½çš„è·Ÿè¸ªï¼Œé•¿åº¦æ˜¯**8-Byte**ï¼ˆå¦‚æœæ²¡æœ‰fieldï¼Œè¯¥åŸŸé•¿åº¦ä¸º0ï¼‰ï¼Œå…¶ä¼šä¸ºæ¯ä¸ªfieldå­˜å‚¨ä¸€ä¸ª**bit**ï¼Œç”¨0æˆ–1è¡¨ç¤ºæ˜¯å¦ä¸ºnullã€‚
+* [values]åŸŸä¸­ä¸ºæ¯ä¸ªfieldå­˜å‚¨äº†8-Byteçš„å†…å®¹ï¼Œå½“ç„¶å¯¹äºå›ºå®šé•¿åº¦çš„åŸå§‹ç±»å‹ï¼Œå¦‚longï¼Œintï¼Œdoubleç­‰ï¼Œç›´æ¥å­˜å…¥ã€‚å¯¹äºéåŸå§‹ç±»å‹æˆ–å¯å˜é•¿åº¦çš„å€¼ï¼Œå­˜å‚¨çš„æ˜¯ä¸€ä¸ªç›¸å¯¹offsetï¼ˆæŒ‡å‘å˜é•¿fieldçš„èµ·å§‹ä½ç½®ï¼‰å’Œè¯¥fieldçš„é•¿åº¦ï¼ˆ[variable length portion]ï¼‰ã€‚
+æ‰€ä»¥UnsafeRowå¯¹è±¡å¯ä»¥å½“åšæ˜¯ä¸€ä¸ªæŒ‡å‘åŸå§‹æ•°æ®çš„æŒ‡é’ˆã€‚
 
 #### BufferHolder
 
-¸ÃÀàÊµ¼ÊÉÏÊÇÓÃÓÚÉú³ÉÏàÓ¦UnsafeRowµÄ¡£
+è¯¥ç±»å®é™…ä¸Šæ˜¯ç”¨äºç”Ÿæˆç›¸åº”UnsafeRowçš„ã€‚
 
 	//BufferHolder
 	public BufferHolder(UnsafeRow row, int initialSize) {
@@ -355,11 +355,11 @@ InternalRowËäÈ»²»°üº¬Êı¾İ£¬µ«ÊÇ²¢²»·Á°­Iterator[InternalRow]¿ÉÒÔÊä³öÊı¾İ£¬ÒòÎª`h
 		this.sizeInBytes = sizeInBytes;
 	}
 	
-ÒÔÉÏ3¸ö·½·¨¾ÍÊÇ½«byteÊı×é´æÈëUnsafeRowÖĞ£¬ÕæÕıĞ´ÈëµÄ²Ù×÷ÊÇÓÉUnsafeRowWriterÆô¶¯µÄ¡£
+ä»¥ä¸Š3ä¸ªæ–¹æ³•å°±æ˜¯å°†byteæ•°ç»„å­˜å…¥UnsafeRowä¸­ï¼ŒçœŸæ­£å†™å…¥çš„æ“ä½œæ˜¯ç”±UnsafeRowWriterå¯åŠ¨çš„ã€‚
 
 #### UnsafeRowWriter
 
-Õë¶Ô²»Í¬µÄÀàĞÍ»áÓĞ²»Í¬µÄĞ´Èë·½·¨£¬ÎªÁË¼ò½à£¬ÕâÀïÑ¡ÓÃÔ­Ê¼ÀàĞÍ£¬ÒÔËµÃ÷Ô­Àí¡£
+é’ˆå¯¹ä¸åŒçš„ç±»å‹ä¼šæœ‰ä¸åŒçš„å†™å…¥æ–¹æ³•ï¼Œä¸ºäº†ç®€æ´ï¼Œè¿™é‡Œé€‰ç”¨åŸå§‹ç±»å‹ï¼Œä»¥è¯´æ˜åŸç†ã€‚
 
 	//UnsafeRowWriter
 	public void write(int ordinal, long value) {
@@ -397,9 +397,9 @@ InternalRowËäÈ»²»°üº¬Êı¾İ£¬µ«ÊÇ²¢²»·Á°­Iterator[InternalRow]¿ÉÒÔÊä³öÊı¾İ£¬ÒòÎª`h
 		}
 	}
 
-UnsafeRowWriterµÄ`write`·½·¨¾ÍÊÇ°ÑÊı¾İĞ´µ½BufferHolderµÄ`buffer`ÖĞ£¬È»ºóµ÷ÓÃ`reset`À´´¥·¢BufferHolder½«Êı¾İÌá½»µ½UnsafeRowµÄ`baseObject`ÖĞ¡£BufferHolderµÄÌá½»¹ı³Ì·¢ÉúÔÚ`grow`·½·¨ÖĞ£¬
-¿ÉÒÔ¿´³öBufferHolderÊµ¼ÊÉÏÖ»ÓĞÒ»¸öbuffer£¬¶øÇÒÒ»¸öIteratorÖĞÒ²Ö»ÓĞÒ»¸öUnsafeRow±äÁ¿£¬Ö»ÊÇBufferHolderÃ¿´ÎÉú³ÉĞÂµÄbuffer£¬Ğ´ÈëUnsafeRow¶ÔÏóÖĞÈ¡³ö£¬ËùÒÔÔì³ÉÒ»ÖÖ¼ÙÏóËÆºõÊÇÃ¿¸ö¶ÔÏó¶¼ÊÇUnsafeRow¡£
-Õâ²¿·ÖµÄÂß¼­¶¼ÔÚ´úÂëÉú³Éµ±ÖĞ£¬ËùÒÔºÜÕÒµ½£¬µ«Ô­ÀíÊÇ»ù±¾Ò»ÖÂµÄ¡£
+UnsafeRowWriterçš„`write`æ–¹æ³•å°±æ˜¯æŠŠæ•°æ®å†™åˆ°BufferHolderçš„`buffer`ä¸­ï¼Œç„¶åè°ƒç”¨`reset`æ¥è§¦å‘BufferHolderå°†æ•°æ®æäº¤åˆ°UnsafeRowçš„`baseObject`ä¸­ã€‚BufferHolderçš„æäº¤è¿‡ç¨‹å‘ç”Ÿåœ¨`grow`æ–¹æ³•ä¸­ï¼Œ
+å¯ä»¥çœ‹å‡ºBufferHolderå®é™…ä¸Šåªæœ‰ä¸€ä¸ªbufferï¼Œè€Œä¸”ä¸€ä¸ªIteratorä¸­ä¹Ÿåªæœ‰ä¸€ä¸ªUnsafeRowå˜é‡ï¼Œåªæ˜¯BufferHolderæ¯æ¬¡ç”Ÿæˆæ–°çš„bufferï¼Œå†™å…¥UnsafeRowå¯¹è±¡ä¸­å–å‡ºï¼Œæ‰€ä»¥é€ æˆä¸€ç§å‡è±¡ä¼¼ä¹æ˜¯æ¯ä¸ªå¯¹è±¡éƒ½æ˜¯UnsafeRowã€‚
+è¿™éƒ¨åˆ†çš„é€»è¾‘éƒ½åœ¨ä»£ç ç”Ÿæˆå½“ä¸­ï¼Œæ‰€ä»¥å¾ˆæ‰¾åˆ°ï¼Œä½†åŸç†æ˜¯åŸºæœ¬ä¸€è‡´çš„ã€‚
 
 ![iterator InternalRow][iterator]
 
