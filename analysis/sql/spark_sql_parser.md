@@ -1,4 +1,4 @@
-#Spark Catalyst 分析阶段
+# Spark Catalyst 分析阶段
 
 本文从使用者的视角，一步步深入SQL的分析，这部分从SQL语句开始，以LogicalPlan为输出。
 
@@ -27,7 +27,7 @@
 	peopleDF.createOrReplaceTempView("people")
 	val teenagersDF = spark.sql("SELECT name, age FROM people WHERE age BETWEEN 13 AND 19")
 	
-##解析每条记录的类型
+## 解析每条记录的类型
 
 SparkSession是DataSet和DataFrame编程的入口，Builder可以用于在REPL或notebooks中配置环境。第一句的重点是获取到当前环境的SparkSession。
 第二步就是引入Spark SQL中的隐式转换和隐式值（RDD.toDF和toDS等操作都是通过隐式转换实现的）。这里虽然是DataFrame，但是之前说过在2.0.0
@@ -121,7 +121,7 @@ Schema，从而达到支持任意类型的目的。这部分代码很多，但�
 
 最后就是利用上面生成的对象构造ExpressionEncoder，每个DataSet[T]中记录的类型T都会有一个ExpressionEncoder。
 
-##生成DataSet
+## 生成DataSet
 
 Encoder生成之后，关注DataSet的生成。
 
@@ -148,7 +148,7 @@ ExternalRDD本身是一个LogicalPlan节点的子类，并且是叶子节点，�
 到此，DataSet生成完毕。但是实际上所有真正的操作都是Lazy的，只有在触发的时候，才会执行QueryPlan。也就是说这里的`toDF`和`toDS`操作都只是转换操作。
 `createTempView`操作是Command操作，所以可以立即执行，就是给这个DataSet起别名（视图名，其生命周期由SparkSession决定），当然该操作会验证这个名字全局唯一。
 
-##Query语句解析
+## Query语句解析
 
 `spark.sql(...)`方法首先是调用`SparkSqlParser.parsePlan`来解析这条查询语句。实际调用的是`AbstractSqlParser.parse`。
 
@@ -314,7 +314,7 @@ visit是父函数在运行时生成的，所以代码中没有显示其位置。
 	
 `analyzer`本身也是Lazy的，所以会调用Analyzer的`execute`方法将Unresolved的Attitude和Relation，通过CataLog转化为真正操作用的类型对象。
 
-##Analyzer
+## Analyzer
 
 首先看什么是Catalog。它是一个SessionCatalog类，用于维护Spark SQL中表和数据库的状态，它可以和外部系统（如Hive）进行连接，从而获取到Hive中的数据库信息。
 之前提到的利用`createTempView`生成表名，这个函数中同时将表名（View名）信息注册到了Catalog中。
@@ -324,7 +324,7 @@ visit是父函数在运行时生成的，所以代码中没有显示其位置。
 
 Analyzer中包含大量的规则，共分为6类，最重要的两类是：替换（Substitution）和解析（Resolution）。规则本身就是一个方法集（工厂类），从而实现对LogicalPlan的转换。
 
-###Substitution
+### Substitution
 
 `CTESubstitution`规则是将CTE定义（就是WITH块）的子查询替换为可处理LogicalPlan，由于CTE定义打乱了语法树的结构（从左到右解析根本没本法直接将CTE定义的子块加到语法树），所以此处要将CTE定义的子块重新按照索引加入到整个查询的LogicalPlan中，并且将所有WITH块中生成的relation解析为Resolved状态。
 
