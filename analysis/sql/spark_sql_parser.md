@@ -335,7 +335,7 @@ Analyzer中包含大量的规则，共分为6类，最重要的两类是：替�
 
 > Substitution做的工作是对LogicalPlan的结构做改变，而Resolution的工作只是将原有的节点解析为实体（因为语法解析后的表名仅仅是一个名字，并没有真正地与DataSet建立联系）。
 
-###Resolution
+### Resolution
 
 这些规则是有序的，打乱了就很可能导致出错或者短时间内运行不完。
 

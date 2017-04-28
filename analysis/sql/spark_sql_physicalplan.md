@@ -1,4 +1,4 @@
-#Spark SQL Physical Plan
+# Spark SQL Physical Plan
 
 本文介绍Spark SQL的PhysicalPlan的生成，这一部分主要是基于CBO(Cost Based Optimizer)的优化。
 
@@ -49,7 +49,7 @@
 
 可以发现代码中暂时实现的仅仅是选择这些PhysicalPlan的第一个，并没有进行基于cost的选择，应该不久之后就会改为选择最优的plan了。
 
-##生成PhysicalPlan的策略（Strategies）
+## 生成PhysicalPlan的策略（Strategies）
 
 	//SparkPlanner
 	def strategies: Seq[Strategy] =
@@ -65,7 +65,7 @@
 		  
 `extraStrategies`是由`experimentalMethods.extraStrategies`提供，[Catalyst Logical Plan Optimizer][1]中介绍过该类。DDLStrategy针对DDL语句，DataSourceStrategy和FileSourceStrategy类似，只是针对的数据源是JDBC等外部数据库的数据（非HadoopFsRelation），这里不对以上两个策略做分析。下面一一介绍其他策略。
 
-###FileSourceStrategy
+### FileSourceStrategy
 
 该策略会扫描文件集合，因为它们可能是按照用于指定的列进行partition（按照给定属性划分，文件名是对应值）或bucket（bucket是另一种划分方式，按照给定属性列划分成多个bucket，文件名是bucket编号）。所以通过代码了解到这个策略仅用于HadoopFsRelation（下面的总结在看完代码分析之后会更清楚）。
 > 该策略可能发生的几个阶段为：
@@ -210,7 +210,7 @@
 
 > 可以发现该策略的作用语句很简单，只是select ... from tb1 where ...类型的操作。没有额外的子查询和Aggregate等。
 
-###SpecialLimits
+### SpecialLimits
 
 	//SparkStrategies
 	object SpecialLimits extends Strategy {
@@ -257,7 +257,7 @@ case 2的区别就是，LocalLimit的子查询是作用在排序上面的投影操作，调用函数同case 1
 
 case 3就是GlobalLimit的子查询并不满足上面的条件，直接生成CollectLimitExec PhysicalPlan节点，注意上面的TakeOrderedAndProjectExec也是PhysicalPlan节点。
 
-###Aggregation
+### Aggregation
 
 	//SparkStrategies
 	object Aggregation extends Strategy {
@@ -375,7 +375,7 @@ case 2是当表达式不是AggregateExpression时，要与grouping expression中的表达式进行
 其中`distinctAttributes`表示DISTINCT操作的属性，例如`Max(DISTINCT a)`中的a。可以发现`requiredChildDistributionExpressions`和`groupingExpressions`都分别添加了DISTINCT作用的属性（表达式）。所以可以说DISTINCT操作被转化为了Group By操作。
 然后找到包含DISTINCT的聚合函数，即上面例子中的`Max`。生成对应的Expression和Attribute，最后输出的新的PhysicalPlan节点，其子节点就是之前生成的那个节点，只是聚合操作进行了改变，变为最终需要输出的部分。
 
-###JoinSelection
+### JoinSelection
 
 顾名思义，该策略的目的就是基于Joining key和logical plan的大小选择合适的Physical plan。首先通过ExtractEquiJoinKeys找到equi-join key。然后依照流程选择策略：
 
@@ -394,7 +394,7 @@ case 2是当表达式不是AggregateExpression时，要与grouping expression中的表达式进行
 至于表大小的预测方法，总体思路就是根据子树的预测结果进行操作，不同操作的预测方式不同，这里不一一赘述。只讲叶子节点的预测方式，对于LocalRelation，其预测方式就是将输出的每条记录的大小（各单元类型的长度之和）乘以记录数，这个属于元数据可以确定。
 对于InMemoryRelation，如果已经实例化就直接partition schema的统计信息计算，反之则直接用一个默认值（可以设置）。这里只介绍这两种。
 
-###InMemoryScans
+### InMemoryScans
 
 该策略主要是用于对InMemoryRelation的扫描操作。主要看。
 
@@ -421,7 +421,7 @@ def pruneFilterProject(
 当不需要复杂的映射操作（即表达式嵌套，如sum(max(a),min(b)），即`AttributeSet(projectList.map(_.toAttribute)) == projectSet`，并且filter所包含的属性时查询（投影）属性的子集。那么只要对Relation进行过滤即可，这样省去了投影操作。
 反之，就要在过滤操作上加一个投影节点ProjectExec，不过这里的过滤还包含投影操作涉及到的属性，即`(projectSet ++ filterSet).toSeq`。
 
-###BasicOperators
+### BasicOperators
 
 直接将基本的操作转化为PhysicalPlan节点，没有额外的策略选择。
 

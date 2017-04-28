@@ -1,8 +1,8 @@
-#Spark基础及Shuffle实现
+# Spark基础及Shuffle实现
 
-##Job，Stage，Task，Dependency
+## Job，Stage，Task，Dependency
 
-###从一般Job（非Shuffle）开始
+### 从一般Job（非Shuffle）开始
 
 Job可以看作是一组transformation操作和一个action操作的集合，换句话说每个action操作会触发一个Job。查看源码
 可以发现每个action操作的最后总是调用`sc.runJob(this,...)`，即SparkContext下的runJob方法。其实所有的runJob的
@@ -461,13 +461,13 @@ JobWaiter的`taskSucceeded`方法中调用`resultHandler`，即利用所说的�
 		}
 	}
 
-###Shuffle Job执行过程
+### Shuffle Job执行过程
 
 Shuffle包含两个过程：Shuffle Map和Shuffle reduce，类似于MapReduce中的map和reduce。Shuffle Map就是ShuffleMapStage，
 ShuffleMapTask将数据写到相应文件中，并把文件位置以MapOutput返回给DAGScheduler，并更新Stage信息。Reduce是利用不同类型的RDD
 来实现的。
 
-####Shuffle Map过程
+#### Shuffle Map过程
 
 首先介绍DAGScheduler中的`mapOutputTracker`（MapOutputTrackerMaster对象）。MapOutputTracker用于记录每个Stage map输出的位置（MapStatus对象），
 相当于是存储元数据信息，由于Driver端和Executor端有不同的实现，所以分为MapOutputTrackerMaster和MapOutputTrackerWorker。Master端用于
@@ -565,7 +565,7 @@ RPC通信的工作是在MapOutputTrackerMasterEndpoint类中实现的，它提�
 该入口的设置是在SparkEnv中的create方法中注册完成的（由`createDriverEnv`和`createExecutorEnv`调用）。至于Executor是
 如何RPC拉去数据的，就是通过MapOutputTracker中的`getStatuses(shuffleId: Int)`方法实现的，具体过程不再赘述。
 
-#####Shuffle机制
+##### Shuffle机制
 
 Map按照什么规则输出数据是由ShuffleManager决定的。
 
@@ -606,7 +606,7 @@ Map按照什么规则输出数据是由ShuffleManager决定的。
 
 运行过程已经在上面的ShuffleMapTask的runTask中介绍过了。
 
-####Shuffle Reduce实现
+#### Shuffle Reduce实现
 
 Reduce对应的应该是之前讲的ResultTask中runTask的内容，其中操作的RDD包括：CoGroupedRDD、CustomShuffledRDD、ShuffledRDD、
 ShuffledRowRDD和SubtractedRDD，以ShuffleRDD为例，其compute方法不同与一般的非Shuffle RDD。

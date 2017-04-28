@@ -1,9 +1,9 @@
-#Spark Block Manager管理
+# Spark Block Manager管理
 
 Spark中的RDD-Cache、broadcast、ShuffleWriter和ExternalSorter等都是基于BlockManager实现的。BlockManager会运行在每个节点上，
 包括driver和executor。其主要是提供接口来检索各种存储（memory，disk和off-heap）中本地或远程的block。
 
-##BlockManager创建
+## BlockManager创建
 
 BlockManager是在SparkEnv中创建生成的。这里插一句SparkContext和SparkEnv的区别，前者是创建了整个Spark系统的环境变量或者调度器，
 而后者是针对每个运行的Spark实体（master或worker）创建了运行时环境对象（如序列化器、RpcEnv、block manager、map output tracker等）。
@@ -31,7 +31,7 @@ BlockManager是在SparkEnv中创建生成的。这里插一句SparkContext和Spa
 [memoryManager][3]，[mapOutputTracker][1]，[shuffleManager][2]，blockTransferService（用于一次拉取一组blocks），
 securityManager，numUsableCores（可用核数）。
 
-##Block相关知识
+## Block相关知识
 
 上面谈到，Block是用户的操作单位，而这个操作对应的key就是这里BlockID，value内容为ManagerBuffer。向看一下BlockDataManager
 这个特质（接口），BlockManager就继承了它。它对外提供了对Block的操作，获取或者添加。
@@ -75,7 +75,7 @@ NIO ByteBuffer暴露。注意这个nioByteBuffer函数是每次调用将会返�
 获取ByteBuffer的来源不同，FileSegmentManagedBuffer是保存了一个File类型的变量，所以是读取`file`里的内容生成ByeBuffer，
 NettyManagedBuffer是通过ByteBuf读取的，NioManagedBuffer保存的直接就是ByteBuffer，BlockManagerManagedBuffer是通过ChunkedByteBuffer（spark.util.io）。
 
-##Block状态维护
+## Block状态维护
 
 首先来看StorageLevel，在Spark中，对应RDD的cache有很多level选择，这里谈到的StorageLevel就是这块内容。首先我们来看存储的级别：
 
@@ -175,18 +175,18 @@ BlockInfoManager其实就是对映射表的又一层封装，只是增加了任�
 	
 `doPutBytes`主要是依靠`doPut`来完成的，`doPutBytes`提供对BlockInfo的处理（包括Block的具体存储），`doPut`则用来
 生成BlockInfo。`doPutBytes`中会先判断Block的存储层级，然后就是是否需要序列化，最后就是利用具体的BlockStore（`memoryStore`
-或`diskStore`，[之后会介绍](##BlockStore)）的`putBytes`方法实现Block的存储。上面的代码省略了针对副本和注册等过程。
+或`diskStore`，[之后会介绍](## BlockStore)）的`putBytes`方法实现Block的存储。上面的代码省略了针对副本和注册等过程。
 
 BlockInfo中的Block的状态是通过锁来控制的，即通过获取当前该Block的reader数量（读的时候写）或writer（写的时候读）来控制读写同步，
 通过保证同时只有一个writer来保证互斥写。Block是否存储成功是通过`doPutBytes`中的`blockWasSuccessfullyStored`变量来控制的，
 其是通过`getCurrentBlockStatus`来获取对应Id的Block的存储状态（就是该Block内存存了多少，磁盘存了多少，以及什么存储层级）来判断的。
 
-##BlockStore
+## BlockStore
 
 BlockStore即Block真正的存储器。但在Spark中，BlockStore既不是一个特质也不是一个类，这里只是用于统称。共分为MemoryStore和DiskStore
 两个类型。
 
-###MemoryStore
+### MemoryStore
 
 MemoryStore中有两张映射表：`onHeapUnrollMemoryMap`和`offHeapUnrollMemoryMap`。前者是从任务尝试的Id到*“Unroll”*一个Block所用内存的映射，
 后者意思相同，不同的是前者是on-heap模式，后者的是off-heap模式。那么什么是“Unroll”？因为有的时候内存中的数据也会进行
@@ -273,7 +273,7 @@ MemoryStore中有两张映射表：`onHeapUnrollMemoryMap`和`offHeapUnrollMemor
 看到`allocateDirectBuffer`中的`cleaner`和`freeMemory`方法了吧。因此是在这里完成off-heap内存申请的。所以这里返
 回的`allocator`已经是一个off-heap内存的ByteBuffer了。
 
-###DiskStore
+### DiskStore
 
 DiskStore即基于文件来存储Block。基于Disk来存储，首先必须要解决一个问题就是磁盘文件的管理：磁盘目录结构的组成，目录的清理等，
 在Spark对磁盘文件的管理是通过DiskBlockManager来进行管理的，因此对DiskStore进行分析之前，首先必须对DiskBlockManager进行分析。
@@ -314,11 +314,11 @@ DiskBlockManager的核心工作就是这个，即提供`getFile`接口，根据f
 
 至于DiskStore，就是将序列化后的数据（利用BlockManager进行序列化）写到DiskBlockManager获取到的文件位置中。
 
-##BlockManager的服务结构
+## BlockManager的服务结构
 
 BlockManager分散在各个节点上，所以要有一个Master来收集各个节点的Block信息。这里依然利用RPC调用（每个节点保留一个对Master的引用，想其发送信息）。
 
-###BlockManagerMaster服务
+### BlockManagerMaster服务
 
 其是在SparkEnv中创建的，其功能通过函数名可以一目了然。主要作用有：
 
@@ -335,11 +335,11 @@ BlockManager分散在各个节点上，所以要有一个Master来收集各个�
 3. BlockManager初始化中，先根据主机名、端口名和Executor Id生成BlockManagerId，然后调用BlockManagerMaster的`registerBlockManager`来注册本机的BlockManager；
 4. `registerBlockManager`中通过RPC调用来向Master注册BlockManager。
 
-###BlockManagerSlaveEndpoint
+### BlockManagerSlaveEndpoint
 
 每个BlockManager中都有一个BlockManagerSlaveEndpoint类型的变量`slaveEndpoint`用于和Master通信，作用无非就是收到Master的消息进行相应处理，这里不再赘述。
 
-###BlockTransferService
+### BlockTransferService
 
 会发现在BlockManager中还有一个BlockTransferService类型的变量`blockTransferService`，其作用是从远程主机上把数据迁移过来。
 主要的函数有
@@ -350,7 +350,7 @@ BlockManager分散在各个节点上，所以要有一个Master来收集各个�
 
 具体的文件拉取操作在OneForOneBlockFetcher的`start`方法（被NettyBlockTransferService的`fetchBlocks`调用）中。发送操作在NettyBlockTransferService的`uploadBlock`中。
 
-##与任务和persist操作的关系
+## 与任务和persist操作的关系
 
 到这里我们只分子了Block管理的部分，那么它与Task的关系是什么样的呢？Excutor中有对应的BlockManager，在运行函数`run`中会调用。下面就是调用关系图：
 

@@ -1,4 +1,4 @@
-#Catalyst Logical Plan Optimizer
+# Catalyst Logical Plan Optimizer
 
 生成Resolved LogicalPlan之后的工作就是执行Logical Plan Optimize。该阶段的主要任务就是对Logical Plan进行剪枝合并等操作，删除无用计算或者对一些计算的多个步骤进行合并。在[Spark Catalyst 分析阶段][1]中也有对LogicalPlan结构的改变，不过那只是将多个LogicalPlan合并成一个，这里是将在一个LogicalPlan的基础上进行结构变化。
 
@@ -9,7 +9,7 @@
 优化操作的是在被触发之后才会执行，所以从DataSet的一个Action操作入手，这里就选`collect`。然后调用`QueryExecution.executedPlan`。
 QueryExecution中有多个Plan需要Lazy执行，首先是利用`analyzed`生成`withCachedData`，然后利用`withCachedData`生成`optimizedPlan`，这之前的操作都是在LogicalPlan上执行的，并且生成的也都是LogicalPlan。然后就是生成`sparkPlan`，即PhysicalPlan，继而是`executedPlan`。
 
-##withCachedData
+## withCachedData
 
 在进入LogicalPlan Optimizer之前，首先需要生成`withCachedData`。其作用就是将LogicalPlan中的某些部分替换成已经cached，从而减少不必要的分析运算。可以说这也是Optimizer的一部分。
 
@@ -56,7 +56,7 @@ LogicalPlan的`canonicalized`形态就是将子查询的别名去掉，这样的
 
 之前的文章介绍过每个LogicalPlan的输出是一组Attribute，这里生成一个新的Relation，但是Attribute经过了替换。这里要强调一下，InMemoryRelation本身也是一个LogicalPlan的子类，所以替换过程就这样完成了。
 
-##optimizedPlan
+## optimizedPlan
 
 	//QueryExecution
 	lazy val optimizedPlan: LogicalPlan = sparkSession.sessionState.optimizer.execute(withCachedData)
@@ -93,7 +93,7 @@ LogicalPlan的`canonicalized`形态就是将子查询的别名去掉，这样的
 
 首先“Finish Analysis”并不属于优化范畴，而是属于Analyzer的范畴，保证了结果一致性（正确性，例如将所有的CurrentData进行同步），并进行规范化操作（将子查询别名去除）。
 
-###优化规则
+### 优化规则
 
 	 Batch("Union", Once,
 		  CombineUnions) ::

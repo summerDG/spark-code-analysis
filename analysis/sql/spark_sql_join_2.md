@@ -1,6 +1,9 @@
-#Spark SQL Join
+# Spark SQL Join
+
 之前分析过SQL的总体执行过程，但是介绍的是大体思路。本文主要关注的是Join的具体执行。
-##LogicalPlan到PhysicalPlan
+
+## LogicalPlan到PhysicalPlan
+
 从LogicalPlan进行分析，Join操作的LogicalPlan有多种类型，主要包含ExtractEquiJoinKeys，Logical.Join类型。从PhysicalPlan中的JoinSelection入手来看。
 
 	//SparkStrategies.JoinSelection
@@ -86,7 +89,8 @@ Shuffle的操作是[执行](https://github.com/summerDG/spark-code-ananlysis/blo
 
 >RDD在进行Shuffle的时候会输入必须是一个Product[K,V]的形式，所以RDD中的记录必须转成这种格式。那么SQL DataSet中的数据类型是InternalRow，哪来的key呢？实际上在DataSet中，这个Key就是Partition Id。在进行真正的Shuffle之前，其实已经计算好了对应的Partition Id。
 
-##PhysicalPlan到执行
+## PhysicalPlan到执行
+
 	//EnsureRequirements
 	private def ensureDistributionAndOrdering(operator: SparkPlan): SparkPlan = {
 	    val requiredChildDistributions: Seq[Distribution] = operator.requiredChildDistribution

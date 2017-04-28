@@ -1,4 +1,4 @@
-#Spark SQL 执行阶段
+# Spark SQL 执行阶段
 
 本文是从生成PhysicalPlan之后开始说起。
 
@@ -22,11 +22,11 @@
 		ReuseExchange(sparkSession.sessionState.conf),
 		ReuseSubquery(sparkSession.sessionState.conf))
 
-##Preparations规则
+## Preparations规则
 
 和Python相关的不介绍。
 
-###PlanSubqueries
+### PlanSubqueries
 
 	case class PlanSubqueries(sparkSession: SparkSession) extends Rule[SparkPlan] {
 	  def apply(plan: SparkPlan): SparkPlan = {
@@ -48,7 +48,7 @@
 2. 将PredicateSubquery生成SparkPlan。何谓PredicateSubquery？该种子查询会检查其子查询结果中是否存在某个值，现在只允许将谓词表达式放在Filter Plan中（WHERE或HAVING块中）。实际上该查询和ScalarSubquery一样，如果直接解析SQL语句，是不会出现这个类的。
 其实Subquery类的子类中只有这两类是SQL语句不会生成的，其他两个是Exist和ListQuery（即IN包含的块）。该规则最后生成InSubquery，该类就是检查查询中的记录包不包含谓词表达式的结果，所以该节点的结果有true、false、null三种。
 
-###EnsureRequirements
+### EnsureRequirements
 
 	//EnsureRequirements
 	def apply(plan: SparkPlan): SparkPlan = plan.transformUp {
@@ -127,7 +127,7 @@
 
 ![add shuffle and sort][ensureDistributionAndOrdering]
 
-###CollapseCodegenStages
+### CollapseCodegenStages
 
 该规则是在支持codegen的节点顶端插入WholeStageCodegen。可参考[Apache Spark as a Compiler: Joining a Billion Rows per Second on a Laptop][2]。
 
@@ -158,22 +158,22 @@
 大概是因为实现了该trait的类本身没有相应的执行方式，其操作太复杂或者有些第三方组件无法集成到生成的代码中，所以没有用java（scala）代码生成。`hasTooManyOutputFields`保证输出的数据类型不能有太多的field。
 而且`hasTooManyInputFields`表明每个子节点的输入数据也都不能超出上限（conf.wholeStageMaxNumFields）。
 
-###ReuseExchange
+### ReuseExchange
 
 该规则是针对重复的Exchange的。Exchange是一个抽象类，所有子类都和多线程或进程的数据交换有关，之前提到的ShuffleExchange和BroadcastExchangeExec是它仅有的两个子类。如果之前有相同类型的Exchange，并且输出结果相同（条件就是判断递归输出类型，参数个数，子树大小是否相同，基本就是说树结构相同，输出结果就相同），
 那么就用之前生成的节点替换，即重用之前生成的节点。该规则逻辑比较简单清晰，这里就不贴代码了。
 
-###ReuseSubquery
+### ReuseSubquery
 
 处理基本同ReuseExchange，只是操作对象换成了ExecSubqueryExpression。
 
-##execute方法介绍
+## execute方法介绍
 
 每个SparkPlan都有一个`execute`方法，其调用`doExecute`方法，各个子类会实现具体的doExecute方法。这里以select XXX from XXX where XXX为例介绍。该语句涉及到的SparkPlan节点很少，只有FilterExec，ProjectExec和InMemoryTableScanExec（假设是InMemoryRealtion）。
 
 ![execution example][execution]
 
-###ProjectExec执行
+### ProjectExec执行
 
 	//ProjectExec
 	protected override def doExecute(): RDD[InternalRow] = {
@@ -188,7 +188,7 @@
 但是RDD[InternalRow]有一个很重要的作用就是知道每步操作的对象。例如：Row[InternalRow]记录了这一步是对第x个单元的数据加一，x是一个变量，但是最后执行的时候，这部分代码只是作用于真是的数据。简而言之RDD[InternalRow]用于生成相应代码。
 上面函数中的`project`就相当于一个投影操作的代码生成函数。
 
-###FilterExec执行
+### FilterExec执行
 
 	//FilterExec
 	protected override def doExecute(): RDD[InternalRow] = {
@@ -205,7 +205,7 @@
 	
 `predicate`相当于一个函数用于判断该行满不满足条件，不过和上面一样是代码生成的函数。
 
-###InMemoryTableScanExec执行
+### InMemoryTableScanExec执行
 
 该节点的`doExecute`方法比较复杂。但思路就是操作具体列（因为经过前面的优化后，没必要输出所有列），作为输出。
 
@@ -246,7 +246,7 @@
 	
 `byteArrayRdd`就是该DataSet对应的RDD[Array[Byte]]。`getByteArrayRdd`就是利用`execute`生成的RDD[InternalRow]。RDD[InternalRow]和数据联系的桥梁是两个：Interator[InternalRow]和UnsafeRow。
 
-###Iterator[InternalRow]和UnsafeRow
+### Iterator[InternalRow]和UnsafeRow
 
 InternalRow虽然不包含数据，但是并不妨碍Iterator[InternalRow]可以输出数据，因为`hasNext`，`next`等函数可以被重写。
 上面在[InMemoryTableScanExec][###InMemoryTableScanExec执行]中没有提到的是其`execute`调用了`GenerateColumnAccessor.generate(columnTypes)`，而该函数又调用了`GenerateColumnAccessor.create(columnTypes)`。
@@ -310,7 +310,7 @@ InternalRow虽然不包含数据，但是并不妨碍Iterator[InternalRow]可以输出数据，因为`h
 
 在这里就会体会到其实在Interator[InternalRow]就会有数据了。这里主要利用到4个变量：`buffer`，`unsafeRow`，`bufferHolder`，`rowWriter`。`buffer`的类型好解释。下面解释其他3个对象的类型。
 
-####UnsafeRow
+#### UnsafeRow
 
 该类型继承自InternalRow，但其包含了数据，而且其操作是原生内存操作，所以不是Java对象。其数据保存在`baseObject`对象中，该对象是Object类型。
 
@@ -329,7 +329,7 @@ InternalRow虽然不包含数据，但是并不妨碍Iterator[InternalRow]可以输出数据，因为`h
 * [values]域中为每个field存储了8-Byte的内容，当然对于固定长度的原始类型，如long，int，double等，直接存入。对于非原始类型或可变长度的值，存储的是一个相对offset（指向变长field的起始位置）和该field的长度（[variable length portion]）。
 所以UnsafeRow对象可以当做是一个指向原始数据的指针。
 
-####BufferHolder
+#### BufferHolder
 
 该类实际上是用于生成相应UnsafeRow的。
 
@@ -357,7 +357,7 @@ InternalRow虽然不包含数据，但是并不妨碍Iterator[InternalRow]可以输出数据，因为`h
 	
 以上3个方法就是将byte数组存入UnsafeRow中，真正写入的操作是由UnsafeRowWriter启动的。
 
-####UnsafeRowWriter
+#### UnsafeRowWriter
 
 针对不同的类型会有不同的写入方法，为了简洁，这里选用原始类型，以说明原理。
 

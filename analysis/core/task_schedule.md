@@ -1,5 +1,5 @@
-#Spark的任务调度机制
-##从TaskScheduler开始
+# Spark的任务调度机制
+## 从TaskScheduler开始
 TaskScheduler的主要作用就是获得需要处理的任务集合，并将其发送到集群进行处理。并且还有汇报任务运行状态的作用。
 所以其是在Master端。具体有以下4个作用：
 
@@ -8,7 +8,7 @@ TaskScheduler的主要作用就是获得需要处理的任务集合，并将其�
 * 对于stragglers（拖后腿的任务）放到其他的节点执行。
 * 向集群提交任务集，交给集群运行。
 
-###TaskScheduler创建
+### TaskScheduler创建
 对于调度器，都是在SparkContext中进行创建的。
 
     // SparkContext初始化块中
@@ -40,7 +40,7 @@ HeartbeatReceiver是一个SparkListener，并且是一个RPC通信的入口，�
 
 这句将其TaskScheduler进行初始化，那么心跳的接收以及处理就实现了。同时对于丢失Executor的处理也是在HeartbeatReceiver中完成的。
 
-###TaskScheduler启动
+### TaskScheduler启动
 
 TaskScheduler的启动也是在SparkContext初始化块中完成的。以TaskSchedulerImpl和StandaloneSchedulerBackend为例，分析器启动过程。
 TaskScheduler的启动函数首先会启动`backend`，并启动一个`speculationScheduler`守护线程，用于检测当前Job的speculatable tasks。
@@ -56,7 +56,7 @@ speculatable tasks的应用场景是，如果一个任务执行时间过长，�
 TaskScheduler则是通过收集的`backend`收集的资源信息针对任务作出合理的资源分配。在利用`backend`初始化的时候，其已经利用不同
 的调度模式建立了对应的任务池（Pool），可以将其简单理解为一组遵循特定调度算法的任务。
 
-###TaskScheduler提交任务集
+### TaskScheduler提交任务集
 
 由于TaskScheduler的函数很多，但最为重要的毕竟是提交任务给集群进行处理。
 

@@ -1,4 +1,4 @@
-#Spark SQL 基础知识
+# Spark SQL 基础知识
 
 本文参考自[Spark Catalyst的实现分析][1]。先上一张所有Catalyst的流程图。虽然本文不会涉及流程，但是之后的分析会以该图为指导。
 
@@ -6,7 +6,7 @@
 
 本文着重介绍几个SQL中的几个重要概念，不对其分析进行展开。
 
-##Row
+## Row
 
 表示关系运算的一行输出。其是一个Trait，所以有很多具体实现。实际上本质上来说就是一个数组。但是和RDD不同的是，
 RDD中的类型可以是任意的，而DataFrame中每条数据的类型只能是Row。在Spark1.6之后DataFrame就变成了DataSet[Row]的别名。
@@ -39,7 +39,7 @@ DataSet的核心概念就是Encoder，这个工具充分利用了隐式转换和
 而且UnsafeRow也是MutableRow的子类，它即为可修改的InternalRow，在很多地方都会出现这个，原理很简单，支持set等操作而已。
 
 
-##Expression
+## Expression
 
 在SQL语句中，除了SELECT FROM等关键字以外，其他大部分元素都可以理解为Expression，比如SELECT sum(a), a，其中sum(a)和a都为Expression，这其中当然也包含表名。
 每一个DataSet在创建的时候都会有一个对应的ExpressionEncoder，而ExpressionEncoder创建必须得有两个和Expression相关的对象：`serializer: Seq[Expression]`和
@@ -108,7 +108,7 @@ TypeCheckResult函数来校验当前Expression的输入（为Tree结构，那么
 | complexTypeCreator | eval | SparkSql支持复杂数据结构，比如Array，Map，Struct，这类Expression支持在sql语句上生成它们，比如select array。常用于Projection类型。 |
 | Generator | eval | 支持flatmap类似的操作，即将Row转变为多个Row，支持Explode和自定义UserDefinedGenerator两种，其中Explode支持将数组和map拆开为多个Row。|
 
-##Attribute
+## Attribute
 
 上面已经介绍过，Attribute其实也是一种Expression，继承自NamedExpression，就是带名字的Expression。
 Attribute直译为属性，在SQL中，可以简单理解为输入的Table中的字段，Attribute通过Name字段来进行命名。
@@ -132,7 +132,7 @@ SQL语句中的`*`，它表示为Star，继承自NamedExpression，它有两个�
 需要对AttributeReference再进行一次BindReferences的转化，生成BoundReference，这个操作本质就是将Expression和一个输入Scheme进行关联，Scheme由一组AttributeReference，它们之间是有顺序的，
 通过Expression中AttributeReference在Schema AttributeReference组中的Index，并生成BoundReference，在对BoundReference进行eval时候，即可以使用该index获取它在相应Row中的值。
 
-##QueryPlan
+## QueryPlan
 
 如上所言，在SQL语句中，除了SELECT FROM等关键字以外，其他大部分元素都可以理解为Expression，那么用什么来表示剩下的SELECT FROM这些关键字呢？毕竟Expression只是一些Eval功能函数或者代码片段，需要一个东西来串联这些片段，这个东西就是Plan，具体来说是QueryPlan。
 
@@ -192,7 +192,7 @@ Operator通常会组成多级的Plan。Operator的类都在basicLogicalOperators
 LogicalPlan需要被转换为最终的PhysicalPlan才能真正具有可执行的能力，而这些Command类型的Plan都是以`def run(sparkSession: SparkSession): Seq[Row]`函数暴露给Spark SQL，
 比如通过调用Table的run函数完成Table的创建等操作。
 
-##Tree的操作
+## Tree的操作
 
 TreeNode节点本身类型为Product（在Scala中Product是最基本数据类型之一，其子类包含所有Tuple、List、Option和case类等，如果一个`Case Class`继承Product，
 那么便可以通过`productElement`函数或者`productIterator`迭代器对`Case Class`的**参数信息**进行索引和遍历），并且所有Expression和Plan都是属于`Product`类型，

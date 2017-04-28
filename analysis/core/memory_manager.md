@@ -1,9 +1,9 @@
-#Spark的内存管理
+# Spark的内存管理
 
 Spark中的内存管理最近几个版本一直有变化。Spark1.6中将过去的内存管理全部放在了`StaticMemoryManager`中，其名字起得很好，因为过去的的内存
 分配确实是静态的(详情见[Spark Architecture][1])，即各个区块的大小是固定的。可以通过配置`spark.memory.useLegacyMode`为`true`来使用。自从1.6版本开始就着力推出新的内存管理，这是[Tungtsen][2]中重要的一个目标。实际上1.6只是一个过渡，其和2.0.0的内存管理还是有一定的区别（在off-heap方面）。[1.6的内存管理见][3]。
 
-##UnifiedMemoryManager Overview
+## UnifiedMemoryManager Overview
 
 新的内存管理策略在有这个类进行负责，这里借用[Alexey Grishchenko分析Spark1.6的内存管理][3]的图（有修改）来说明其整体的策略。
 
@@ -34,7 +34,7 @@ e.g.
 1. 当Storage Memory内存默认大小为1G，有200MB的空闲内存，而Execution Storage默认1G，需要300MB的内存用于运行，那么向Storage Memory最多借200MB。
 2. 当Storage Memory之前向Execution Memory 借了200MB内存，即1.2G，那么Execution Storage若需要300MB内存，那么它最多踢掉200MB用于自己运行。
 
-##Spark Tungtsen的内存思路
+## Spark Tungtsen的内存思路
 
 与C等直接面向内存的编程语言不同，Java业务逻辑操作内存是JVM堆内存，分配释放以及引用关系都由JVM进行管理，new返回的只是一个对象引用，而不是该对象在进程空间的绝对地址。但是由于堆内存的使用严重依赖JVM的GC器，对于大内存的使用，JavaER都想脱离JVM的管理，而自行和内存进行打交道，即堆外内存。
 
@@ -48,7 +48,7 @@ e.g.
 
 这种设计可以极大地提高数组、Map等操作的效率。Tungtsen中已经利用这种设计替换了之前的原生数据结构。
 
-##UnifiedMemoryManager源码分析
+## UnifiedMemoryManager源码分析
 
 首先分析其父类MemoryManager
 
@@ -71,7 +71,7 @@ private[spark] abstract class MemoryManager(
 
 上面列举出其最重要的4个成员变量，分别是on-heap和off-heap版本的StorageMemoryPool和ExecutionMemoryPool。
 
-###StorageMemoryPool
+### StorageMemoryPool
 
 先分析StorageMemoryPool。
 
@@ -134,7 +134,7 @@ private[memory] class StorageMemoryPool(
 可以发现最终会调用Cleaner的`clean`方法来释放这部分空间（sun.misc）。不过至此我们还没有分析怎么向off-heap中写数据，实际上向off-heap中写数据只存在于MemoryStore的`putIteratorAsBytes`中，进一步往回找，发现只有在BlockManager的`doPutIterator`中hi调用此函数，而且该函数只会被
 BlockManager的`getOrElseUpdate`调用，也就是触发persist（cache）操作的时候。所以off-heap只会用于persist操作。
 
-###ExecutionMemoryPool
+### ExecutionMemoryPool
 
 接下来分析ExecutionMemoryPool，该类除了像StorageMemoryPool存储数据（只是用途不同），还提供了一组策略来保证每个任务都可以得到一部分
 合理的内存。
@@ -155,7 +155,7 @@ ExecutionMemoryPool，只是维护一个可用内存指标，接受指标的申�
 
 了解了Shuffle与ExecutionMemoryPool的关系之后，现在分析一下TaskMemoryManager。
 
-####TaskMemoryManager
+#### TaskMemoryManager
 
 这个类很复杂，其中大部分是将off-heap地址转换成64-bit的long型。在off-heap模式下，内存可以直接用64-bit的long值处理。
 在on-heap模式下，内存可以通过对象引用和一个64-bit的long值的offset来处理（最初想法）。当想存储其他数据结构中包含的数据结构指针时，例如hashmap或已排序buffer，那么这种方式就会有问题，因为地址完全可以大于这个范围。所以对于on-heap模式，使用64-bit中的高13位来存储页好，低51位来存储页内偏移量（offset）。页号被存储在TaskMemoryManager的页表数组中。所以允许存储_2 ^ 13 = 8192_页，页大小受限于long[]数组（最大2^31），所以可以处理_8192 * 2^31 * 8 bytes_的数据，16TB内存。
@@ -279,7 +279,7 @@ MemoryBlock，也就是一页，因为页中有偏移量，长度，所以可以
 
 剩下的就是`encodePageNumberAndOffset`、`decodePageNumber`、`decodeOffset`，这几个很容易理解。`encodePageNumberAndOffset`是针对on-heap和off-heap中的页和页内偏移进行编码的。`getPage`是获得页的引用（只针对on-heap有效，因为off-heap并没有页引用）。这些函数在UnsafeExternalSorter和新数据结构中有大量应用，这里不再赘述。
 
-##JIT编译
+## JIT编译
 
 实际上Tungtsen借用`sun.misc.Unsafe`管理内存后，其内存操作（申请、插入、释放）都是原生的，即直接通过JIT编译编译成机器指令，而无需JVM将 Java字节码解释后再运行。所以执行速度也会有提升。
 	

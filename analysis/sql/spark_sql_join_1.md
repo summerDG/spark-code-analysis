@@ -1,6 +1,9 @@
-#Spark SQL Join 解析
+# Spark SQL Join 解析
+
 本文讲的是将from语句块解析成Join的LogicalPlan。
-##从AST到Unresolved LogicalPlan
+
+## 从AST到Unresolved LogicalPlan
+
 	//AstBuilder
 	override def visitQuerySpecification(
 	      ctx: QuerySpecificationContext): LogicalPlan = withOrigin(ctx) {
@@ -78,7 +81,9 @@ AstBuilder中引入了ParserUtils，所以其[隐式类](http://docs.scala-lang.
 
 必须说明**这里生成的Join二叉树中各个节点的join类型是任意的，包括outer join(left,right,full)，semi join等**。
 每个relation都会生成一棵Join二叉树，`visitFromClause`中的操作是将这些二叉树再进行合并，只是条件并没有给定，这是因为条件在where语句中。
-##从Unresolved LogicalPlan到Resolved LogicalPlan
+
+## 从Unresolved LogicalPlan到Resolved LogicalPlan
+
 Analyzer的Resolution规则集中涉及到resolve Join的规则有：ResolveReferences和ResolveNaturalAndUsingJoin。下面分别说明这三个规则中对Join节点的操作。
 
 	//Analyzer.ResolveReferences.apply
@@ -115,10 +120,13 @@ Analyzer的Resolution规则集中涉及到resolve Join的规则有：ResolveRefe
 `commonNaturalJoinProcessing`生成的是Projection节点（包含投影Join后的输出和Join节点），而且增加了`condition`（之前为None），并且解析出了左右Join Key的Attribute对象。
 [之前](https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/sql/spark_sql_parser.md)介绍过，这些规则集有负责将属性绑定到真是的数据集上。
 
-##LogicalPlan Optimize
+## LogicalPlan Optimize
+
 在Optimizer的优化规则里与Join算子关系较为密切的规则有：PushPredicateThroughJoin、ReorderJoin和EliminateOuterJoin。
 本文着重关注InnerJoin，所以EliminateOuterJoin不介绍。
-###PushPredicateThroughJoin
+
+### PushPredicateThroughJoin
+
 该优化规则是将Filter中的条件下移到Join算子中。
 
 1. 当Filter中的条件只需要Join中的left child或right child的输出属性求出来，就更新该节点。以InnerJoin为例（本文只关注InnerJoin）
@@ -156,7 +164,8 @@ Analyzer的Resolution规则集中涉及到resolve Join的规则有：ResolveRefe
 
 2. 只是将Join节点中的连接条件下移到左右子节点。即如果连接条件中的部分条件可以完全由左（右）子节点求值，就没必要将其放到Join的判断条件中，毕竟Join关注的应该是和Shuffle相关的条件才对。这部分代码类似于1中的前半部分，所以就不贴了。
 
-###ReorderJoin
+### ReorderJoin
+
 该规则只对InnerJoin进行重新排序，把所有的条件表达式分配到join的子树中，使每个叶子节点至少有一个条件表达式。
 
 	//ReorderJoin in joins.scala

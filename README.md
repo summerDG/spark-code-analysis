@@ -1,12 +1,12 @@
-#Spark源码分析
+# Spark源码分析
 
 该专题主要分为两个大的章节，第一章是关于spark core的源码分析，第二章是关于spark sql的源码分析。
 
-##spark core
+## spark core
 
 该章主要从两个角度分析了spark core的源码：计算和存储。
 
-###计算
+### 计算
 
 计算方面涉及到的内容主要包含：作业及任务的调度和shuffle。这里默认读者已经了解了RDD的概念和原理，所以并未对RDD作分析。
 
@@ -16,7 +16,7 @@
 
 [Spark的任务调度机制][3]：该节介绍的是Task的调度机制，包括核心概念和实现流程。
 
-###存储
+### 存储
 
 存储管理分两节讲解，第一节是从用户角度，即数据的存储单位Block的角度进行阐述，第二节是从实现方式的角度，即内存管理来阐述。
 
@@ -24,11 +24,11 @@
 
 [Spark内存管理][5]：BlockManager落实到具体的存储（内存，磁盘等）方面是利用MemoryManager来完成的。所以该节是对Spark的内存管理的实现进行分析。
 
-##spark sql
+## spark sql
 
 该章分为两部分：Catalyst分析和Join详解。
 
-###Catalyst分析
+### Catalyst分析
 
 这部分是完成对Catalyst的分析，从sql语句的解析到logical前半部分是完成对Catalyst的分析，从sql语句的解析到logical plan，再到logical plan优化，然后是physical plan，最后是执行。如下图所示。
 
@@ -44,7 +44,7 @@
 
 [Spark SQL 执行阶段][10]：在PhysicalPlan生成之后，就是执行阶段，执行的时候会涉及到部分的优化方案，并且本节对DataSet的原理进行了分析。
 
-###Join详解
+### Join详解
 
 这部分主要是针对Join算子的分析，前半部分的分析涵盖基本的处理思路，但是并不会细致到每个算子都分析，如果相分析具体算子可以沿着前半部分的思路去挖掘。
 

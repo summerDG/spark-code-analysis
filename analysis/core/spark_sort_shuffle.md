@@ -1,12 +1,12 @@
-#Spark的shuffle机制分析
-##SortShuffle
+# Spark的shuffle机制分析
+## SortShuffle
 spark2.0.0开始后，HashShuffleManager被移除了，但实际上HashShuffle通过改变特定的ShuffleWriter来实现了，因
 为这两个Shuffle的ShuffleReader是相同的，即reduce获取数据的方式相同。所以这里只分析SortShuffleManager。
 
 SortShuffleManager的主要功能是依靠IndexShuffleBlockResolver、BlockStoreShuffleReader和ShuffleWriter的3个
 子类（UnsafeShuffleWriter、bypassMergeSortShuffleWriter和BaseShuffleWriter）实现的。
 
-###IndexShuffleBlockResolver分析
+### IndexShuffleBlockResolver分析
 IndexShuffleBlockResolver用于生成并维护逻辑块到物理文件位置的映射。同一个map任务的shuffle块数据存储在一个
 统一的数据文件中。数据块在数据文件中的偏移量存储在不同的索引文件中。数据文件的命名方式为shuffle_shuffleID_
 mapId_reduceId.data，但是reduceId是被设置为0的，索引文件只是后缀为.index。
@@ -94,7 +94,7 @@ mapId_reduceId.data，但是reduceId是被设置为0的，索引文件只是后�
 要删除临时的map输出（包括数据文件和索引文件）。对于不匹配的情况（通常是每个task第一次尝试），要用临时的map输
 出进行覆盖。
 
-###ShuffleWriter分析
+### ShuffleWriter分析
 下面分析ShuffleWriter的逻辑。
 
     private[spark] class SortShuffleWriter[K, V, C](
@@ -349,7 +349,7 @@ insertRecordIntoSorter中先是利用`serOutputStream`将record加入序列化�
 来选择不同的合并方式，`mergeSpillsWithTransferTo`是基于NIO转换的合并方式，速度快，但当压缩和序列化支持连接操作时。
 `mergeSpillsWithFileStream`使用情况相反，并且速度更慢，因为该过程需要先将压缩数据解码，然后在进行压缩。
 
-###ShuffleReader分析
+### ShuffleReader分析
 SortShuffleManager依赖的ShuffleReader是BlockStoreShuffleReader，其作用就是从其他节点将该reduce所要读取的数据段拉过来。
 其只包含方法read
 
