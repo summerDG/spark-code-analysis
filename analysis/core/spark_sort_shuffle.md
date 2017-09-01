@@ -6,6 +6,8 @@ spark2.0.0开始后，HashShuffleManager被移除了，但实际上HashShuffle�
 SortShuffleManager的主要功能是依靠IndexShuffleBlockResolver、BlockStoreShuffleReader和ShuffleWriter的3个
 子类（UnsafeShuffleWriter、bypassMergeSortShuffleWriter和BaseShuffleWriter）实现的。
 
+在看下面的源码之前先看一下总体的思路，见[各种ShuffleWriter][1]。
+
 ### IndexShuffleBlockResolver分析
 IndexShuffleBlockResolver用于生成并维护逻辑块到物理文件位置的映射。同一个map任务的shuffle块数据存储在一个
 统一的数据文件中。数据块在数据文件中的偏移量存储在不同的索引文件中。数据文件的命名方式为shuffle_shuffleID_
@@ -305,18 +307,18 @@ reduce生成一个partition文件writer，但是由于这会造成大量的小�
       }
     }
 
-UnsafeShuffleWriter与SortShuffleWriter最大的不同在于二者使用的排序方式。前者使用的是ShuffleExternalSorter，
+UnsafeShuffleWriter与SortShuffleWriter最大的不同在于二者使用的排序对象。前者使用的是ShuffleExternalSorter，
 其排序使用的是ShuffleInMemorySorter，但该Sorter本身使用的排序有两种可供选择：RadixSort和TimSort。而且排序是
-基于二进制数据（不是Java对象），这会减少内存开销和GC。
+基于堆外记录的地址（不是Java对象），这会减少堆内内存开销和GC。
 与ExternalSorter不同的是，其不会对溢出（内存装不下）数据进行合并，而是将合并工作转交给UnsafeShuffleWriter，
-由于特出的处理过程，可以省去额外的序列化和反序列化的操作。可以发现write的操作主要是调用insertRecordIntoSorter
+由于特殊的处理过程，可以省去额外的序列化和反序列化的操作。可以发现write的操作主要是调用insertRecordIntoSorter
 插入数据，然后也是调用`sorter.insertRecord(...)`来完成，进一步探索就可以看到其只是在数据太大（内存装不下）的
 时候将一部分数据放到磁盘上，减轻内存压力。然后在UnsafeShuffleWriter中调用mergeSpills完成对溢出数据的合并，基于
-溢出文件数和IO压缩编解码来选择最快的合并策略。这需要序列化器允许序列化后的记录可以不用反序列化就可以重新排序。
-此外ShuffleExternalSorter可以排序压缩后的记录指针和partirion ids，每个记录仅仅使用8bytes。溢出文件合并的处理直
-接在序列化记录上操作，而不需要在合并的时候反序列化。而且如果压缩编解码支持压缩数据连接操作，那么就可以直接将文
-件连接起来（但依据不同的压缩方式而定）。所以这一切都得益于编码和压缩，这种Sort并不适应所有情况（aggregation，
-输出有序，因为而这会涉及到全局的数据信息，所以还需解压，这种情况下，就会退化成SortShuffleManager）。
+溢出文件数和IO压缩编解码来选择最快的合并策略。这需要序列化器允许序列化后的记录可以不用反序列化就可以连接合并。
+此外对堆外内存数据的排序仅需要对其在堆内的地址映射进行排序，堆外的对象无需移动，所以ShuffleExternalSorter仅需要依据key对其地址（堆内的数组里）进行排序。有两种快速合并溢出文件的方式，FileStream和TransferTo。这两种方式直
+接在序列化记录上操作，而不需要在合并的时候反序列化（其区别在于压缩方式是否支持之间合并）。而且如果压缩编解码支持压缩数据连接操作，那么就可以直接将文
+件连接起来（但依据不同的压缩方式而定）。所以这一切都得益于编码和压缩，这种合并并不适应所有情况，如aggregation，
+输出有序，因为而这会涉及到全局的数据信息，所以还需解压，这种情况下，就会退化成SortShuffleManager。
 
 insertRecordIntoSorter中先是利用`serOutputStream`将record加入序列化流，但这里还有一个`serBuffer`是byte数组形式
 的输出流，这二者的关系在open方法中有体现，`serBuffer`实际上是一个ByteArrayOutputStream的对象，只是它对外暴露了
@@ -347,7 +349,7 @@ insertRecordIntoSorter中先是利用`serOutputStream`将record加入序列化�
 转入mergeSpills，可以发现压缩编解码的内容，但是并没有发现和sorter或者spills的联系，其实压缩编解码的过程是在`SerializerManager`
 中完成的，其实也就是序列化的过程，该类的作用就是依据配置自动选择序列化方式和压缩方式。然后就是依据不同的压缩配置
 来选择不同的合并方式，`mergeSpillsWithTransferTo`是基于NIO转换的合并方式，速度快，但当压缩和序列化支持连接操作时。
-`mergeSpillsWithFileStream`使用情况相反，并且速度更慢，因为该过程需要先将压缩数据解码，然后在进行压缩。
+`mergeSpillsWithFileStream`更适用压缩不支持直接合并的情况，因为该过程需要先解压缩，然后再进行压缩，所以速度相对慢一点。
 
 ### ShuffleReader分析
 SortShuffleManager依赖的ShuffleReader是BlockStoreShuffleReader，其作用就是从其他节点将该reduce所要读取的数据段拉过来。
@@ -426,3 +428,6 @@ SortShuffleManager依赖的ShuffleReader是BlockStoreShuffleReader，其作用�
 为了简洁，这里删去部分代码，前两句是获取打包后的数据（因为不同节点对应的map输出并不在一起），第一句使用到
 `mapOutputTracker`，也就是reduce必须通过它才能知道自己应该拉取的数据在哪台物理节点上。第4句是用于反序列化
 数据。后面的内容是针对aggregate操作和输出排序的。
+
+
+[1]: ./spark_shuffle_new.md
