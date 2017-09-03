@@ -3,6 +3,10 @@
 Spark中的RDD-Cache、broadcast、ShuffleWriter和ExternalSorter等都是基于BlockManager实现的。BlockManager会运行在每个节点上，
 包括driver和executor。其主要是提供接口来检索各种存储（memory，disk和off-heap）中本地或远程的block。
 
+![BlockManager][block-manager]
+
+上图显示的是BlockManager各个模块间的关系。可以发现Shuffle只使用了DiskBlockManager。MemoryManager通常的使用场所是persist操作、者缓存磁盘数据、存储拉取过来的数据块等（图中未显示）。由于BlockManager实际上对内存数据和磁盘数据用MemoryStore和DiskStore作了封装，在调用者眼里并不会在乎数据来自于哪里。
+
 ## BlockManager创建
 
 BlockManager是在SparkEnv中创建生成的。这里插一句SparkContext和SparkEnv的区别，前者是创建了整个Spark系统的环境变量或者调度器，
@@ -352,7 +356,11 @@ BlockManager分散在各个节点上，所以要有一个Master来收集各个�
 
 ## 与任务和persist操作的关系
 
-到这里我们只分子了Block管理的部分，那么它与Task的关系是什么样的呢？Excutor中有对应的BlockManager，在运行函数`run`中会调用。下面就是调用关系图：
+下图显示了RDD如何在任务中实现一层层的计算。
+
+![RDD计算][rddCompute]
+
+到这里我们只分析了Block管理的部分，那么它与Task的关系是什么样的呢？Excutor中有对应的BlockManager，在运行函数`run`中会调用。下面就是调用关系图：
 
 ![Task与BlockManager的关系][task-block]
 
@@ -365,3 +373,5 @@ BlockManager分散在各个节点上，所以要有一个Master来收集各个�
 [4]:https://github.com/apache/spark/pull/11805
 [5]:https://0x0fff.com/spark-architecture/
 [task-block]:../../pic/task-block.png
+[block-manager]:../../pic/blockManager.png
+[rddCompute]:../../pic/rddCompute.png
