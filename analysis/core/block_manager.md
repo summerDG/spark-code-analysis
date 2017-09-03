@@ -5,7 +5,7 @@ Spark中的RDD-Cache、broadcast、ShuffleWriter和ExternalSorter等都是基于
 
 ![BlockManager][block-manager]
 
-上图显示的是BlockManager各个模块间的关系。可以发现Shuffle只使用了DiskBlockManager。MemoryManager通常的使用场所是persist操作、者缓存磁盘数据、存储拉取过来的数据块等（图中未显示）。由于BlockManager实际上对内存数据和磁盘数据用MemoryStore和DiskStore作了封装，在调用者眼里并不会在乎数据来自于哪里。
+上图显示的是BlockManager各个模块间的关系。可以发现Shuffle只使用了DiskBlockManager。MemoryManager通常用于persist、shuffle过程中内存buffer（用于排序）、缓存磁盘数据、存储拉取过来的数据块等（图中未显示）。由于BlockManager实际上对内存数据和磁盘数据用MemoryStore和DiskStore作了封装，在调用者眼里并不会在乎数据来自于哪里。
 
 ## BlockManager创建
 
@@ -367,9 +367,9 @@ BlockManager分散在各个节点上，所以要有一个Master来收集各个�
 至于persist操作，其实这个操作只是将对应的RDD标记为persist（cache）到哪里，实际上并没有马上执行相关的BlockStore操作。只是在取用的时候，会调用BlockManager的
 `getOrElseUpdate`方法，如果这个块本还没有被persist，那么才会调用`doPutIterator`来执行BlockStore操作。这也就是为什么调用`persist`之后还要有具体操作来触发。
 
-[1]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/spark_shuffle.md
-[2]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/spark_sort_shuffle.md
-[3]:https://github.com/summerDG/spark-code-ananlysis/blob/master/analysis/memory_manager.md
+[1]:https://github.com/summerDG/spark-code-analysis/tree/master/analysis/core/spark_shuffle.md
+[2]:https://github.com/summerDG/spark-code-analysis/tree/master/analysis/core/spark_sort_shuffle.md
+[3]:https://github.com/summerDG/spark-code-analysis/tree/master/analysis/core/memory_manager.md
 [4]:https://github.com/apache/spark/pull/11805
 [5]:https://0x0fff.com/spark-architecture/
 [task-block]:../../pic/task-block.png
